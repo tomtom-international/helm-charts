@@ -1,0 +1,37 @@
+apiVersion: v1
+entries:
+  gha-runner-scale-set:
+  - apiVersion: v2
+    appVersion: 0.3.0
+    created: "2023-03-16T20:36:44.336596626Z"
+    description: A Helm chart for deploying an AutoScalingRunnerSet
+    digest: 6fee984c02192a91cd7e721ec8a213521a56bce11efe3505e74a3ff7bbf1d3ce
+    home: https://github.com/actions/dev-arc
+    maintainers:
+    - name: actions
+      url: https://github.com/actions
+    name: gha-runner-scale-set
+    sources:
+    - https://github.com/actions/dev-arc
+    type: application
+    urls:
+    - https://github.com/tomtom-international/helm-charts/releases/download/gha-runner-scale-set-0.3.0/gha-runner-scale-set-0.3.0.tgz
+    version: 0.3.0
+  gha-runner-scale-set-controller:
+  - apiVersion: v2
+    appVersion: 0.3.0
+    created: "2023-03-16T20:36:44.480402654Z"
+    description: A Helm chart for install actions-runner-controller CRD
+    digest: 8b90614e52480a255acbb149fb4a3f6fbc5c8fdae08f5d707f20f868e261828a
+    home: https://github.com/actions/actions-runner-controller
+    maintainers:
+    - name: actions
+      url: https://github.com/actions
+    name: gha-runner-scale-set-controller
+    sources:
+    - https://github.com/actions/actions-runner-controller
+    type: application
+    urls:
+    - https://github.com/tomtom-international/helm-charts/releases/download/gha-runner-scale-set-controller-0.3.0/gha-runner-scale-set-controller-0.3.0.tgz
+    version: 0.3.0
+generated: "2023-03-16T20:36:44.480412954Z"
