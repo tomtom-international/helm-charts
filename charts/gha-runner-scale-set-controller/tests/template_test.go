@@ -147,7 +147,7 @@ func TestTemplate_NotCreateServiceAccount_ServiceAccountNotSet(t *testing.T) {
 	assert.ErrorContains(t, err, "serviceAccount.name must be set if serviceAccount.create is false", "We should get an error because the default service account cannot be used")
 }
 
-func TestTemplate_CreateManagerRole(t *testing.T) {
+func TestTemplate_CreateManagerClusterRole(t *testing.T) {
 	t.Parallel()
 
 	// Path to the helm chart we will test
@@ -162,17 +162,23 @@ func TestTemplate_CreateManagerRole(t *testing.T) {
 		KubectlOptions: k8s.NewKubectlOptions("", "", namespaceName),
 	}
 
-	output := helm.RenderTemplate(t, options, helmChartPath, releaseName, []string{"templates/manager_role.yaml"})
+	output := helm.RenderTemplate(t, options, helmChartPath, releaseName, []string{"templates/manager_cluster_role.yaml"})
 
-	var managerRole rbacv1.ClusterRole
-	helm.UnmarshalK8SYaml(t, output, &managerRole)
+	var managerClusterRole rbacv1.ClusterRole
+	helm.UnmarshalK8SYaml(t, output, &managerClusterRole)
 
-	assert.Empty(t, managerRole.Namespace, "ClusterRole should not have a namespace")
-	assert.Equal(t, "test-arc-gha-runner-scale-set-controller-manager-role", managerRole.Name)
-	assert.Equal(t, 18, len(managerRole.Rules))
+	assert.Empty(t, managerClusterRole.Namespace, "ClusterRole should not have a namespace")
+	assert.Equal(t, "test-arc-gha-runner-scale-set-controller-manager-cluster-role", managerClusterRole.Name)
+	assert.Equal(t, 15, len(managerClusterRole.Rules))
+
+	_, err = helm.RenderTemplateE(t, options, helmChartPath, releaseName, []string{"templates/manager_single_namespace_controller_role.yaml"})
+	assert.ErrorContains(t, err, "could not find template templates/manager_single_namespace_controller_role.yaml in chart", "We should get an error because the template should be skipped")
+
+	_, err = helm.RenderTemplateE(t, options, helmChartPath, releaseName, []string{"templates/manager_single_namespace_watch_role.yaml"})
+	assert.ErrorContains(t, err, "could not find template templates/manager_single_namespace_watch_role.yaml in chart", "We should get an error because the template should be skipped")
 }
 
-func TestTemplate_ManagerRoleBinding(t *testing.T) {
+func TestTemplate_ManagerClusterRoleBinding(t *testing.T) {
 	t.Parallel()
 
 	// Path to the helm chart we will test
@@ -189,16 +195,80 @@ func TestTemplate_ManagerRoleBinding(t *testing.T) {
 		KubectlOptions: k8s.NewKubectlOptions("", "", namespaceName),
 	}
 
-	output := helm.RenderTemplate(t, options, helmChartPath, releaseName, []string{"templates/manager_role_binding.yaml"})
+	output := helm.RenderTemplate(t, options, helmChartPath, releaseName, []string{"templates/manager_cluster_role_binding.yaml"})
 
-	var managerRoleBinding rbacv1.ClusterRoleBinding
-	helm.UnmarshalK8SYaml(t, output, &managerRoleBinding)
+	var managerClusterRoleBinding rbacv1.ClusterRoleBinding
+	helm.UnmarshalK8SYaml(t, output, &managerClusterRoleBinding)
 
-	assert.Empty(t, managerRoleBinding.Namespace, "ClusterRoleBinding should not have a namespace")
-	assert.Equal(t, "test-arc-gha-runner-scale-set-controller-manager-rolebinding", managerRoleBinding.Name)
-	assert.Equal(t, "test-arc-gha-runner-scale-set-controller-manager-role", managerRoleBinding.RoleRef.Name)
-	assert.Equal(t, "test-arc-gha-runner-scale-set-controller", managerRoleBinding.Subjects[0].Name)
-	assert.Equal(t, namespaceName, managerRoleBinding.Subjects[0].Namespace)
+	assert.Empty(t, managerClusterRoleBinding.Namespace, "ClusterRoleBinding should not have a namespace")
+	assert.Equal(t, "test-arc-gha-runner-scale-set-controller-manager-cluster-rolebinding", managerClusterRoleBinding.Name)
+	assert.Equal(t, "test-arc-gha-runner-scale-set-controller-manager-cluster-role", managerClusterRoleBinding.RoleRef.Name)
+	assert.Equal(t, "test-arc-gha-runner-scale-set-controller", managerClusterRoleBinding.Subjects[0].Name)
+	assert.Equal(t, namespaceName, managerClusterRoleBinding.Subjects[0].Namespace)
+
+	_, err = helm.RenderTemplateE(t, options, helmChartPath, releaseName, []string{"templates/manager_single_namespace_controller_role_binding.yaml"})
+	assert.ErrorContains(t, err, "could not find template templates/manager_single_namespace_controller_role_binding.yaml in chart", "We should get an error because the template should be skipped")
+
+	_, err = helm.RenderTemplateE(t, options, helmChartPath, releaseName, []string{"templates/manager_single_namespace_watch_role_binding.yaml"})
+	assert.ErrorContains(t, err, "could not find template templates/manager_single_namespace_watch_role_binding.yaml in chart", "We should get an error because the template should be skipped")
+}
+
+func TestTemplate_CreateManagerListenerRole(t *testing.T) {
+	t.Parallel()
+
+	// Path to the helm chart we will test
+	helmChartPath, err := filepath.Abs("../../gha-runner-scale-set-controller")
+	require.NoError(t, err)
+
+	releaseName := "test-arc"
+	namespaceName := "test-" + strings.ToLower(random.UniqueId())
+
+	options := &helm.Options{
+		SetValues:      map[string]string{},
+		KubectlOptions: k8s.NewKubectlOptions("", "", namespaceName),
+	}
+
+	output := helm.RenderTemplate(t, options, helmChartPath, releaseName, []string{"templates/manager_listener_role.yaml"})
+
+	var managerListenerRole rbacv1.Role
+	helm.UnmarshalK8SYaml(t, output, &managerListenerRole)
+
+	assert.Equal(t, namespaceName, managerListenerRole.Namespace, "Role should have a namespace")
+	assert.Equal(t, "test-arc-gha-runner-scale-set-controller-manager-listener-role", managerListenerRole.Name)
+	assert.Equal(t, 4, len(managerListenerRole.Rules))
+	assert.Equal(t, "pods", managerListenerRole.Rules[0].Resources[0])
+	assert.Equal(t, "pods/status", managerListenerRole.Rules[1].Resources[0])
+	assert.Equal(t, "secrets", managerListenerRole.Rules[2].Resources[0])
+	assert.Equal(t, "serviceaccounts", managerListenerRole.Rules[3].Resources[0])
+}
+
+func TestTemplate_ManagerListenerRoleBinding(t *testing.T) {
+	t.Parallel()
+
+	// Path to the helm chart we will test
+	helmChartPath, err := filepath.Abs("../../gha-runner-scale-set-controller")
+	require.NoError(t, err)
+
+	releaseName := "test-arc"
+	namespaceName := "test-" + strings.ToLower(random.UniqueId())
+
+	options := &helm.Options{
+		SetValues: map[string]string{
+			"serviceAccount.create": "true",
+		},
+		KubectlOptions: k8s.NewKubectlOptions("", "", namespaceName),
+	}
+
+	output := helm.RenderTemplate(t, options, helmChartPath, releaseName, []string{"templates/manager_listener_role_binding.yaml"})
+
+	var managerListenerRoleBinding rbacv1.RoleBinding
+	helm.UnmarshalK8SYaml(t, output, &managerListenerRoleBinding)
+
+	assert.Equal(t, namespaceName, managerListenerRoleBinding.Namespace, "RoleBinding should have a namespace")
+	assert.Equal(t, "test-arc-gha-runner-scale-set-controller-manager-listener-rolebinding", managerListenerRoleBinding.Name)
+	assert.Equal(t, "test-arc-gha-runner-scale-set-controller-manager-listener-role", managerListenerRoleBinding.RoleRef.Name)
+	assert.Equal(t, "test-arc-gha-runner-scale-set-controller", managerListenerRoleBinding.Subjects[0].Name)
+	assert.Equal(t, namespaceName, managerListenerRoleBinding.Subjects[0].Namespace)
 }
 
 func TestTemplate_ControllerDeployment_Defaults(t *testing.T) {
@@ -237,6 +307,10 @@ func TestTemplate_ControllerDeployment_Defaults(t *testing.T) {
 	assert.Equal(t, "test-arc", deployment.Labels["app.kubernetes.io/instance"])
 	assert.Equal(t, chart.AppVersion, deployment.Labels["app.kubernetes.io/version"])
 	assert.Equal(t, "Helm", deployment.Labels["app.kubernetes.io/managed-by"])
+	assert.Equal(t, namespaceName, deployment.Labels["actions.github.com/controller-service-account-namespace"])
+	assert.Equal(t, "test-arc-gha-runner-scale-set-controller", deployment.Labels["actions.github.com/controller-service-account-name"])
+	assert.NotContains(t, deployment.Labels, "actions.github.com/controller-watch-single-namespace")
+	assert.Equal(t, "gha-runner-scale-set-controller", deployment.Labels["app.kubernetes.io/part-of"])
 
 	assert.Equal(t, int32(1), *deployment.Spec.Replicas)
 
@@ -261,9 +335,11 @@ func TestTemplate_ControllerDeployment_Defaults(t *testing.T) {
 	assert.Nil(t, deployment.Spec.Template.Spec.Affinity)
 	assert.Len(t, deployment.Spec.Template.Spec.Tolerations, 0)
 
+	managerImage := "ghcr.io/actions/gha-runner-scale-set-controller:dev"
+
 	assert.Len(t, deployment.Spec.Template.Spec.Containers, 1)
 	assert.Equal(t, "manager", deployment.Spec.Template.Spec.Containers[0].Name)
-	assert.Equal(t, "ghcr.io/actions/gha-runner-scale-set-controller:dev", deployment.Spec.Template.Spec.Containers[0].Image)
+	assert.Equal(t, managerImage, deployment.Spec.Template.Spec.Containers[0].Image)
 	assert.Equal(t, corev1.PullIfNotPresent, deployment.Spec.Template.Spec.Containers[0].ImagePullPolicy)
 
 	assert.Len(t, deployment.Spec.Template.Spec.Containers[0].Command, 1)
@@ -273,12 +349,15 @@ func TestTemplate_ControllerDeployment_Defaults(t *testing.T) {
 	assert.Equal(t, "--auto-scaling-runner-set-only", deployment.Spec.Template.Spec.Containers[0].Args[0])
 	assert.Equal(t, "--log-level=debug", deployment.Spec.Template.Spec.Containers[0].Args[1])
 
-	assert.Len(t, deployment.Spec.Template.Spec.Containers[0].Env, 2)
-	assert.Equal(t, "CONTROLLER_MANAGER_POD_NAME", deployment.Spec.Template.Spec.Containers[0].Env[0].Name)
-	assert.Equal(t, "metadata.name", deployment.Spec.Template.Spec.Containers[0].Env[0].ValueFrom.FieldRef.FieldPath)
+	assert.Len(t, deployment.Spec.Template.Spec.Containers[0].Env, 3)
+	assert.Equal(t, "CONTROLLER_MANAGER_CONTAINER_IMAGE", deployment.Spec.Template.Spec.Containers[0].Env[0].Name)
+	assert.Equal(t, managerImage, deployment.Spec.Template.Spec.Containers[0].Env[0].Value)
 
 	assert.Equal(t, "CONTROLLER_MANAGER_POD_NAMESPACE", deployment.Spec.Template.Spec.Containers[0].Env[1].Name)
 	assert.Equal(t, "metadata.namespace", deployment.Spec.Template.Spec.Containers[0].Env[1].ValueFrom.FieldRef.FieldPath)
+
+	assert.Equal(t, "CONTROLLER_MANAGER_LISTENER_IMAGE_PULL_POLICY", deployment.Spec.Template.Spec.Containers[0].Env[2].Name)
+	assert.Equal(t, "IfNotPresent", deployment.Spec.Template.Spec.Containers[0].Env[2].Value) // default value. Needs to align with controllers/actions.github.com/resourcebuilder.go
 
 	assert.Empty(t, deployment.Spec.Template.Spec.Containers[0].Resources)
 	assert.Nil(t, deployment.Spec.Template.Spec.Containers[0].SecurityContext)
@@ -314,6 +393,8 @@ func TestTemplate_ControllerDeployment_Customize(t *testing.T) {
 			"imagePullSecrets[0].name":     "dockerhub",
 			"nameOverride":                 "gha-runner-scale-set-controller-override",
 			"fullnameOverride":             "gha-runner-scale-set-controller-fullname-override",
+			"env[0].name":                  "ENV_VAR_NAME_1",
+			"env[0].value":                 "ENV_VAR_VALUE_1",
 			"serviceAccount.name":          "gha-runner-scale-set-controller-sa",
 			"podAnnotations.foo":           "bar",
 			"podSecurityContext.fsGroup":   "1000",
@@ -341,6 +422,7 @@ func TestTemplate_ControllerDeployment_Customize(t *testing.T) {
 	assert.Equal(t, "test-arc", deployment.Labels["app.kubernetes.io/instance"])
 	assert.Equal(t, chart.AppVersion, deployment.Labels["app.kubernetes.io/version"])
 	assert.Equal(t, "Helm", deployment.Labels["app.kubernetes.io/managed-by"])
+	assert.Equal(t, "gha-runner-scale-set-controller", deployment.Labels["app.kubernetes.io/part-of"])
 	assert.Equal(t, "bar", deployment.Labels["foo"])
 	assert.Equal(t, "actions", deployment.Labels["github"])
 
@@ -354,6 +436,9 @@ func TestTemplate_ControllerDeployment_Customize(t *testing.T) {
 
 	assert.Equal(t, "bar", deployment.Spec.Template.Annotations["foo"])
 	assert.Equal(t, "manager", deployment.Spec.Template.Annotations["kubectl.kubernetes.io/default-container"])
+
+	assert.Equal(t, "ENV_VAR_NAME_1", deployment.Spec.Template.Spec.Containers[0].Env[3].Name)
+	assert.Equal(t, "ENV_VAR_VALUE_1", deployment.Spec.Template.Spec.Containers[0].Env[3].Value)
 
 	assert.Len(t, deployment.Spec.Template.Spec.ImagePullSecrets, 1)
 	assert.Equal(t, "dockerhub", deployment.Spec.Template.Spec.ImagePullSecrets[0].Name)
@@ -375,9 +460,11 @@ func TestTemplate_ControllerDeployment_Customize(t *testing.T) {
 	assert.Len(t, deployment.Spec.Template.Spec.Tolerations, 1)
 	assert.Equal(t, "foo", deployment.Spec.Template.Spec.Tolerations[0].Key)
 
+	managerImage := "ghcr.io/actions/gha-runner-scale-set-controller:dev"
+
 	assert.Len(t, deployment.Spec.Template.Spec.Containers, 1)
 	assert.Equal(t, "manager", deployment.Spec.Template.Spec.Containers[0].Name)
-	assert.Equal(t, "ghcr.io/actions/gha-runner-scale-set-controller:dev", deployment.Spec.Template.Spec.Containers[0].Image)
+	assert.Equal(t, managerImage, deployment.Spec.Template.Spec.Containers[0].Image)
 	assert.Equal(t, corev1.PullAlways, deployment.Spec.Template.Spec.Containers[0].ImagePullPolicy)
 
 	assert.Len(t, deployment.Spec.Template.Spec.Containers[0].Command, 1)
@@ -388,9 +475,15 @@ func TestTemplate_ControllerDeployment_Customize(t *testing.T) {
 	assert.Equal(t, "--auto-scaler-image-pull-secrets=dockerhub", deployment.Spec.Template.Spec.Containers[0].Args[1])
 	assert.Equal(t, "--log-level=debug", deployment.Spec.Template.Spec.Containers[0].Args[2])
 
-	assert.Len(t, deployment.Spec.Template.Spec.Containers[0].Env, 2)
-	assert.Equal(t, "CONTROLLER_MANAGER_POD_NAME", deployment.Spec.Template.Spec.Containers[0].Env[0].Name)
-	assert.Equal(t, "metadata.name", deployment.Spec.Template.Spec.Containers[0].Env[0].ValueFrom.FieldRef.FieldPath)
+	assert.Len(t, deployment.Spec.Template.Spec.Containers[0].Env, 4)
+	assert.Equal(t, "CONTROLLER_MANAGER_CONTAINER_IMAGE", deployment.Spec.Template.Spec.Containers[0].Env[0].Name)
+	assert.Equal(t, managerImage, deployment.Spec.Template.Spec.Containers[0].Env[0].Value)
+
+	assert.Equal(t, "CONTROLLER_MANAGER_LISTENER_IMAGE_PULL_POLICY", deployment.Spec.Template.Spec.Containers[0].Env[2].Name)
+	assert.Equal(t, "Always", deployment.Spec.Template.Spec.Containers[0].Env[2].Value) // default value. Needs to align with controllers/actions.github.com/resourcebuilder.go
+
+	assert.Equal(t, "ENV_VAR_NAME_1", deployment.Spec.Template.Spec.Containers[0].Env[3].Name)
+	assert.Equal(t, "ENV_VAR_VALUE_1", deployment.Spec.Template.Spec.Containers[0].Env[3].Value)
 
 	assert.Equal(t, "CONTROLLER_MANAGER_POD_NAMESPACE", deployment.Spec.Template.Spec.Containers[0].Env[1].Name)
 	assert.Equal(t, "metadata.namespace", deployment.Spec.Template.Spec.Containers[0].Env[1].ValueFrom.FieldRef.FieldPath)
@@ -530,4 +623,265 @@ func TestTemplate_ControllerDeployment_ForwardImagePullSecrets(t *testing.T) {
 	assert.Equal(t, "--auto-scaling-runner-set-only", deployment.Spec.Template.Spec.Containers[0].Args[0])
 	assert.Equal(t, "--auto-scaler-image-pull-secrets=dockerhub,ghcr", deployment.Spec.Template.Spec.Containers[0].Args[1])
 	assert.Equal(t, "--log-level=debug", deployment.Spec.Template.Spec.Containers[0].Args[2])
+}
+
+func TestTemplate_ControllerDeployment_WatchSingleNamespace(t *testing.T) {
+	t.Parallel()
+
+	// Path to the helm chart we will test
+	helmChartPath, err := filepath.Abs("../../gha-runner-scale-set-controller")
+	require.NoError(t, err)
+
+	chartContent, err := os.ReadFile(filepath.Join(helmChartPath, "Chart.yaml"))
+	require.NoError(t, err)
+
+	chart := new(Chart)
+	err = yaml.Unmarshal(chartContent, chart)
+	require.NoError(t, err)
+
+	releaseName := "test-arc"
+	namespaceName := "test-" + strings.ToLower(random.UniqueId())
+
+	options := &helm.Options{
+		SetValues: map[string]string{
+			"image.tag":                  "dev",
+			"flags.watchSingleNamespace": "demo",
+		},
+		KubectlOptions: k8s.NewKubectlOptions("", "", namespaceName),
+	}
+
+	output := helm.RenderTemplate(t, options, helmChartPath, releaseName, []string{"templates/deployment.yaml"})
+
+	var deployment appsv1.Deployment
+	helm.UnmarshalK8SYaml(t, output, &deployment)
+
+	assert.Equal(t, namespaceName, deployment.Namespace)
+	assert.Equal(t, "test-arc-gha-runner-scale-set-controller", deployment.Name)
+	assert.Equal(t, "gha-runner-scale-set-controller-"+chart.Version, deployment.Labels["helm.sh/chart"])
+	assert.Equal(t, "gha-runner-scale-set-controller", deployment.Labels["app.kubernetes.io/name"])
+	assert.Equal(t, "test-arc", deployment.Labels["app.kubernetes.io/instance"])
+	assert.Equal(t, chart.AppVersion, deployment.Labels["app.kubernetes.io/version"])
+	assert.Equal(t, "Helm", deployment.Labels["app.kubernetes.io/managed-by"])
+	assert.Equal(t, namespaceName, deployment.Labels["actions.github.com/controller-service-account-namespace"])
+	assert.Equal(t, "test-arc-gha-runner-scale-set-controller", deployment.Labels["actions.github.com/controller-service-account-name"])
+	assert.Equal(t, "demo", deployment.Labels["actions.github.com/controller-watch-single-namespace"])
+
+	assert.Equal(t, int32(1), *deployment.Spec.Replicas)
+
+	assert.Equal(t, "gha-runner-scale-set-controller", deployment.Spec.Selector.MatchLabels["app.kubernetes.io/name"])
+	assert.Equal(t, "test-arc", deployment.Spec.Selector.MatchLabels["app.kubernetes.io/instance"])
+
+	assert.Equal(t, "gha-runner-scale-set-controller", deployment.Spec.Template.Labels["app.kubernetes.io/name"])
+	assert.Equal(t, "test-arc", deployment.Spec.Template.Labels["app.kubernetes.io/instance"])
+
+	assert.Equal(t, "manager", deployment.Spec.Template.Annotations["kubectl.kubernetes.io/default-container"])
+
+	assert.Len(t, deployment.Spec.Template.Spec.ImagePullSecrets, 0)
+	assert.Equal(t, "test-arc-gha-runner-scale-set-controller", deployment.Spec.Template.Spec.ServiceAccountName)
+	assert.Nil(t, deployment.Spec.Template.Spec.SecurityContext)
+	assert.Empty(t, deployment.Spec.Template.Spec.PriorityClassName)
+	assert.Equal(t, int64(10), *deployment.Spec.Template.Spec.TerminationGracePeriodSeconds)
+	assert.Len(t, deployment.Spec.Template.Spec.Volumes, 1)
+	assert.Equal(t, "tmp", deployment.Spec.Template.Spec.Volumes[0].Name)
+	assert.NotNil(t, 10, deployment.Spec.Template.Spec.Volumes[0].EmptyDir)
+
+	assert.Len(t, deployment.Spec.Template.Spec.NodeSelector, 0)
+	assert.Nil(t, deployment.Spec.Template.Spec.Affinity)
+	assert.Len(t, deployment.Spec.Template.Spec.Tolerations, 0)
+
+	managerImage := "ghcr.io/actions/gha-runner-scale-set-controller:dev"
+
+	assert.Len(t, deployment.Spec.Template.Spec.Containers, 1)
+	assert.Equal(t, "manager", deployment.Spec.Template.Spec.Containers[0].Name)
+	assert.Equal(t, "ghcr.io/actions/gha-runner-scale-set-controller:dev", deployment.Spec.Template.Spec.Containers[0].Image)
+	assert.Equal(t, corev1.PullIfNotPresent, deployment.Spec.Template.Spec.Containers[0].ImagePullPolicy)
+
+	assert.Len(t, deployment.Spec.Template.Spec.Containers[0].Command, 1)
+	assert.Equal(t, "/manager", deployment.Spec.Template.Spec.Containers[0].Command[0])
+
+	assert.Len(t, deployment.Spec.Template.Spec.Containers[0].Args, 3)
+	assert.Equal(t, "--auto-scaling-runner-set-only", deployment.Spec.Template.Spec.Containers[0].Args[0])
+	assert.Equal(t, "--log-level=debug", deployment.Spec.Template.Spec.Containers[0].Args[1])
+	assert.Equal(t, "--watch-single-namespace=demo", deployment.Spec.Template.Spec.Containers[0].Args[2])
+
+	assert.Len(t, deployment.Spec.Template.Spec.Containers[0].Env, 3)
+	assert.Equal(t, "CONTROLLER_MANAGER_CONTAINER_IMAGE", deployment.Spec.Template.Spec.Containers[0].Env[0].Name)
+	assert.Equal(t, managerImage, deployment.Spec.Template.Spec.Containers[0].Env[0].Value)
+
+	assert.Equal(t, "CONTROLLER_MANAGER_POD_NAMESPACE", deployment.Spec.Template.Spec.Containers[0].Env[1].Name)
+	assert.Equal(t, "metadata.namespace", deployment.Spec.Template.Spec.Containers[0].Env[1].ValueFrom.FieldRef.FieldPath)
+
+	assert.Equal(t, "CONTROLLER_MANAGER_LISTENER_IMAGE_PULL_POLICY", deployment.Spec.Template.Spec.Containers[0].Env[2].Name)
+	assert.Equal(t, "IfNotPresent", deployment.Spec.Template.Spec.Containers[0].Env[2].Value) // default value. Needs to align with controllers/actions.github.com/resourcebuilder.go
+
+	assert.Empty(t, deployment.Spec.Template.Spec.Containers[0].Resources)
+	assert.Nil(t, deployment.Spec.Template.Spec.Containers[0].SecurityContext)
+	assert.Len(t, deployment.Spec.Template.Spec.Containers[0].VolumeMounts, 1)
+	assert.Equal(t, "tmp", deployment.Spec.Template.Spec.Containers[0].VolumeMounts[0].Name)
+	assert.Equal(t, "/tmp", deployment.Spec.Template.Spec.Containers[0].VolumeMounts[0].MountPath)
+}
+
+func TestTemplate_ControllerContainerEnvironmentVariables(t *testing.T) {
+	t.Parallel()
+
+	// Path to the helm chart we will test
+	helmChartPath, err := filepath.Abs("../../gha-runner-scale-set-controller")
+	require.NoError(t, err)
+
+	releaseName := "test-arc"
+	namespaceName := "test-" + strings.ToLower(random.UniqueId())
+
+	options := &helm.Options{
+		SetValues: map[string]string{
+			"env[0].Name":                            "ENV_VAR_NAME_1",
+			"env[0].Value":                           "ENV_VAR_VALUE_1",
+			"env[1].Name":                            "ENV_VAR_NAME_2",
+			"env[1].ValueFrom.SecretKeyRef.Key":      "ENV_VAR_NAME_2",
+			"env[1].ValueFrom.SecretKeyRef.Name":     "secret-name",
+			"env[1].ValueFrom.SecretKeyRef.Optional": "true",
+			"env[2].Name":                            "ENV_VAR_NAME_3",
+			"env[2].Value":                           "",
+			"env[3].Name":                            "ENV_VAR_NAME_4",
+		},
+		KubectlOptions: k8s.NewKubectlOptions("", "", namespaceName),
+	}
+
+	output := helm.RenderTemplate(t, options, helmChartPath, releaseName, []string{"templates/deployment.yaml"})
+
+	var deployment appsv1.Deployment
+	helm.UnmarshalK8SYaml(t, output, &deployment)
+
+	assert.Equal(t, namespaceName, deployment.Namespace)
+	assert.Equal(t, "test-arc-gha-runner-scale-set-controller", deployment.Name)
+
+	assert.Len(t, deployment.Spec.Template.Spec.Containers[0].Env, 7)
+	assert.Equal(t, "ENV_VAR_NAME_1", deployment.Spec.Template.Spec.Containers[0].Env[3].Name)
+	assert.Equal(t, "ENV_VAR_VALUE_1", deployment.Spec.Template.Spec.Containers[0].Env[3].Value)
+	assert.Equal(t, "ENV_VAR_NAME_2", deployment.Spec.Template.Spec.Containers[0].Env[4].Name)
+	assert.Equal(t, "secret-name", deployment.Spec.Template.Spec.Containers[0].Env[4].ValueFrom.SecretKeyRef.Name)
+	assert.Equal(t, "ENV_VAR_NAME_2", deployment.Spec.Template.Spec.Containers[0].Env[4].ValueFrom.SecretKeyRef.Key)
+	assert.True(t, *deployment.Spec.Template.Spec.Containers[0].Env[4].ValueFrom.SecretKeyRef.Optional)
+	assert.Equal(t, "ENV_VAR_NAME_3", deployment.Spec.Template.Spec.Containers[0].Env[5].Name)
+	assert.Empty(t, deployment.Spec.Template.Spec.Containers[0].Env[5].Value)
+	assert.Equal(t, "ENV_VAR_NAME_4", deployment.Spec.Template.Spec.Containers[0].Env[6].Name)
+	assert.Empty(t, deployment.Spec.Template.Spec.Containers[0].Env[6].ValueFrom)
+}
+
+func TestTemplate_WatchSingleNamespace_NotCreateManagerClusterRole(t *testing.T) {
+	t.Parallel()
+
+	// Path to the helm chart we will test
+	helmChartPath, err := filepath.Abs("../../gha-runner-scale-set-controller")
+	require.NoError(t, err)
+
+	releaseName := "test-arc"
+	namespaceName := "test-" + strings.ToLower(random.UniqueId())
+
+	options := &helm.Options{
+		SetValues: map[string]string{
+			"flags.watchSingleNamespace": "demo",
+		},
+		KubectlOptions: k8s.NewKubectlOptions("", "", namespaceName),
+	}
+
+	_, err = helm.RenderTemplateE(t, options, helmChartPath, releaseName, []string{"templates/manager_cluster_role.yaml"})
+	assert.ErrorContains(t, err, "could not find template templates/manager_cluster_role.yaml in chart", "We should get an error because the template should be skipped")
+}
+
+func TestTemplate_WatchSingleNamespace_NotManagerClusterRoleBinding(t *testing.T) {
+	t.Parallel()
+
+	// Path to the helm chart we will test
+	helmChartPath, err := filepath.Abs("../../gha-runner-scale-set-controller")
+	require.NoError(t, err)
+
+	releaseName := "test-arc"
+	namespaceName := "test-" + strings.ToLower(random.UniqueId())
+
+	options := &helm.Options{
+		SetValues: map[string]string{
+			"serviceAccount.create":      "true",
+			"flags.watchSingleNamespace": "demo",
+		},
+		KubectlOptions: k8s.NewKubectlOptions("", "", namespaceName),
+	}
+
+	_, err = helm.RenderTemplateE(t, options, helmChartPath, releaseName, []string{"templates/manager_cluster_role_binding.yaml"})
+	assert.ErrorContains(t, err, "could not find template templates/manager_cluster_role_binding.yaml in chart", "We should get an error because the template should be skipped")
+}
+
+func TestTemplate_CreateManagerSingleNamespaceRole(t *testing.T) {
+	t.Parallel()
+
+	// Path to the helm chart we will test
+	helmChartPath, err := filepath.Abs("../../gha-runner-scale-set-controller")
+	require.NoError(t, err)
+
+	releaseName := "test-arc"
+	namespaceName := "test-" + strings.ToLower(random.UniqueId())
+
+	options := &helm.Options{
+		SetValues: map[string]string{
+			"flags.watchSingleNamespace": "demo",
+		},
+		KubectlOptions: k8s.NewKubectlOptions("", "", namespaceName),
+	}
+
+	output := helm.RenderTemplate(t, options, helmChartPath, releaseName, []string{"templates/manager_single_namespace_controller_role.yaml"})
+
+	var managerSingleNamespaceControllerRole rbacv1.Role
+	helm.UnmarshalK8SYaml(t, output, &managerSingleNamespaceControllerRole)
+
+	assert.Equal(t, "test-arc-gha-runner-scale-set-controller-manager-single-namespace-role", managerSingleNamespaceControllerRole.Name)
+	assert.Equal(t, namespaceName, managerSingleNamespaceControllerRole.Namespace)
+	assert.Equal(t, 10, len(managerSingleNamespaceControllerRole.Rules))
+
+	output = helm.RenderTemplate(t, options, helmChartPath, releaseName, []string{"templates/manager_single_namespace_watch_role.yaml"})
+
+	var managerSingleNamespaceWatchRole rbacv1.Role
+	helm.UnmarshalK8SYaml(t, output, &managerSingleNamespaceWatchRole)
+
+	assert.Equal(t, "test-arc-gha-runner-scale-set-controller-manager-single-namespace-role", managerSingleNamespaceWatchRole.Name)
+	assert.Equal(t, "demo", managerSingleNamespaceWatchRole.Namespace)
+	assert.Equal(t, 13, len(managerSingleNamespaceWatchRole.Rules))
+}
+
+func TestTemplate_ManagerSingleNamespaceRoleBinding(t *testing.T) {
+	t.Parallel()
+
+	// Path to the helm chart we will test
+	helmChartPath, err := filepath.Abs("../../gha-runner-scale-set-controller")
+	require.NoError(t, err)
+
+	releaseName := "test-arc"
+	namespaceName := "test-" + strings.ToLower(random.UniqueId())
+
+	options := &helm.Options{
+		SetValues: map[string]string{
+			"flags.watchSingleNamespace": "demo",
+		},
+		KubectlOptions: k8s.NewKubectlOptions("", "", namespaceName),
+	}
+
+	output := helm.RenderTemplate(t, options, helmChartPath, releaseName, []string{"templates/manager_single_namespace_controller_role_binding.yaml"})
+
+	var managerSingleNamespaceControllerRoleBinding rbacv1.RoleBinding
+	helm.UnmarshalK8SYaml(t, output, &managerSingleNamespaceControllerRoleBinding)
+
+	assert.Equal(t, "test-arc-gha-runner-scale-set-controller-manager-single-namespace-rolebinding", managerSingleNamespaceControllerRoleBinding.Name)
+	assert.Equal(t, namespaceName, managerSingleNamespaceControllerRoleBinding.Namespace)
+	assert.Equal(t, "test-arc-gha-runner-scale-set-controller-manager-single-namespace-role", managerSingleNamespaceControllerRoleBinding.RoleRef.Name)
+	assert.Equal(t, "test-arc-gha-runner-scale-set-controller", managerSingleNamespaceControllerRoleBinding.Subjects[0].Name)
+	assert.Equal(t, namespaceName, managerSingleNamespaceControllerRoleBinding.Subjects[0].Namespace)
+
+	output = helm.RenderTemplate(t, options, helmChartPath, releaseName, []string{"templates/manager_single_namespace_watch_role_binding.yaml"})
+
+	var managerSingleNamespaceWatchRoleBinding rbacv1.RoleBinding
+	helm.UnmarshalK8SYaml(t, output, &managerSingleNamespaceWatchRoleBinding)
+
+	assert.Equal(t, "test-arc-gha-runner-scale-set-controller-manager-single-namespace-rolebinding", managerSingleNamespaceWatchRoleBinding.Name)
+	assert.Equal(t, "demo", managerSingleNamespaceWatchRoleBinding.Namespace)
+	assert.Equal(t, "test-arc-gha-runner-scale-set-controller-manager-single-namespace-role", managerSingleNamespaceWatchRoleBinding.RoleRef.Name)
+	assert.Equal(t, "test-arc-gha-runner-scale-set-controller", managerSingleNamespaceWatchRoleBinding.Subjects[0].Name)
+	assert.Equal(t, namespaceName, managerSingleNamespaceWatchRoleBinding.Subjects[0].Namespace)
 }

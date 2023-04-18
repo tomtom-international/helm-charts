@@ -5,6 +5,11 @@ metadata:
   namespace: {{ .Release.Namespace }}
   labels:
     {{- include "gha-runner-scale-set-controller.labels" . | nindent 4 }}
+    actions.github.com/controller-service-account-namespace: {{ .Release.Namespace }}
+    actions.github.com/controller-service-account-name: {{ include "gha-runner-scale-set-controller.serviceAccountName" . }}
+    {{- if .Values.flags.watchSingleNamespace }}
+    actions.github.com/controller-watch-single-namespace: {{ .Values.flags.watchSingleNamespace }}
+    {{- end }}
 spec:
   replicas: {{ default 1 .Values.replicaCount }}
   selector:
@@ -18,7 +23,7 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       labels:
-        app.kubernetes.io/part-of: actions-runner-controller
+        app.kubernetes.io/part-of: gha-runner-scale-set-controller
         app.kubernetes.io/component: controller-manager
         app.kubernetes.io/version: {{ .Chart.Version }}
         {{- include "gha-runner-scale-set-controller.selectorLabels" . | nindent 8 }}
@@ -51,25 +56,23 @@ spec:
         {{- with .Values.flags.logLevel }}
         - "--log-level={{ . }}"
         {{- end }}
+        {{- with .Values.flags.watchSingleNamespace }}
+        - "--watch-single-namespace={{ . }}"
+        {{- end }}
         command:
         - "/manager"
         env:
-        - name: CONTROLLER_MANAGER_POD_NAME
-          valueFrom:
-            fieldRef:
-              fieldPath: metadata.name
+        - name: CONTROLLER_MANAGER_CONTAINER_IMAGE
+          value: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
         - name: CONTROLLER_MANAGER_POD_NAMESPACE
           valueFrom:
             fieldRef:
               fieldPath: metadata.namespace
+        - name: CONTROLLER_MANAGER_LISTENER_IMAGE_PULL_POLICY
+          value: "{{ .Values.image.pullPolicy | default "IfNotPresent" }}"
         {{- with .Values.env }}
-          {{- if kindIs "slice" .Values.env }}
-        {{- toYaml .Values.env | nindent 8 }}
-          {{- else }}
-            {{- range $key, $val := .Values.env }}
-        - name: {{ $key }}
-          value: {{ $val | quote }}
-            {{- end }}
+          {{- if kindIs "slice" . }}
+            {{- toYaml . | nindent 8 }}
           {{- end }}
         {{- end }}
         {{- with .Values.resources }}

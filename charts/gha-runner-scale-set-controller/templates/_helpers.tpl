@@ -39,7 +39,7 @@ helm.sh/chart: {{ include "gha-runner-scale-set-controller.chart" . }}
 {{- if .Chart.AppVersion }}
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- end }}
-app.kubernetes.io/part-of: {{ .Chart.Name }}
+app.kubernetes.io/part-of: gha-runner-scale-set-controller
 app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- range $k, $v := .Values.labels }}
 {{ $k }}: {{ $v }}
@@ -59,25 +59,41 @@ Create the name of the service account to use
 */}}
 {{- define "gha-runner-scale-set-controller.serviceAccountName" -}}
 {{- if eq .Values.serviceAccount.name "default"}}
-{{- fail "serviceAccount.name cannot be set to 'default'" }}
+  {{- fail "serviceAccount.name cannot be set to 'default'" }}
 {{- end }}
 {{- if .Values.serviceAccount.create }}
-{{- default (include "gha-runner-scale-set-controller.fullname" .) .Values.serviceAccount.name }}
+  {{- default (include "gha-runner-scale-set-controller.fullname" .) .Values.serviceAccount.name }}
 {{- else }}
-    {{- if not .Values.serviceAccount.name }}
-{{- fail "serviceAccount.name must be set if serviceAccount.create is false" }}
-    {{- else }}
-{{- .Values.serviceAccount.name }}
-    {{- end }}
+  {{- if not .Values.serviceAccount.name }}
+    {{- fail "serviceAccount.name must be set if serviceAccount.create is false" }}
+  {{- else }}
+    {{- .Values.serviceAccount.name }}
+  {{- end }}
 {{- end }}
 {{- end }}
 
-{{- define "gha-runner-scale-set-controller.managerRoleName" -}}
-{{- include "gha-runner-scale-set-controller.fullname" . }}-manager-role
+{{- define "gha-runner-scale-set-controller.managerClusterRoleName" -}}
+{{- include "gha-runner-scale-set-controller.fullname" . }}-manager-cluster-role
 {{- end }}
 
-{{- define "gha-runner-scale-set-controller.managerRoleBinding" -}}
-{{- include "gha-runner-scale-set-controller.fullname" . }}-manager-rolebinding
+{{- define "gha-runner-scale-set-controller.managerClusterRoleBinding" -}}
+{{- include "gha-runner-scale-set-controller.fullname" . }}-manager-cluster-rolebinding
+{{- end }}
+
+{{- define "gha-runner-scale-set-controller.managerSingleNamespaceRoleName" -}}
+{{- include "gha-runner-scale-set-controller.fullname" . }}-manager-single-namespace-role
+{{- end }}
+
+{{- define "gha-runner-scale-set-controller.managerSingleNamespaceRoleBinding" -}}
+{{- include "gha-runner-scale-set-controller.fullname" . }}-manager-single-namespace-rolebinding
+{{- end }}
+
+{{- define "gha-runner-scale-set-controller.managerListenerRoleName" -}}
+{{- include "gha-runner-scale-set-controller.fullname" . }}-manager-listener-role
+{{- end }}
+
+{{- define "gha-runner-scale-set-controller.managerListenerRoleBinding" -}}
+{{- include "gha-runner-scale-set-controller.fullname" . }}-manager-listener-rolebinding
 {{- end }}
 
 {{- define "gha-runner-scale-set-controller.leaderElectionRoleName" -}}
@@ -91,7 +107,7 @@ Create the name of the service account to use
 {{- define "gha-runner-scale-set-controller.imagePullSecretsNames" -}}
 {{- $names := list }}
 {{- range $k, $v := . }}
-{{- $names = append $names $v.name }}
+  {{- $names = append $names $v.name }}
 {{- end }}
 {{- $names | join ","}}
 {{- end }}
