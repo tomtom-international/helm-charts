@@ -1,0 +1,52 @@
+apiVersion: keda.sh/v1alpha1
+kind: ScaledJob
+metadata:
+  name: {{ include "azure-devops-agents.fullname" . }}
+spec:
+  jobTargetRef:
+    template:
+      spec:
+        restartPolicy: Never
+        containers:
+        - name: {{ include "azure-devops-agents.name" . }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          command: ["./start.sh"]
+          args: ["--once"]
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+          - name: AZP_URL
+            value: {{ .Values.agentPoolInfo.url }}
+          - name: AZP_POOL
+            value: {{ .Values.agentPoolInfo.poolname }}
+          - name: AZP_TOKEN
+            valueFrom:
+              secretKeyRef:
+                name: {{ include "azure-devops-agents.fullname" . }}
+                key: AZP_TOKEN
+          ports:
+            - name: http
+              containerPort: {{ .Values.service.port }}
+              protocol: TCP
+          livenessProbe:
+            {{- toYaml .Values.readinessProbe | nindent 12 }}  
+          securityContext:
+            privileged: {{ .Values.agentPoolInfo.privileged }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          volumeMounts:
+          {{- toYaml .Values.volumeMounts | nindent 10 }}
+        volumes:
+        {{- toYaml .Values.volumes | nindent 8 }}
+        {{- with .Values.nodeSelector }}
+        nodeSelector:
+          {{- toYaml . | nindent 10 }}
+        {{- end }}
+  {{- toYaml .Values.autoscaling | nindent 2 }}
+  scalingStrategy:
+    strategy: "default"               
+  triggers:
+  - type: azure-pipelines
+    metadata:
+      poolID: "{{ .Values.agentPoolInfo.poolID }}"
+      organizationURLFromEnv: "AZP_URL"
+      personalAccessTokenFromEnv: "AZP_TOKEN"

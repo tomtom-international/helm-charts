@@ -1,0 +1,61 @@
+# Default values for azure-devops-agents.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+image:
+  repository: mcr.microsoft.com/azure-pipelines/vsts-agent
+  pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: "latest"
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+podAnnotations: {}
+
+service:
+  type: ClusterIP
+  port: 80
+
+resources: 
+  limits:
+    cpu: 100m
+    memory: 128Mi
+  requests:
+    cpu: 100m
+    memory: 128Mi
+
+autoscaling:
+  # maxReplicaCount: 100
+  # minReplicaCount: 1 # cannot start from 0
+  # pollingInterval: 30
+  # successfulJobsHistoryLimit: 0
+  # failedJobsHistoryLimit: 5
+
+nodeSelector:
+  agentpool: additionalpool
+
+agentPoolInfo:
+  url: "https://dev.azure.com/myorg"
+  poolname: "keda self-hosted"
+  poolID: "2"
+
+secret:
+  create: true
+  token: "mytoken"
+
+volumeMounts:
+- name: work-disk
+  mountPath: /mnt
+
+volumes:
+- name: work-disk
+  emptyDir: {}
+
+readinessProbe:
+  initialDelaySeconds: 120
+  periodSeconds: 60
+  successThreshold: 1
+  failureThreshold: 5
+  timeoutSeconds: 10
