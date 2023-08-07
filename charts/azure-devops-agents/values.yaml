@@ -53,6 +53,9 @@ volumes:
 - name: work-disk
   emptyDir: {}
 
+configMap:
+  enabled: false
+
 readinessProbe:
   initialDelaySeconds: 120
   periodSeconds: 60

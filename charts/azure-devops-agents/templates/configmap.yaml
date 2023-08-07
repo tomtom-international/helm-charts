@@ -1,0 +1,9 @@
+{{- if .Values.configMap.enabled -}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "azure-devops-agents.fullname" . }}
+data:
+  start.sh: |-
+{{ .Files.Get .Values.configMap.startScriptPath | indent 4 }}
+{{- end }}
