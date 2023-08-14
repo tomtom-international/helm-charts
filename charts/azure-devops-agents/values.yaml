@@ -5,6 +5,7 @@
 image:
   repository: mcr.microsoft.com/azure-pipelines/vsts-agent
   pullPolicy: IfNotPresent
+  pullSecret: "secret"
   # Overrides the image tag whose default is the chart appVersion.
   tag: "latest"
 
@@ -41,9 +42,13 @@ agentPoolInfo:
   poolname: "keda self-hosted"
   poolID: "2"
 
-secret:
-  create: true
-  token: "mytoken"
+workloadidentity:
+  create: false
+  clientid: ""
+  parameters: ""
+  secretObjects: ""
+
+secretName: "mysecret"
 
 volumeMounts:
 - name: work-disk
