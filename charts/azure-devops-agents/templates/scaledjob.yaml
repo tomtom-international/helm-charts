@@ -6,6 +6,9 @@ spec:
   jobTargetRef:
     template:
       spec:
+        {{- if .Values.workloadidentity.create }}
+        serviceAccountName: {{ include "azure-devops-agents.fullname" . }}
+        {{- end }}
         restartPolicy: Never
         containers:
         - name: {{ include "azure-devops-agents.name" . }}
