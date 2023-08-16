@@ -46,7 +46,7 @@ spec:
         {{- end }}
         {{- with .Values.imagePullSecrets }}
         imagePullSecrets:
-        - name: {{- .name }}
+        - name: {{ .name }}
         {{- end }}
   {{- toYaml .Values.autoscaling | nindent 2 }}
   scalingStrategy:
