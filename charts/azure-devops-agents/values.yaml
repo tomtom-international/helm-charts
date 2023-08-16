@@ -9,6 +9,9 @@ image:
   tag: "latest"
 
 imagePullSecrets: []
+  # name: secret
+  # secret: "c2VjcmV0Cg=="
+
 nameOverride: ""
 fullnameOverride: ""
 
