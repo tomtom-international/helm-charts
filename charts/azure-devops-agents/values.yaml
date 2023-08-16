@@ -51,7 +51,6 @@ secret:
   create: true
   name: "mysecret"
   token: "mytoken"
-  pullsecret: '{"auths":{"URL":{"username":"USERNAME","password":"TOKEN","auth":"AUTH"}}}'
 
 volumeMounts:
 - name: work-disk
