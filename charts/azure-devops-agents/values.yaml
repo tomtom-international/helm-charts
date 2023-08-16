@@ -5,7 +5,6 @@
 image:
   repository: mcr.microsoft.com/azure-pipelines/vsts-agent
   pullPolicy: IfNotPresent
-  pullSecret: "secret"
   # Overrides the image tag whose default is the chart appVersion.
   tag: "latest"
 
@@ -48,7 +47,11 @@ workloadidentity:
   parameters: ""
   secretObjects: ""
 
-secretName: "mysecret"
+secret:
+  create: true
+  name: "mysecret"
+  token: "mytoken"
+  pullsecret: '{"auths":{"URL":{"username":"USERNAME","password":"TOKEN","auth":"AUTH"}}}'
 
 volumeMounts:
 - name: work-disk

@@ -24,7 +24,7 @@ spec:
           - name: AZP_TOKEN
             valueFrom:
               secretKeyRef:
-                name: {{ .Values.secretName | default (printf "%s" (include "azure-devops-agents.fullname" .)) }}
+                name: {{ .Values.secret.name | default (printf "%s" (include "azure-devops-agents.fullname" .)) }}
                 key: AZP_TOKEN
           ports:
             - name: http
@@ -44,8 +44,10 @@ spec:
         nodeSelector:
           {{- toYaml . | nindent 10 }}
         {{- end }}
+        {{- with .Values.imagePullSecrets }}
         imagePullSecrets:
-        - name: {{ .Values.image.pullSecret }}
+          {{- toYaml . | nindent 8 }}
+        {{- end }}
   {{- toYaml .Values.autoscaling | nindent 2 }}
   scalingStrategy:
     strategy: "default"               
