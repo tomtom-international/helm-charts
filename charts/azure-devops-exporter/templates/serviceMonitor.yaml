@@ -1,0 +1,16 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: {{ include "azure-devops-exporter.fullname" . }}
+  labels:
+    {{- include "azure-devops-exporter.labels" . | nindent 4 }}
+spec:
+  jobLabel: {{ .Chart.Name }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "azure-devops-exporter.name" . }}
+  namespaceSelector:
+    any: true
+  endpoints:
+    - port: http
+      interval: 15s
