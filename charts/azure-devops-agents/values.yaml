@@ -10,7 +10,6 @@ image:
 
 imagePullSecrets: []
   # name: secret
-  # secret: "c2VjcmV0Cg=="
 
 nameOverride: ""
 fullnameOverride: ""
@@ -44,12 +43,6 @@ agentPoolInfo:
   poolname: "keda self-hosted"
   poolID: "2"
 
-workloadidentity:
-  create: false
-  clientid: ""
-  parameters: ""
-  secretObjects: ""
-
 secret:
   create: true
   name: "mysecret"
@@ -66,7 +59,7 @@ volumes:
 configMap:
   enabled: false
 
-readinessProbe:
+livenessProbe:
   initialDelaySeconds: 120
   periodSeconds: 60
   successThreshold: 1

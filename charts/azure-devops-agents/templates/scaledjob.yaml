@@ -6,9 +6,6 @@ spec:
   jobTargetRef:
     template:
       spec:
-        {{- if .Values.workloadidentity.create }}
-        serviceAccountName: {{ include "azure-devops-agents.fullname" . }}
-        {{- end }}
         restartPolicy: Never
         containers:
         - name: {{ include "azure-devops-agents.name" . }}
@@ -31,7 +28,7 @@ spec:
               containerPort: {{ .Values.service.port }}
               protocol: TCP
           livenessProbe:
-            {{- toYaml .Values.readinessProbe | nindent 12 }}  
+            {{- toYaml .Values.livenessProbe | nindent 12 }}  
           securityContext:
             privileged: {{ .Values.agentPoolInfo.privileged }}
           resources:
