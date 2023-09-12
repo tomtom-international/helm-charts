@@ -3,6 +3,16 @@ entries:
   azure-devops-agents:
   - apiVersion: v2
     appVersion: 1.16.0
+    created: "2023-09-12T12:37:58.563675029Z"
+    description: A Helm chart for Kubernetes
+    digest: e4e42fce01fdb1adc8ba74123e48d516de894283c2936a0d07b16d5f56fefabc
+    name: azure-devops-agents
+    type: application
+    urls:
+    - https://github.com/tomtom-international/helm-charts/releases/download/azure-devops-agents-0.9.0/azure-devops-agents-0.9.0.tgz
+    version: 0.9.0
+  - apiVersion: v2
+    appVersion: 1.16.0
     created: "2023-08-16T13:02:09.377482365Z"
     description: A Helm chart for Kubernetes
     digest: 83677807970854414b0d1e89ee01f8756f343084959e7a92ef2f49a34ec3c3ec
@@ -179,4 +189,4 @@ entries:
     urls:
     - https://github.com/tomtom-international/helm-charts/releases/download/gha-runner-scale-set-controller-0.3.0/gha-runner-scale-set-controller-0.3.0.tgz
     version: 0.3.0
-generated: "2023-08-22T11:46:02.750004727Z"
+generated: "2023-09-12T12:37:58.563713729Z"
