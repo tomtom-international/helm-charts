@@ -4,13 +4,17 @@ metadata:
   name: {{ include "azure-devops-exporter.fullname" . }}
   labels:
     {{- include "azure-devops-exporter.labels" . | nindent 4 }}
+    {{- if .Values.serviceMonitor.additionalLabels }}
+      {{- toYaml .Values.serviceMonitor.additionalLabels | nindent 4 }}
+    {{- end }}
 spec:
   jobLabel: {{ .Chart.Name }}
   selector:
     matchLabels:
       app.kubernetes.io/name: {{ include "azure-devops-exporter.name" . }}
   namespaceSelector:
-    any: true
+    matchNames:
+      - {{ .Release.Namespace }}
   endpoints:
     - port: http
       interval: 15s
