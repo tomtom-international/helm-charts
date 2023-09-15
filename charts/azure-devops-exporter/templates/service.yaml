@@ -11,5 +11,9 @@ spec:
       targetPort: http
       protocol: TCP
       name: http
+    - name: metrics
+      port: 8080
+      protocol: TCP
+      targetPort: 8080
   selector:
     {{- include "azure-devops-exporter.selectorLabels" . | nindent 4 }}
