@@ -94,6 +94,16 @@ entries:
   azure-devops-exporter:
   - apiVersion: v2
     appVersion: 1.16.0
+    created: "2023-09-15T09:02:49.124471194Z"
+    description: A Helm chart for Kubernetes ADO Exporter
+    digest: b9b32063fa33191cefaa8d8c8bf5b2ba64f49772b2f00da74329185e5636ecc8
+    name: azure-devops-exporter
+    type: application
+    urls:
+    - https://github.com/tomtom-international/helm-charts/releases/download/azure-devops-exporter-0.6.0/azure-devops-exporter-0.6.0.tgz
+    version: 0.6.0
+  - apiVersion: v2
+    appVersion: 1.16.0
     created: "2023-09-15T08:12:56.28177088Z"
     description: A Helm chart for Kubernetes ADO Exporter
     digest: d8b2c9c5f52ab666a6a04fef2ab367a185499976fd39f54756190746d4a0a478
@@ -240,4 +250,4 @@ entries:
     urls:
     - https://github.com/tomtom-international/helm-charts/releases/download/gha-runner-scale-set-controller-0.3.0/gha-runner-scale-set-controller-0.3.0.tgz
     version: 0.3.0
-generated: "2023-09-15T08:12:56.281942493Z"
+generated: "2023-09-15T09:02:49.124622738Z"
