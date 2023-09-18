@@ -1,6 +1,6 @@
 # helm-charts
 
-This repository stores helm charts for SP- Integration and Delivery Team and publish them using github pages.
+This repository stores helm charts for `SP-Integration and Delivery Team` and publish them using github pages.
 
 ## Prerequisites
 
