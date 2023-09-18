@@ -154,6 +154,22 @@ entries:
     version: 0.1.0
   gha-runner-scale-set:
   - apiVersion: v2
+    appVersion: 0.6.0
+    created: "2023-09-18T21:41:42.16611101Z"
+    description: A Helm chart for deploying an AutoScalingRunnerSet
+    digest: 94bdee09ee2bca22ab20748ffb922b5cba3478d4b84e4801cc8aa8d89a91b181
+    home: https://github.com/actions/dev-arc
+    maintainers:
+    - name: actions
+      url: https://github.com/actions
+    name: gha-runner-scale-set
+    sources:
+    - https://github.com/actions/dev-arc
+    type: application
+    urls:
+    - https://github.com/tomtom-international/helm-charts/releases/download/gha-runner-scale-set-0.6.0/gha-runner-scale-set-0.6.0.tgz
+    version: 0.6.0
+  - apiVersion: v2
     appVersion: 0.5.0
     created: "2023-08-22T11:46:02.57800953Z"
     description: A Helm chart for deploying an AutoScalingRunnerSet
@@ -203,6 +219,22 @@ entries:
     version: 0.3.0
   gha-runner-scale-set-controller:
   - apiVersion: v2
+    appVersion: 0.6.0
+    created: "2023-09-18T21:41:42.355496148Z"
+    description: A Helm chart for install actions-runner-controller CRD
+    digest: a4da3e299f61d2cf951ff84930a7e0d34b95ebb922b6a5f386795d0e056df462
+    home: https://github.com/actions/actions-runner-controller
+    maintainers:
+    - name: actions
+      url: https://github.com/actions
+    name: gha-runner-scale-set-controller
+    sources:
+    - https://github.com/actions/actions-runner-controller
+    type: application
+    urls:
+    - https://github.com/tomtom-international/helm-charts/releases/download/gha-runner-scale-set-controller-0.6.0/gha-runner-scale-set-controller-0.6.0.tgz
+    version: 0.6.0
+  - apiVersion: v2
     appVersion: 0.5.0
     created: "2023-08-22T11:46:02.749972727Z"
     description: A Helm chart for install actions-runner-controller CRD
@@ -250,4 +282,4 @@ entries:
     urls:
     - https://github.com/tomtom-international/helm-charts/releases/download/gha-runner-scale-set-controller-0.3.0/gha-runner-scale-set-controller-0.3.0.tgz
     version: 0.3.0
-generated: "2023-09-15T09:02:49.124622738Z"
+generated: "2023-09-18T21:41:42.355545249Z"
