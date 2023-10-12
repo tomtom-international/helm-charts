@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "azure-devops-agents-exporter.fullname" . }}
+  labels:
+    {{- include "azure-devops-agents-exporter.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - name: metrics
+      port: {{ .Values.service.port }}
+      targetPort: 8080
+      protocol: TCP
+  selector:
+    {{- include "azure-devops-agents-exporter.selectorLabels" . | nindent 4 }}
