@@ -1,0 +1,21 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: {{ include "azure-devops-agents-exporter.fullname" . }}
+  labels:
+    {{- include "azure-devops-agents-exporter.labels" . | nindent 4 }}
+    {{- if .Values.serviceMonitor.additionalLabels }}
+      {{- toYaml .Values.serviceMonitor.additionalLabels | nindent 4 }}
+    {{- end }}
+spec:
+  jobLabel: {{ .Chart.Name }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "azure-devops-agents-exporter.name" . }}
+  namespaceSelector:
+    matchNames:
+      - {{ .Release.Namespace }}
+  endpoints:
+    - port: metrics
+      interval: 60s
+      scrapeTimeout: 30s

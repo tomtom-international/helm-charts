@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "azure-devops-agents-exporter.fullname" . }}
+  labels:
+    {{- include "azure-devops-agents-exporter.labels" . | nindent 4 }}
+data:
+  config.toml: |
+    [servers]
+{{- range .Values.config }}
+        [servers.{{ .serverName }}]
+        address = {{ .serverHost | quote }}
+{{- end -}}
