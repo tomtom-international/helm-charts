@@ -91,6 +91,17 @@ entries:
     urls:
     - https://github.com/tomtom-international/helm-charts/releases/download/azure-devops-agents-0.1.0/azure-devops-agents-0.1.0.tgz
     version: 0.1.0
+  azure-devops-agents-exporter:
+  - apiVersion: v2
+    appVersion: 1.0.0
+    created: "2023-10-19T12:25:17.001402601Z"
+    description: A Helm chart for Kubernetes AzureDevOps Agents Exporter
+    digest: 09de46268b3f7c5aef308eed69bba94a84643baf428604776e9e4f3e65cf891d
+    name: azure-devops-agents-exporter
+    type: application
+    urls:
+    - https://github.com/tomtom-international/helm-charts/releases/download/azure-devops-agents-exporter-0.1.0/azure-devops-agents-exporter-0.1.0.tgz
+    version: 0.1.0
   azure-devops-exporter:
   - apiVersion: v2
     appVersion: 1.16.0
@@ -314,4 +325,4 @@ entries:
     urls:
     - https://github.com/tomtom-international/helm-charts/releases/download/gha-runner-scale-set-controller-0.3.0/gha-runner-scale-set-controller-0.3.0.tgz
     version: 0.3.0
-generated: "2023-10-09T12:57:55.346993361Z"
+generated: "2023-10-19T12:25:17.001462205Z"
