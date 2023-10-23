@@ -43,3 +43,7 @@ config:
   # - serverName: azuredevops
   #   serverHost: https://dev.azure.com/your-organisation
   #   accessToken: personal-access-token
+
+scrapeConfig:
+  interval: 120s
+  scrapeTimeout: 30s
