@@ -17,4 +17,5 @@ spec:
       - {{ .Release.Namespace }}
   endpoints:
     - port: metrics
-      interval: 15s
+      interval: {{ .Values.scrapeConfig.interval }}
+      scrapeTimeout: {{ .Values.scrapeConfig.scrapeTimeout }}
