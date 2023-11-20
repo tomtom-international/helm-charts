@@ -1,3 +1,5 @@
+{{- $defaultName := printf "%s" (include "azure-devops-agents.fullname" .) -}}
+{{- $azpTokenSecret := ternary (.Values.externalSecret.secretName | default ($defaultName)) (.Values.secret.name | default ($defaultName)) .Values.externalSecret.create -}}
 apiVersion: keda.sh/v1alpha1
 kind: ScaledJob
 metadata:
@@ -21,7 +23,7 @@ spec:
           - name: AZP_TOKEN
             valueFrom:
               secretKeyRef:
-                name: {{ .Values.secret.name | default (printf "%s" (include "azure-devops-agents.fullname" .)) }}
+                name: {{ $azpTokenSecret }}
                 key: AZP_TOKEN
           ports:
             - name: http

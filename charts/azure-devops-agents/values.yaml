@@ -48,6 +48,19 @@ secret:
   name: "mysecret"
   token: "mytoken"
 
+externalSecret:
+  create: false
+  name: myExternalSecretName
+  refreshInterval: 1h
+  secretStoreName: existedClusterSecretStoreName
+  secretName: mySecretName
+  remoteKey: azureKeyvaultSecretKey
+
+externalSecretStore:
+  create: false
+  name: secretStoreName
+  vaultUrl: https://MY-KEY-VAULT.vault.azure.net/
+
 volumeMounts:
 - name: work-disk
   mountPath: /mnt
