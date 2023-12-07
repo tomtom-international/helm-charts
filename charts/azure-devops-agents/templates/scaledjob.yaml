@@ -43,6 +43,10 @@ spec:
         nodeSelector:
           {{- toYaml . | nindent 10 }}
         {{- end }}
+        {{- with .Values.tolerations }}
+        tolerations:
+          {{- toYaml . | nindent 10 }}
+        {{- end }}
         {{- with .Values.imagePullSecrets }}
         imagePullSecrets:
         - name: {{ .name }}

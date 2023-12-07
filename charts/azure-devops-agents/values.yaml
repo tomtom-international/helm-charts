@@ -38,6 +38,8 @@ autoscaling:
 nodeSelector:
   agentpool: additionalpool
 
+tolerations: []
+
 agentPoolInfo:
   url: "https://dev.azure.com/myorg"
   poolname: "keda self-hosted"
