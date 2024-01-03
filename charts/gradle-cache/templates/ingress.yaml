@@ -1,0 +1,44 @@
+{{- if .Values.ingress.enabled -}}
+{{- $fullName := include "gradle-cache.fullname" . -}}
+{{- $svcPort := .Values.service.port -}}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ $fullName }}
+  labels:
+    {{- include "gradle-cache.labels" . | nindent 4 }}
+  annotations:
+  {{- if eq .Values.ingress.ingressClassName "traefik" }}
+    traefik.ingress.kubernetes.io/router.middlewares: "{{ .Release.Namespace }}-{{ $fullName }}-whitelist@kubernetescrd"
+  {{- end }}
+  {{- with .Values.ingress.annotations }}
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+{{- with .Values.ingress.ingressClassName }}
+  ingressClassName: {{ . | quote }}
+{{- end }}
+{{- if .Values.ingress.tls }}
+  tls:
+  {{- range .Values.ingress.tls }}
+    - hosts:
+      {{- range .hosts }}
+        - {{ . | quote }}
+      {{- end }}
+      secretName: {{ .secretName }}
+  {{- end }}
+{{- end }}
+  rules:
+  {{- range .Values.ingress.hosts }}
+    - host: {{ .host | quote }}
+      http:
+        paths:
+          - path: /
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: {{ $fullName }}
+                port:
+                  number: {{ $svcPort }}
+  {{- end }}
+{{- end }}
