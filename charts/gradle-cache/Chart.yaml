@@ -1,0 +1,12 @@
+apiVersion: v2
+name: gradle-cache
+description: |-
+  Helm chart for [gradle-cache](https://docs.gradle.com/build-cache-node/).
+type: application
+home: https://github.com/tomtom-international/helm-charts/tree/main/charts/gradle-cache
+icon: https://assets.gradle.com/icon/gradle-enterprise/favicon.ico
+version: 0.1.0
+appVersion: "18.0"
+maintainers:
+  - name: Dzmitry Harchanin
+    email: dzmitry.harchanin@tomtom.com

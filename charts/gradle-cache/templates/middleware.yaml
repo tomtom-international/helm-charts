@@ -1,0 +1,17 @@
+{{- if and (.Values.ingress.enabled) (eq .Values.ingress.ingressClassName "traefik") -}}
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: "{{ include "gradle-cache.fullname" . }}-whitelist"
+spec:
+  ipWhiteList:
+    {{- if .Values.ingress.whitelist }}
+    sourceRange:
+    {{- range .Values.ingress.whitelist }}
+      - {{ . | quote }}
+    {{- end }}
+    {{- else }}
+    sourceRange:
+    - 0.0.0.0/0
+    {{- end }}
+{{- end }}

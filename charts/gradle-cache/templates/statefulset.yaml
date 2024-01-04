@@ -1,0 +1,102 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ include "gradle-cache.fullname" . }}
+  labels:
+    {{- include "gradle-cache.labels" . | nindent 4 }}
+spec:
+  serviceName: {{ include "gradle-cache.fullname" . }}
+  selector:
+    matchLabels:
+      {{- include "gradle-cache.selectorLabels" . | nindent 6 }}
+  replicas: {{ .Values.replicaCount }}
+  template:
+    metadata:
+      labels:
+        {{- include "gradle-cache.selectorLabels" . | nindent 8 }}
+      annotations:
+        checksum/secret: {{ include (print $.Template.BasePath "/secret.yaml") . | sha256sum }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      {{- if .Values.serviceAccount.create }}
+      image: "{{ .Values.image.repository }}:{{ include "gradle-cache.tag" . }}"
+      serviceAccountName: {{ include "gradle-cache.serviceAccountName" . }}
+      {{- end }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      # topologySpreadConstraints:
+      # - labelSelector:
+      #     matchLabels:
+      #       app.kubernetes.io/instance: kube-prometheus-stack
+      #   maxSkew: 2
+      #   topologyKey: topology.kubernetes.io/zone
+      #   whenUnsatisfiable: ScheduleAnyway
+      initContainers:
+        - name: config-mounter
+          image: "busybox:1.35.0"
+          command:
+             - sh
+             - -ce
+             - mkdir -p /data/conf/ && cp /tmp/config.yaml /data/conf/config.yaml
+          volumeMounts:
+            - name: tmp-build-cache-config-file
+              mountPath: /tmp
+            - name: cache
+              mountPath: /data
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.containerSecurityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ include "gradle-cache.tag" . }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          args: {{ .Values.args | toYaml | nindent 12 }}
+          ports:
+            - name: http
+              containerPort: 5071
+              protocol: TCP
+          {{- if .Values.livenessProbe.enabled }}
+          livenessProbe:
+            {{- toYaml .Values.livenessProbe.probe| nindent 12 }}
+          {{- end }}
+          {{- if .Values.livenessProbe.enabled }}
+          readinessProbe:
+            {{- toYaml .Values.readinessProbe.probe | nindent 12 }}
+          {{- end }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          {{- with .Values.env }}
+          env:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          volumeMounts:
+            - name: cache
+              mountPath: /data
+      volumes:
+        - name: tmp-build-cache-config-file
+          secret:
+            secretName: {{ include "gradle-cache.configSecretName" . }}
+  volumeClaimTemplates:
+  - metadata:
+      name: cache
+    spec:
+      accessModes:
+        - ReadWriteOnce
+      storageClassName: {{ .Values.storage.storageClass }}
+      resources:
+        requests:
+          storage: {{ .Values.storage.size | quote }}

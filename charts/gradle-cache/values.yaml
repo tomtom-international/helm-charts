@@ -1,0 +1,137 @@
+# Override name of the chart
+nameOverride: ""
+# Full name of the chart.
+fullnameOverride: ""
+
+# Image pull secret for private images
+imagePullSecrets: []
+image:
+  repository: gradle/build-cache-node
+  tag: ""
+  pullPolicy: IfNotPresent
+
+replicaCount: 1
+
+configSecret:
+  # Specifies whether a secret should be created
+  create: true
+  # Name of the secret to use; if not set and create is true, a name is generated using the fullname template
+  name: 
+  # Content of 'config.yaml'
+  content: |-
+    version: 5
+    cache:
+      accessControl:
+        anonymousLevel: readwrite
+      freeSpaceBufferSize: 2048
+      maxEntryAgeInHours: 720
+      maxArtifactSize: 1024 
+      targetSize:
+        type: fixed
+        size: 10000
+    uiAccess:
+      type: open
+    registration: null
+
+externalSecret:
+  create: false
+  name: myExternalSecretName
+  refreshInterval: 1h
+  secretStoreName: existedClusterSecretStoreName
+  secretName: mySecretName
+  remoteKey: azureKeyvaultSecretKey
+
+externalSecretStore:
+  create: false
+  name: secretStoreName
+  vaultUrl: https://MY-KEY-VAULT.vault.azure.net/
+
+args:
+  - start
+  - --no-warn-anon-cache-write
+  - --no-warn-anon-ui-access
+
+storage:
+  storageClass: storageClassName
+  size: 10Gi
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: false
+  # Annotations to add to the service account
+  annotations: {}
+  # Name of the service account to use; if not set and create is true, a name is generated using the fullname template
+  name:
+
+# Specifies security settings for a pod
+podSecurityContext: {}
+  # runAsUser: 999
+  # runAsGroup: 0
+  # fsGroup: 0
+
+# Specifies security settings for a container
+container : {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+service:
+  type: ClusterIP
+  port: 80
+  annotations: {}
+
+resources: {}
+  # limits:
+  #   cpu: 2
+  #   memory: 5Gi
+  # requests:
+  #   cpu: 1900m
+  #   memory: 3750Mi
+
+nodeSelector: {}
+
+affinity: {}
+
+tolerations: []
+
+livenessProbe:
+  enabled: true
+  probe:
+    httpGet:
+      path: /ping
+      port: http
+    initialDelaySeconds: 10
+    periodSeconds: 15
+    timeoutSeconds: 5
+
+readinessProbe:
+  enabled: true
+  probe:
+    httpGet:
+      path: /ping
+      port: http
+    initialDelaySeconds: 10
+    periodSeconds: 15
+    timeoutSeconds: 5
+
+# Additional environment variables for the deployment
+env: {}
+  # - name: FOO
+  #   value: "bar"
+
+ingress:
+  enabled: false
+  # annotations: {}
+  #   # kubernetes.io/ingress.class: gradle-cache
+  #   # kubernetes.io/tls-acme: "true"
+  # hosts: []
+  #  - host: chart-example.local
+  #    paths: []
+  # tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
+  # ingressClassName: ""
