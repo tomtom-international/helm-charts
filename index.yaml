@@ -365,4 +365,20 @@ entries:
     urls:
     - https://github.com/tomtom-international/helm-charts/releases/download/gha-runner-scale-set-controller-0.3.0/gha-runner-scale-set-controller-0.3.0.tgz
     version: 0.3.0
-generated: "2023-12-07T09:56:19.29652574Z"
+  gradle-cache:
+  - apiVersion: v2
+    appVersion: "18.0"
+    created: "2024-01-04T10:49:17.154683219Z"
+    description: Helm chart for [gradle-cache](https://docs.gradle.com/build-cache-node/).
+    digest: 086d65650ca6eae2dfb4fd8dcd4a3dea737ed77070008a015fe8f24b3e68f5dd
+    home: https://github.com/tomtom-international/helm-charts/tree/main/charts/gradle-cache
+    icon: https://assets.gradle.com/icon/gradle-enterprise/favicon.ico
+    maintainers:
+    - email: dzmitry.harchanin@tomtom.com
+      name: Dzmitry Harchanin
+    name: gradle-cache
+    type: application
+    urls:
+    - https://github.com/tomtom-international/helm-charts/releases/download/gradle-cache-0.1.0/gradle-cache-0.1.0.tgz
+    version: 0.1.0
+generated: "2024-01-04T10:49:17.154755699Z"
