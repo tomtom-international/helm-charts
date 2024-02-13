@@ -381,4 +381,15 @@ entries:
     urls:
     - https://github.com/tomtom-international/helm-charts/releases/download/gradle-cache-0.1.0/gradle-cache-0.1.0.tgz
     version: 0.1.0
-generated: "2024-01-04T10:49:17.154755699Z"
+  tomtom-base-chart:
+  - apiVersion: v2
+    appVersion: 1.0.0
+    created: "2024-02-13T08:54:24.515928949Z"
+    description: A base Helm chart for all TomTom product units
+    digest: 072f413a1c81ecb9dad342d4ff3d4d1ad93f8bcef49e8e1f7b5fe8f9aa3877b3
+    name: tomtom-base-chart
+    type: application
+    urls:
+    - https://github.com/tomtom-international/helm-charts/releases/download/tomtom-base-chart-0.0.2/tomtom-base-chart-0.0.2.tgz
+    version: 0.0.2
+generated: "2024-02-13T08:54:24.516250499Z"
