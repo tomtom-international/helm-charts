@@ -1,0 +1,207 @@
+# Default values for tomtom-base-chart.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+#
+# BASIC SETTINGS
+#
+basicSettings:
+  # Number of replicas to run
+  replicas: 1
+
+  # Container image settings
+  image:
+    # Repository name
+    #   URL of the container image except for the tag
+    repository: nginx
+
+    # Image tag
+    #   Tag of the container image to pull
+    #   Most of the time, this is the version of the application (e.g. 1.0.0).
+    #   If no tag is provided, appVersion in Chart.yaml will be used.
+    tag: ""
+
+    # Image pull credentials
+    #   For this section to work, the secret store needs to be created in advance.
+    #   See docs for more information about how to create this.
+    pullSecret:
+      # Name of the secret store
+      secretStore: azure-store
+      # Secret key on the remote secret store
+      secretKey: regcred
+
+  # Command
+  #   Command to run after starting the container
+  #   If not set, ENTRYPOINT and CMD of the container will be used.
+  # command: ""
+
+  # Shell
+  #   Shell to run the command on
+  #   This setting does not apply if "command" is not set.
+  shell: "/bin/sh"
+
+  # Service port
+  #   Port number the application listens to
+  port: 80
+
+  # Application FQDN
+  #   Hostname (FQDN) part of the URL used to access the application
+  #   If no "fqdn" is set, the application will not be accessible through a domain name.
+  fqdn: ""
+
+  # Allowed IP Ranges (IP Allowlist)
+  #   Range of IP addresses that are allowed to access this application through ingress
+  allowedIpRanges:
+  - "0.0.0.0/0"
+
+  # Resource Requests & Limits
+  #   CPU and memory usage requests and limits
+  #   The average usage under regular load needs to be specified under 'requests'.
+  #   The resource limits need to be specified under 'limits'.
+  #   Please refer to https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+  resources: {}
+    # limits:
+    #   cpu: 100m
+    #   memory: 128Mi
+    # requests:
+    #   cpu: 100m
+    #   memory: 128Mi
+
+  # Environment variables
+  #   Environment variables as key-value pairs for the application
+  #   This will create a Kubernetes ConfigMap and create envs referring to that.
+  #   IMPORTANT: Use secretEnvs for sensitive environment variables. Such variables should not be
+  #              a part of the Helm values and must be fetched from an external secret store like AKV.
+  envs: {}
+    # MY_ENV: value
+
+  # Configuration files
+  #   Files to mount to the pod for the application to use
+  #   The key for each item will be the file name with full path and the value will be the content.
+  #   This will create a Kubernetes ConfigMap and use this as a reference to mount files.
+  #   Configuration format:
+  #     - name: <configmap-name>            # will be prefixed by release name
+  #       path: <path-to-mount-the-files>
+  #       files:
+  #         <file-name>: <file-content>
+  #   The example below will create a file at /etc/config/example.ini with the content:
+  #     [GLOBAL]
+  #     foo = bar
+  configFiles: []
+  # - name: example-config
+  #   path: /etc/config
+  #   files:
+  #     example.ini: |
+  #       [GLOBAL]
+  #       foo = bar
+
+  # Secret environment variables (uses External Secrets Operator)
+  #   Secrets to be fetched from an external secret store and used by the application
+  #   See docs for information on how to create the neccessary config before using ESO.
+  #   Configuration format:
+  #     - name: <secret-name>               # will be prefixed by release name
+  #       secretStore: <secretstore-name>   # must be configured beforehand
+  #       secrets:
+  #         <secret-name>: <remote-secret-name>
+  #   The example below creates a secret named "my-secrets" using the pre-created secret store
+  #     "azure-kv-store" and all secrets listed under "secrets" will be accessible by the 
+  #     application through environment variables.
+  secretEnvs: []
+  # - name: my-secrets
+  #   secretStore: azure-kv-store
+  #   secrets:
+  #     A_SECRET_ENV: remote-secret-key-1
+  #     ANOTHER_SECRET_ENV: remote-secret-key-2
+
+  # Secret configuration files (uses External Secrets Operator)
+  #   Files with secret information to mount to the pod for the application to use
+  #   The key for each item will be the file name with full path and the value defines how to fetch the content.
+  #   Configuration format:
+  #     - name: <secret-name>               # will be prefixed by release name
+  #       path: <path-to-mount-the-files>
+  #       secretStore: <secretstore-name>   # must be configured beforehand
+  #       files:
+  #         <file-name>: <remote-secret-name>
+  #   The example below will create a file at /etc/config/secrets.txt with the content:
+  #     SOME SENSITIVE DATA
+  secretFiles: []
+  # - name: example-secret
+  #   path: /etc/config
+  #   secretStore: azure-kv-store
+  #   files:
+  #     secrets.txt: remote-secret-key
+
+  # Autoscaling
+  #   Enabled by default, creates a HorizontalPodAutoscaler resource
+  #   This resource scales the deployment based on CPU (set to 75% by default) or memory usage.
+  autoscaling:
+    enabled: true
+    minReplicas: 2
+    maxReplicas: 10
+    targetCPUUtilizationPercentage: 75
+    # targetMemoryUtilizationPercentage: 80
+
+
+#
+# ADVANCED SETTINGS
+#
+advancedSettings:
+  image:
+    pullPolicy: IfNotPresent
+
+  # To use an existing secret as imagePullSecret, set this field to the name of that secret.
+  # Note that this configuration overrides the creation of an ExternalSecret as an imagePullSecret.
+  imagePullSecrets: []
+  # - name: image-pull-secret-name
+
+  fullnameOverride: ""
+
+  serviceAccount:
+    # Specifies whether a service account should be created
+    create: false
+    # Annotations to add to the service account
+    annotations: {}
+    # The name of the service account to use.
+    # If not set and create is true, a name is generated using the fullname template
+    name: ""
+
+  podAnnotations: {}
+
+  podSecurityContext: {}
+    # fsGroup: 2000
+
+  securityContext: {}
+    # capabilities:
+    #   drop:
+    #   - ALL
+    # readOnlyRootFilesystem: true
+    # runAsNonRoot: true
+    # runAsUser: 1000
+
+  service:
+    type: ClusterIP
+
+  ingress:
+    enabled: true
+    className: "traefik"
+    annotations: {}
+      # cert-manager.io/cluster-issuer: letsencrypt
+      # kubernetes.io/ingress.allow-http: "false"
+      # traefik.ingress.kubernetes.io/router.entrypoints: websecure
+      # traefik.ingress.kubernetes.io/router.tls: "true"
+      # traefik.ingress.kubernetes.io/router.tls.options: default
+    hosts: []
+    # - host: www.tomtom.com
+    #   paths:
+    #     - path: /
+    #       pathType: ImplementationSpecific
+    tls: []
+    # - secretName: chart-example-tls
+    #   hosts:
+    #     - chart-example.local
+
+  nodeSelector: {}
+
+  tolerations: []
+
+  affinity: {}

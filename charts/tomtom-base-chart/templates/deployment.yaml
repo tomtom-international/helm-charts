@@ -1,0 +1,98 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "tomtom-base-chart.fullname" . }}
+  labels:
+    {{- include "tomtom-base-chart.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.basicSettings.autoscaling.enabled }}
+  replicas: {{ .Values.basicSettings.replicas }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "tomtom-base-chart.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.advancedSettings.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "tomtom-base-chart.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- if .Values.advancedSettings.imagePullSecrets }}
+      {{- with .Values.advancedSettings.imagePullSecrets }}
+      imagePullSecrets:
+      {{- toYaml . | nindent 6 }}
+      {{- end }}
+      {{- else }}
+      imagePullSecrets:
+      - name: {{ .Release.Name }}-imagepullsecret
+      {{- end }}
+      serviceAccountName: {{ include "tomtom-base-chart.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.advancedSettings.podSecurityContext | nindent 8 }}
+      containers:
+      - name: {{ .Release.Name }}
+        {{- if .Values.basicSettings.command }}
+        command:
+        - {{ .Values.basicSettings.shell }}
+        - -c
+        - {{ .Values.basicSettings.command | quote }}
+        {{- end }}
+        image: "{{ .Values.basicSettings.image.repository }}:{{ .Values.basicSettings.image.tag | default .Chart.AppVersion }}"
+        imagePullPolicy: {{ .Values.advancedSettings.image.pullPolicy }}
+        envFrom:
+        {{- if .Values.basicSettings.envs }}
+        - configMapRef:
+            name: {{ include "tomtom-base-chart.fullname" . }}-env-cm
+        {{- end }}
+        {{- range .Values.basicSettings.secretEnvs }}
+        - secretRef:
+            name: {{ include "tomtom-base-chart.fullname" $ }}-{{ .name }}-env-es
+        {{- end }}
+        ports:
+        - name: http
+          containerPort: {{ .Values.basicSettings.port }}
+          protocol: TCP
+        resources:
+          {{- toYaml .Values.basicSettings.resources | nindent 10 }}
+        securityContext:
+          {{- toYaml .Values.advancedSettings.securityContext | nindent 12 }}
+        {{- if or .Values.basicSettings.configFiles .Values.basicSettings.secretFiles }}
+        volumeMounts:
+        {{- range .Values.basicSettings.configFiles }}
+        - name: {{ .name }}
+          mountPath: {{ .path }}
+        {{- end }}
+        {{- range .Values.basicSettings.secretFiles }}
+        - name: {{ .name }}
+          mountPath: {{ .path }}
+          readOnly: true
+        {{- end }}
+        {{- end }}
+      {{- with .Values.advancedSettings.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.advancedSettings.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.advancedSettings.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- if or .Values.basicSettings.configFiles .Values.basicSettings.secretFiles }}
+      volumes:
+      {{- range .Values.basicSettings.configFiles }}
+      - name: {{ .name }}
+        configMap:
+          name: {{ include "tomtom-base-chart.fullname" $ }}-{{ .name }}-file-cm
+      {{- end }}
+      {{- range .Values.basicSettings.secretFiles }}
+      - name: {{ .name }}
+        secret:
+          secretName: {{ include "tomtom-base-chart.fullname" $ }}-{{ .name }}-file-es
+      {{- end }}
+      {{- end }}
