@@ -1,0 +1,28 @@
+{{- if .Values.basicSettings.autoscaling.enabled }}
+apiVersion: autoscaling/v2beta1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: {{ include "tomtom-base-chart.fullname" . }}
+  labels:
+    {{- include "tomtom-base-chart.labels" . | nindent 4 }}
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: {{ include "tomtom-base-chart.fullname" . }}
+  minReplicas: {{ .Values.basicSettings.autoscaling.minReplicas }}
+  maxReplicas: {{ .Values.basicSettings.autoscaling.maxReplicas }}
+  metrics:
+    {{- if .Values.basicSettings.autoscaling.targetCPUUtilizationPercentage }}
+    - type: Resource
+      resource:
+        name: cpu
+        targetAverageUtilization: {{ .Values.basicSettings.autoscaling.targetCPUUtilizationPercentage }}
+    {{- end }}
+    {{- if .Values.basicSettings.autoscaling.targetMemoryUtilizationPercentage }}
+    - type: Resource
+      resource:
+        name: memory
+        targetAverageUtilization: {{ .Values.basicSettings.autoscaling.targetMemoryUtilizationPercentage }}
+    {{- end }}
+{{- end }}

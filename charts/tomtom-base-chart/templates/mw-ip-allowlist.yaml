@@ -1,0 +1,11 @@
+{{- if .Values.basicSettings.fqdn -}}
+{{- $ingressFullName := include "tomtom-base-chart.fullname" . -}}
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: {{ $ingressFullName }}-ipallowlist
+spec:
+  ipWhiteList:
+    sourceRange:
+    - 0.0.0.0/0
+{{- end }}

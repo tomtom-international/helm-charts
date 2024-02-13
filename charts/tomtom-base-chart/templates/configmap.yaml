@@ -1,0 +1,26 @@
+{{- if .Values.basicSettings.envs }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "tomtom-base-chart.fullname" . }}-env-cm
+  labels:
+    {{- include "tomtom-base-chart.labels" . | nindent 4 }}
+data:
+{{- range $key, $val := .Values.basicSettings.envs }}
+  {{ $key }}: {{ $val | quote }}
+{{- end }}
+{{- end }}
+{{- range .Values.basicSettings.configFiles }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "tomtom-base-chart.fullname" $ }}-{{ .name }}-file-cm
+  labels:
+    {{- include "tomtom-base-chart.labels" $ | nindent 4 }}
+data:
+{{- range $key, $val := .files }}
+  {{ $key }}: {{ $val | quote }}
+{{- end }}
+{{- end }}
