@@ -96,3 +96,11 @@ spec:
           secretName: {{ include "tomtom-base-chart.fullname" $ }}-{{ .name }}-file-es
       {{- end }}
       {{- end }}
+  {{- if .Values.advancedSettings.strategy }}
+  strategy:
+    type: {{ .Values.advancedSettings.strategy.type }}
+    {{- if eq .Values.advancedSettings.strategy.type "RollingUpdate" }}
+    rollingUpdate:
+    {{- toYaml .Values.advancedSettings.strategy.rollingUpdate | nindent 6 }}
+    {{- end }}
+  {{- end }}
