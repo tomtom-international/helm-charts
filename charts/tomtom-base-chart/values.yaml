@@ -205,3 +205,12 @@ advancedSettings:
   tolerations: []
 
   affinity: {}
+
+  # ref: https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#strategy
+  # The default is "RollingUpdate" as per Kubernetes defaults.
+  # During a release, 'RollingUpdate' can lead to two running instances for a short period of time while 'Recreate' can create a small gap in data.
+  # strategy:
+  #   rollingUpdate:
+  #     maxSurge: 25%
+  #     maxUnavailable: 25%
+  #   type: RollingUpdate
