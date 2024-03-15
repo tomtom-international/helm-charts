@@ -51,6 +51,23 @@ spec:
         - secretRef:
             name: {{ include "tomtom-base-chart.fullname" $ }}-{{ .name }}-env-es
         {{- end }}
+        {{- if .Values.basicSettings.probe.liveness }}
+        livenessProbe:
+          httpGet:
+            path: {{ .Values.basicSettings.probe.liveness.path }}
+            port: {{ .Values.basicSettings.port }}
+            scheme: HTTP
+          {{- with .Values.basicSettings.probe.liveness.settings }}
+          {{- toYaml . | nindent 10 }}
+          {{- end }}
+        {{- end }}
+        {{- if .Values.basicSettings.probe.readiness }}
+        readinessProbe:
+          httpGet:
+            path: {{ .Values.basicSettings.probe.readiness.path }}
+            port: {{ .Values.basicSettings.port }}
+            scheme: HTTP
+        {{- end }}
         ports:
         - name: http
           containerPort: {{ .Values.basicSettings.port }}

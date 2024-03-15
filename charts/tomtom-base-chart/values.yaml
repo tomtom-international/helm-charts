@@ -44,6 +44,24 @@ basicSettings:
   #   Port number the application listens to
   port: 80
 
+  # Probes
+  #   
+  #   liveness:  Used to determine if the application is alive or experiencing problems.
+  #              If this fails, the container will be restarted.
+  #   readiness: Used to determine if the pod is ready to receive requests.
+  #              If this fails, the pod will not receive traffic.
+  #   
+  #   "settings" can be used for custom probe options for both probes.
+  #   See https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/
+  probe: {}
+    # liveness:
+    #   path: /healthz
+    #   settings:
+    #     periodSeconds: 60
+    # readiness:
+    #   path: /ready
+    #   settings: {}
+
   # Application FQDN
   #   Hostname (FQDN) part of the URL used to access the application
   #   If no "fqdn" is set, the application will not be accessible through a domain name.
