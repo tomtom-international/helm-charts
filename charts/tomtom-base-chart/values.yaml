@@ -6,59 +6,134 @@
 # BASIC SETTINGS
 #
 basicSettings:
+  # --
+  # @raw
+  #
+  # **Replica count**
+  #
   # Number of replicas to run
+  #
+  # **WARNING:** Does not get applied when autoscaling is enabled,
+  # which is the default behavior. See `basicSettings.autoscaling`
   replicas: 1
 
   # Container image settings
   image:
-    # Repository name
-    #   URL of the container image except for the tag
+    # --
+    # @raw
+    #
+    # **Container repository**
+    #
+    # URL of the container image except for the tag
     repository: nginx
 
-    # Image tag
-    #   Tag of the container image to pull
-    #   Most of the time, this is the version of the application (e.g. 1.0.0).
-    #   If no tag is provided, appVersion in Chart.yaml will be used.
+    # --
+    # @raw
+    #
+    # **Image tag**
+    #
+    # Tag of the container image to pull.
+    # Most of the time, this is the version of the application (e.g. 1.0.0).
+    # If no tag is provided, appVersion in Chart.yaml will be used.
+    #
+    # @default -- `{{ Chart.appVersion }}`
     tag: ""
 
-    # Image pull credentials
-    #   For this section to work, the secret store needs to be created in advance.
-    #   See docs for more information about how to create this.
+    # --
+    # @raw
+    #
+    # **Image pull credentials**
+    #
+    # For this section to work, the secret store needs to be created in advance.
+    # See docs for more information about how to create this.
     pullSecret:
       # Name of the secret store
       secretStore: azure-store
       # Secret key on the remote secret store
       secretKey: regcred
 
-  # Command
-  #   Command to run after starting the container
-  #   If not set, ENTRYPOINT and CMD of the container will be used.
-  # command: ""
+  # --
+  # @raw
+  #
+  # **Command**
+  #
+  # Command to run after starting the container.
+  # If not set, `ENTRYPOINT` and `CMD` of the container will be used.
+  command: ""
 
-  # Shell
-  #   Shell to run the command on
-  #   This setting does not apply if "command" is not set.
+  # --
+  # @raw
+  #
+  # **Shell**
+  #
+  # Shell to run the command on.
+  # This setting does not apply if `basicSettings.command` is not set.
   shell: "/bin/sh"
 
-  # Service port
-  #   Port number the application listens to
+  # --
+  # @raw
+  #
+  # **Service port**
+  #
+  # Port number the application listens to
   port: 80
 
-  # Application FQDN
-  #   Hostname (FQDN) part of the URL used to access the application
-  #   If no "fqdn" is set, the application will not be accessible through a domain name.
+  # --
+  # @raw
+  #
+  # **Probes**
+  #
+  # `liveness`:  Used to determine if the application is alive or experiencing problems.
+  #              If this fails, the container will be restarted.
+  #
+  # `readiness`: Used to determine if the pod is ready to receive requests.
+  #              If this fails, the pod will not receive traffic.
+  #
+  # `settings` can be used for custom probe options for both probes.
+  # See https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/
+  #
+  # Example:
+  # ```yaml
+  # liveness:
+  #   path: /healthz
+  #   settings:
+  #     periodSeconds: 60
+  # readiness:
+  #   path: /ready
+  #   settings: {}
+  # ```
+  #
+  probe: {}
+
+  # --
+  # @raw
+  #
+  # **Application FQDN**
+  #
+  # Hostname (FQDN) part of the URL used to access the application.
+  # If no "fqdn" is set, the application will not be accessible through a domain name.
   fqdn: ""
 
-  # Allowed IP Ranges (IP Allowlist)
-  #   Range of IP addresses that are allowed to access this application through ingress
+  # --
+  # @raw
+  #
+  # **Allowed IP Ranges (IP Allowlist)**
+  #
+  # Range of IP addresses that are allowed to access this application through ingress
   allowedIpRanges:
   - "0.0.0.0/0"
 
-  # Resource Requests & Limits
-  #   CPU and memory usage requests and limits
-  #   The average usage under regular load needs to be specified under 'requests'.
-  #   The resource limits need to be specified under 'limits'.
-  #   Please refer to https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+  # --
+  # @raw
+  #
+  # **Resource Requests & Limits**
+  #
+  # CPU and memory usage requests and limits.
+  #
+  # The average usage under regular load needs to be specified under `requests`.
+  # The resource limits need to be specified under `limits`.
+  #
+  # Please refer to https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
   resources: {}
     # limits:
     #   cpu: 100m
@@ -67,73 +142,127 @@ basicSettings:
     #   cpu: 100m
     #   memory: 128Mi
 
-  # Environment variables
-  #   Environment variables as key-value pairs for the application
-  #   This will create a Kubernetes ConfigMap and create envs referring to that.
-  #   IMPORTANT: Use secretEnvs for sensitive environment variables. Such variables should not be
-  #              a part of the Helm values and must be fetched from an external secret store like AKV.
+  # --
+  # @raw
+  #
+  # **Environment variables**
+  #
+  # Environment variables as key-value pairs for the application.
+  # This will create a Kubernetes ConfigMap and create envs referring to that.
+  #
+  # **IMPORTANT:** Use secretEnvs for sensitive environment variables. 
+  # Such variables should not be a part of the Helm values and
+  # must be fetched from an external secret store like AKV.
+  #
+  # Example:
+  # ```yaml
+  # MY_ENV: value
+  # ```
+  #
   envs: {}
-    # MY_ENV: value
 
-  # Configuration files
-  #   Files to mount to the pod for the application to use
-  #   The key for each item will be the file name with full path and the value will be the content.
-  #   This will create a Kubernetes ConfigMap and use this as a reference to mount files.
-  #   Configuration format:
-  #     - name: <configmap-name>            # will be prefixed by release name
-  #       path: <path-to-mount-the-files>
-  #       files:
-  #         <file-name>: <file-content>
-  #   The example below will create a file at /etc/config/example.ini with the content:
-  #     [GLOBAL]
-  #     foo = bar
-  configFiles: []
+  # --
+  # @raw
+  #
+  # **Configuration files**
+  #
+  # Files to mount to the pod for the application to use.
+  # The key for each item will be the file name with full path and the value will be the content.
+  # This will create a Kubernetes ConfigMap and use this as a reference to mount files.
+  #
+  # Configuration format:
+  # ```yaml
+  # - name: <configmap-name>    # will be prefixed by release name
+  #   path: <path-to-mount-the-files>
+  #   files:
+  #     <file-name>: <file-content>
+  # ```
+  #
+  # Example:
+  # ```yaml
   # - name: example-config
   #   path: /etc/config
   #   files:
   #     example.ini: |
   #       [GLOBAL]
   #       foo = bar
+  # ```
+  #
+  # This will create a file at `/etc/config/example.ini` with the content:
+  # ```
+  # [GLOBAL]
+  # foo = bar
+  # ```
+  #
+  configFiles: []
 
-  # Secret environment variables (uses External Secrets Operator)
-  #   Secrets to be fetched from an external secret store and used by the application
-  #   See docs for information on how to create the neccessary config before using ESO.
-  #   Configuration format:
-  #     - name: <secret-name>               # will be prefixed by release name
-  #       secretStore: <secretstore-name>   # must be configured beforehand
-  #       secrets:
-  #         <secret-name>: <remote-secret-name>
-  #   The example below creates a secret named "my-secrets" using the pre-created secret store
-  #     "azure-kv-store" and all secrets listed under "secrets" will be accessible by the 
-  #     application through environment variables.
-  secretEnvs: []
+  # --
+  # @raw
+  #
+  # **Secret environment variables (uses External Secrets Operator)**
+  #
+  # Secrets to be fetched from an external secret store and used by the application.
+  # See docs for information on how to create the neccessary config before using ESO.
+  #
+  # Configuration format:
+  # ```yaml
+  # - name: <secret-name>               # will be prefixed by release name
+  #   secretStore: <secretstore-name>   # must be configured beforehand
+  #   secrets:
+  #     <secret-name>: <remote-secret-name>
+  # ```
+  #
+  # Example:
+  # ```yaml
   # - name: my-secrets
   #   secretStore: azure-kv-store
   #   secrets:
   #     A_SECRET_ENV: remote-secret-key-1
   #     ANOTHER_SECRET_ENV: remote-secret-key-2
+  # ```
+  #
+  # This example creates a secret named `my-secrets` using the pre-created secret store
+  # `azure-kv-store` and all secrets listed under `secrets` will be accessible by the 
+  # application through environment variables.
+  secretEnvs: []
 
-  # Secret configuration files (uses External Secrets Operator)
-  #   Files with secret information to mount to the pod for the application to use
-  #   The key for each item will be the file name with full path and the value defines how to fetch the content.
-  #   Configuration format:
-  #     - name: <secret-name>               # will be prefixed by release name
-  #       path: <path-to-mount-the-files>
-  #       secretStore: <secretstore-name>   # must be configured beforehand
-  #       files:
-  #         <file-name>: <remote-secret-name>
-  #   The example below will create a file at /etc/config/secrets.txt with the content:
-  #     SOME SENSITIVE DATA
-  secretFiles: []
+  # --
+  # @raw
+  #
+  # **Secret configuration files (uses External Secrets Operator)**
+  #
+  # Files with secret information to mount to the pod for the application to use.
+  # The key for each item will be the file name with full path and the value defines how to fetch the content.
+  #
+  # Configuration format:
+  # ```yaml
+  #   - name: <secret-name>   # will be prefixed by release name
+  #     path: <path-to-mount-the-files>
+  #     secretStore: <secretstore-name>   # must be configured beforehand
+  #     files:
+  #       <file-name>: <remote-secret-name>
+  # ```
+  #
+  # Example:
+  # ```yaml
   # - name: example-secret
   #   path: /etc/config
   #   secretStore: azure-kv-store
   #   files:
   #     secrets.txt: remote-secret-key
+  # ```
+  #
+  # This example will create a file at `/etc/config/secrets.txt`
+  # with the sensitive content defined in KV store secret `remote-secret-key`.
+  secretFiles: []
 
-  # Autoscaling
-  #   Enabled by default, creates a HorizontalPodAutoscaler resource
-  #   This resource scales the deployment based on CPU (set to 75% by default) or memory usage.
+  # -- 
+  # @raw
+  #
+  # **Autoscaling**
+  #
+  # Enabled by default, creates a HorizontalPodAutoscaler resource.
+  # This resource scales the deployment based on CPU (set to 75% by default) or memory usage.
   autoscaling:
     enabled: true
     minReplicas: 2
@@ -145,6 +274,7 @@ basicSettings:
 #
 # ADVANCED SETTINGS
 #
+# @ignored
 advancedSettings:
   image:
     pullPolicy: IfNotPresent

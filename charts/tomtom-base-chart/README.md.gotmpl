@@ -1,0 +1,154 @@
+{{ template "chart.header" . }}
+
+{{ template "chart.versionBadge" . }}
+
+TomTom Base Helm Chart (a.k.a Golden Helm Chart) is a project to help teams deploy their application more quickly. 
+
+The chart aims to:
+- reduce repetition across the organization,
+- reduce time spent on setting up deployment manifests,
+- prevent errors and implement best practices by default,
+- allow customers to onboard to Kubernetes (preferably KaaP) more easily,
+
+The main motivation behind this initiative is to help engineers onboard to KaaP with less effort. Although some functionality is intended for use with KaaP, the chart can be used when deploying to self-managed Kubernetes clusters.
+
+## Getting started
+To start using the TomTom base chart, add it as a dependency to your application chart. The user basically creates a Helm chart per application, but does not have to go through setting up all the templates for their app one-by-one. Instead, they will be using templates that should work with most use cases. If one component of the base chart does not fulfil the requirements, users can always [extend the functionality](#extending-the-chart) by adding custom templates.
+
+The basic configuration requires two files: a `Chart.yaml` and a `values.yaml`
+
+```
+.
+└── my-app
+    ├── Chart.yaml
+    └── values.yaml
+```
+
+`Chart.yaml` is a basic file that defines the application's Helm chart.
+
+Sample `Chart.yaml`:
+```yaml
+apiVersion: v2
+appVersion: 1.0.0
+description: Sample app helm chart
+name: sample-app
+type: application
+version: 1.0.0
+dependencies:
+  - name: tomtom-base-chart
+    version: {{ template "chart.version" . }}
+    repository: https://tomtom-international.github.io/helm-charts
+```
+
+The following table can be taken as a refence when creating this file. More details and options can be found in [Helm documentation](https://helm.sh/docs/topics/charts/#the-chartyaml-file).
+
+| Key | Value | Description |
+|---|---|---|
+| apiVersion | v2 | `{{ template "chart.name" . }}` uses Helm v3, so apiVersion must be set to `v2`. |
+| appVersion |  | Version of the application to be deployed via this Helm chart |
+| description |  | A short description of the Helm chart |
+| name |  | Chart name. Can be set to application name. |
+| type | application | This is a Helm chart used for deployments, so this must be set to `application`. |
+| version |  | Helm chart version. This must be incremented every time the chart changes. Changes in `values.yaml` do not require incrementing the version, but updating `{{ template "chart.name" . }}` version or adding a custom template do. |
+| dependencies | _see example_ | This option is what allows the application chart to use `{{ template "chart.name" . }}`, so it is required to add `{{ template "chart.name" . }}` as a dependency as shown in the example above. Users can always define more dependencies, if needed. |
+
+The second file, `values.yaml`, is where the user defines the "values" or the inputs for the templates defined in `{{ template "chart.name" . }}`. All values must be defined under the key `{{ template "chart.name" . }}`.
+
+Sample `values.yaml`:
+```yaml
+tomtom-base-chart:
+  basicSettings:
+    replicas: 2
+    image:
+      repository: artifactory.tomtomgroup.com/docker/nginx
+      tag: "1.0.0"
+    #...
+```
+
+All supported values can be seen in the next section, as well as [values.yaml](./values.yaml) inside the git repository. The actual _values_ inside the [values.yaml](./values.yaml) act as default values, and are overriden by the values supplied by the user in the values.yaml file of the application chart.
+
+{{ define "chart.valuesHeader" }}
+## Chart values
+{{ end }}
+
+{{ define "chart.valueDefaultColumnRender" }}
+{{- $defaultValue := (default .Default .AutoDefault)  -}}
+{{- $notationType := .NotationType }}
+{{- if (and (hasPrefix "`" $defaultValue) (hasSuffix "`" $defaultValue) ) -}}
+{{- $defaultValue = (toPrettyJson (fromJson (trimAll "`" (default .Default .AutoDefault) ) ) ) -}}
+{{- $notationType = "json" }}
+{{- end -}}
+{{- if (eq $notationType "tpl" ) }}
+<pre lang="{{ $notationType }}">
+{{ .Key }}: |
+{{- $defaultValue | nindent 2 }}
+</pre>
+{{- else }}
+<pre lang="{{ $notationType }}">
+{{ $defaultValue }}
+</pre>
+{{- end }}
+{{ end }}
+
+{{ define "chart.valuesTableHtml" }}
+<table height="400px" >
+	<thead>
+		<th>Key</th>
+		<th>Type</th>
+		<th>Default</th>
+		<th>Description</th>
+	</thead>
+	<tbody>
+	{{- range .Values }}
+		<tr>
+			<td id="{{ .Key | replace "." "--" }}"><a href="./values.yaml#L{{ .LineNumber }}">{{ .Key }}</a></td>
+			<td>{{ .Type }}</td>
+			<td>
+				<div style="max-width: 300px;">{{ template "chart.valueDefaultColumnRender" . }}</div>
+			</td>
+			<td>{{ if .Description }}{{ .Description }}{{ else }}{{ .AutoDescription }}{{ end }}</td>
+		</tr>
+	{{- end }}
+	</tbody>
+</table>
+{{ end }}
+
+{{ template "chart.valuesSectionHtml" . }}
+
+### About advanced settings
+
+The chart also provides advanced configuration options under `advancedSettings` key (see [values.yaml](./values.yaml)). These are intended for advanced requirements. Their naming convention follows the official configuration options.
+
+Please refer to [Kubernetes documentation](https://kubernetes.io/docs/home/) when using these.
+
+## Extending the chart
+
+In case there is a need to deploy custom manifests along with the supported ones or if one of the base templated does not fulfil requirements, custom templates can be defined in the application Helm chart.
+
+As explained in [Getting started](#getting-started), the application Helm chart consists primarily of `Chart.yaml` and `values.yaml`. However, this does not limit the user to use only templates from the {{ template "chart.name" . }}. More (custom) templates can be defined under a directory called `templates` inside the chart directory.
+
+```
+.
+└── my-app
+    ├── templates
+    │   └── customresource.yaml
+    ├── Chart.yaml
+    └── values.yaml
+```
+
+Values for custom template(s) must be defined in the root context of the `values.yaml`.
+
+```yaml
+# values for custom templates
+some-custom-option: true
+
+# values for the base helm chart
+tomtom-base-chart:
+  basicSettings:
+    replicas: 2
+  #...
+```
+
+If you think the feature would benefit more people, consider contributing or creating an issue.
+
+{{ template "helm-docs.versionFooter" . }}
