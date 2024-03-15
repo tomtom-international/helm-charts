@@ -1,6 +1,6 @@
 # tomtom-base-chart
 
-![Version: 0.0.3](https://img.shields.io/badge/Version-0.0.3-informational?style=flat-square)
+![Version: 0.0.4](https://img.shields.io/badge/Version-0.0.4-informational?style=flat-square)
 
 TomTom Base Helm Chart (a.k.a Golden Helm Chart) is a project to help teams deploy their application more quickly.
 
@@ -36,7 +36,7 @@ type: application
 version: 1.0.0
 dependencies:
   - name: tomtom-base-chart
-    version: 0.0.3
+    version: 0.0.4
     repository: https://tomtom-international.github.io/helm-charts
 ```
 
@@ -69,7 +69,7 @@ All supported values can be seen in the next section, as well as [values.yaml](.
 
 ## Chart values
 
-<table height="400px" >
+<table>
 	<thead>
 		<th>Key</th>
 		<th>Type</th>
