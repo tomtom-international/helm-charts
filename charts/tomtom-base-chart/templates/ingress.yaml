@@ -42,6 +42,7 @@ spec:
   {{- end }}
   {{- end }}
   rules:
+  {{- if not .Values.advancedSettings.ingress.hosts }}
   - host: {{ .Values.basicSettings.fqdn }}
     http:
       paths:
@@ -57,6 +58,7 @@ spec:
             serviceName: {{ $fullName }}
             servicePort: {{ $svcPort }}
             {{- end }}
+  {{- end }}
   {{- range .Values.advancedSettings.ingress.hosts }}
   - host: {{ .host | quote }}
     http:
