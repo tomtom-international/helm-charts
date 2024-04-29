@@ -18,11 +18,15 @@ metadata:
   name: {{ $fullName }}
   labels:
     {{- include "tomtom-base-chart.labels" . | nindent 4 }}
+  {{- if or (.Values.advancedSettings.ingress.annotations) (eq .Values.advancedSettings.ingress.className "traefik") }}
   annotations:
+    {{- if eq .Values.advancedSettings.ingress.className "traefik" -}}
     traefik.ingress.kubernetes.io/router.middlewares: {{ .Release.Namespace }}-{{ $fullName }}-ipallowlist@kubernetescrd
+    {{- end }}
     {{- with .Values.advancedSettings.ingress.annotations }}
     {{- toYaml . | nindent 4 }}
     {{- end }}
+  {{- end }}
 spec:
   {{- if and .Values.advancedSettings.ingress.className (semverCompare ">=1.18-0" .Capabilities.KubeVersion.GitVersion) }}
   ingressClassName: {{ .Values.advancedSettings.ingress.className }}
