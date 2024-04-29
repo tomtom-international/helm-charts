@@ -1,5 +1,31 @@
 {{- if .Values.basicSettings.fqdn -}}
 {{- $fullName := include "tomtom-base-chart.fullname" . -}}
+{{- if and .Values.advancedSettings.ingress.tls (eq .Values.advancedSettings.ingress.className "istio") -}}
+{{- range .Values.advancedSettings.ingress.tls }}
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: {{ $fullName }}-cert
+spec:
+  secretTemplate:
+    annotations:
+      kubed.appscode.com/sync: kubernetes.io/metadata.name=istio-ingress
+  secretName: {{ $fullName }}-cert
+  dnsNames:
+    {{- range .hosts }}
+    - {{ . }}
+    {{- end }}
+  issuerRef:
+    group: cert-manager.io
+    kind: ClusterIssuer
+    name: letsencrypt
+  usages:
+    - digital signature
+    - key encipherment
+{{- end }}
+{{- end }}
+---
 {{- $svcPort := .Values.basicSettings.port -}}
 {{- if and .Values.advancedSettings.ingress.className (not (semverCompare ">=1.18-0" .Capabilities.KubeVersion.GitVersion)) }}
   {{- if not (hasKey .Values.advancedSettings.ingress.annotations "kubernetes.io/ingress.class") }}
