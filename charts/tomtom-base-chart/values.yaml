@@ -127,6 +127,7 @@ basicSettings:
   secretEnvs: []
   # - name: my-secrets
   #   secretStore: azure-kv-store
+  #   secretName: my-secret
   #   secrets:
   #     A_SECRET_ENV: remote-secret-key-1
   #     ANOTHER_SECRET_ENV: remote-secret-key-2
