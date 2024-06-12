@@ -67,9 +67,9 @@ spec:
             path: {{ .Values.basicSettings.probe.readiness.path }}
             port: {{ .Values.basicSettings.port }}
             scheme: HTTP
-          {{ - with .Values.basicSettings.probe.readiness.settings }}
-          {{ - toYaml . | nindent 10 }}
-          {{ - end }}
+          {{- with .Values.basicSettings.probe.readiness.settings }}
+          {{- toYaml . | nindent 10 }}
+          {{- end }}
         {{- end }}
         ports:
         - name: http
