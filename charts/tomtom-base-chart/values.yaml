@@ -127,6 +127,7 @@ basicSettings:
   secretEnvs: []
   # - name: my-secrets
   #   secretStore: azure-kv-store
+  #   secretName: my-secret
   #   secrets:
   #     A_SECRET_ENV: remote-secret-key-1
   #     ANOTHER_SECRET_ENV: remote-secret-key-2
@@ -182,6 +183,23 @@ advancedSettings:
     # The name of the service account to use.
     # If not set and create is true, a name is generated using the fullname template
     name: ""
+
+  externalSecretStore:
+    # Specifies whether an external secret store should be created
+    create: false
+    # The name of the external secret store
+    name: ""
+    # Provider field contains the configuration to access the provider which contains the secrets.
+    # Exactly one provider must be configured.
+    # Configuration format:
+    # - Azure Key Vault: https://external-secrets.io/main/provider/azure-key-vault/#workload-identity
+    # - HashiCorp Vault: https://external-secrets.io/main/provider/hashicorp-vault/#jwtoidc-authentication
+    provider: {}
+    #  azurekv:
+    #    authType: WorkloadIdentity
+    #    vaultUrl: "https://xx-xxxx-xx.vault.azure.net"
+    #    serviceAccountRef:
+    #      name: workload-identity-sa
 
   podAnnotations: {}
 
