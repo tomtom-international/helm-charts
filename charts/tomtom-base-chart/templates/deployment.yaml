@@ -49,7 +49,7 @@ spec:
         {{- end }}
         {{- range .Values.basicSettings.secretEnvs }}
         - secretRef:
-            name: {{ include "tomtom-base-chart.fullname" $ }}-{{ .name }}-env-es
+            name: {{ .secretName }}
         {{- end }}
         {{- if .Values.basicSettings.probe.liveness }}
         livenessProbe:
@@ -67,6 +67,9 @@ spec:
             path: {{ .Values.basicSettings.probe.readiness.path }}
             port: {{ .Values.basicSettings.port }}
             scheme: HTTP
+          {{- with .Values.basicSettings.probe.readiness.settings }}
+          {{- toYaml . | nindent 10 }}
+          {{- end }}
         {{- end }}
         ports:
         - name: http
