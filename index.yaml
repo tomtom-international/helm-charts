@@ -448,6 +448,16 @@ entries:
   tomtom-base-chart:
   - apiVersion: v2
     appVersion: 1.0.0
+    created: "2024-06-26T09:29:49.545353086Z"
+    description: A base Helm chart for all TomTom product units
+    digest: bf90e7c313c6c2ec50546ee28e78d254bb60a53a09c182842a170baddc6e61be
+    name: tomtom-base-chart
+    type: application
+    urls:
+    - https://github.com/tomtom-international/helm-charts/releases/download/tomtom-base-chart-0.0.7/tomtom-base-chart-0.0.7.tgz
+    version: 0.0.7
+  - apiVersion: v2
+    appVersion: 1.0.0
     created: "2024-06-14T05:15:11.671328383Z"
     description: A base Helm chart for all TomTom product units
     digest: 9d78cc4e2afe85cf26198a662f513ee70c82324099fad62e463870ec2b4966dc
@@ -496,4 +506,4 @@ entries:
     urls:
     - https://github.com/tomtom-international/helm-charts/releases/download/tomtom-base-chart-0.0.2/tomtom-base-chart-0.0.2.tgz
     version: 0.0.2
-generated: "2024-06-14T05:15:11.671413282Z"
+generated: "2024-06-26T09:29:49.545469364Z"
