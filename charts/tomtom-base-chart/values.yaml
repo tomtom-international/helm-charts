@@ -120,14 +120,13 @@ basicSettings:
   #     - name: <secret-name>               # will be prefixed by release name
   #       secretStore: <secretstore-name>   # must be configured beforehand
   #       secrets:
-  #         <secret-name>: <remote-secret-name>
+  #         <secret-key>: <remote-secret-name>
   #   The example below creates a secret named "my-secrets" using the pre-created secret store
   #     "azure-kv-store" and all secrets listed under "secrets" will be accessible by the 
   #     application through environment variables.
   secretEnvs: []
   # - name: my-secrets
   #   secretStore: azure-kv-store
-  #   secretName: my-secret
   #   secrets:
   #     A_SECRET_ENV: remote-secret-key-1
   #     ANOTHER_SECRET_ENV: remote-secret-key-2
