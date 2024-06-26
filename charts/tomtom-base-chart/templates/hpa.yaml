@@ -1,5 +1,5 @@
 {{- if .Values.basicSettings.autoscaling.enabled }}
-apiVersion: autoscaling/v2beta1
+apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
   name: {{ include "tomtom-base-chart.fullname" . }}
@@ -17,12 +17,16 @@ spec:
     - type: Resource
       resource:
         name: cpu
-        targetAverageUtilization: {{ .Values.basicSettings.autoscaling.targetCPUUtilizationPercentage }}
+        target:
+          type: Utilization
+          averageUtilization: {{ .Values.basicSettings.autoscaling.targetCPUUtilizationPercentage }}
     {{- end }}
     {{- if .Values.basicSettings.autoscaling.targetMemoryUtilizationPercentage }}
     - type: Resource
       resource:
         name: memory
-        targetAverageUtilization: {{ .Values.basicSettings.autoscaling.targetMemoryUtilizationPercentage }}
+        target:
+          type: Utilization
+          averageUtilization: {{ .Values.basicSettings.autoscaling.targetMemoryUtilizationPercentage }}
     {{- end }}
 {{- end }}
