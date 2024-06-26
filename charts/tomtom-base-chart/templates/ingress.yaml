@@ -1,5 +1,31 @@
 {{- if .Values.basicSettings.fqdn -}}
 {{- $fullName := include "tomtom-base-chart.fullname" . -}}
+{{- if and .Values.advancedSettings.ingress.tls (eq .Values.advancedSettings.ingress.className "istio") -}}
+{{- range .Values.advancedSettings.ingress.tls }}
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: {{ $fullName }}-cert
+spec:
+  secretTemplate:
+    annotations:
+      kubed.appscode.com/sync: kubernetes.io/metadata.name=istio-ingress
+  secretName: {{ $fullName }}-cert
+  dnsNames:
+    {{- range .hosts }}
+    - {{ . }}
+    {{- end }}
+  issuerRef:
+    group: cert-manager.io
+    kind: ClusterIssuer
+    name: letsencrypt
+  usages:
+    - digital signature
+    - key encipherment
+{{- end }}
+{{- end }}
+---
 {{- $svcPort := .Values.basicSettings.port -}}
 {{- if and .Values.advancedSettings.ingress.className (not (semverCompare ">=1.18-0" .Capabilities.KubeVersion.GitVersion)) }}
   {{- if not (hasKey .Values.advancedSettings.ingress.annotations "kubernetes.io/ingress.class") }}
@@ -18,11 +44,15 @@ metadata:
   name: {{ $fullName }}
   labels:
     {{- include "tomtom-base-chart.labels" . | nindent 4 }}
+  {{- if or (.Values.advancedSettings.ingress.annotations) (eq .Values.advancedSettings.ingress.className "traefik") }}
   annotations:
+    {{- if eq .Values.advancedSettings.ingress.className "traefik" -}}
     traefik.ingress.kubernetes.io/router.middlewares: {{ .Release.Namespace }}-{{ $fullName }}-ipallowlist@kubernetescrd
+    {{- end }}
     {{- with .Values.advancedSettings.ingress.annotations }}
     {{- toYaml . | nindent 4 }}
     {{- end }}
+  {{- end }}
 spec:
   {{- if and .Values.advancedSettings.ingress.className (semverCompare ">=1.18-0" .Capabilities.KubeVersion.GitVersion) }}
   ingressClassName: {{ .Values.advancedSettings.ingress.className }}
@@ -32,12 +62,13 @@ spec:
   {{- range .Values.advancedSettings.ingress.tls }}
   - hosts:
       {{- range .hosts }}
-      - {{ . | quote }}
+      - {{ . }}
       {{- end }}
     secretName: {{ .secretName }}
   {{- end }}
   {{- end }}
   rules:
+  {{- if not .Values.advancedSettings.ingress.hosts }}
   - host: {{ .Values.basicSettings.fqdn }}
     http:
       paths:
@@ -53,25 +84,26 @@ spec:
             serviceName: {{ $fullName }}
             servicePort: {{ $svcPort }}
             {{- end }}
+  {{- end }}
   {{- range .Values.advancedSettings.ingress.hosts }}
-  - host: {{ .host | quote }}
+  - host: {{ .host }}
     http:
       paths:
       {{- range .paths }}
-      - path: {{ .path }}
-        {{- if and .pathType (semverCompare ">=1.18-0" $.Capabilities.KubeVersion.GitVersion) }}
-        pathType: {{ .pathType }}
-        {{- end }}
-        backend:
-          {{- if semverCompare ">=1.19-0" $.Capabilities.KubeVersion.GitVersion }}
-          service:
-            name: {{ $fullName }}
-            port:
-              number: {{ $svcPort }}
-          {{- else }}
-          serviceName: {{ $fullName }}
-          servicePort: {{ $svcPort }}
+        - path: {{ .path }}
+          {{- if and .pathType (semverCompare ">=1.18-0" $.Capabilities.KubeVersion.GitVersion) }}
+          pathType: {{ .pathType }}
           {{- end }}
+          backend:
+            {{- if semverCompare ">=1.19-0" $.Capabilities.KubeVersion.GitVersion }}
+            service:
+              name: {{ $fullName }}
+              port:
+                number: {{ $svcPort }}
+            {{- else }}
+            serviceName: {{ $fullName }}
+            servicePort: {{ $svcPort }}
+            {{- end }}
       {{- end }}
   {{- end }}
 {{- end }}
