@@ -79,7 +79,7 @@ spec:
           {{- toYaml .Values.basicSettings.resources | nindent 10 }}
         securityContext:
           {{- toYaml .Values.advancedSettings.securityContext | nindent 12 }}
-        {{- if or .Values.basicSettings.configFiles .Values.basicSettings.secretFiles }}
+        {{- if or .Values.basicSettings.configFiles .Values.basicSettings.secretFiles .Values.advancedSettings.persistentVolumes }}
         volumeMounts:
         {{- range .Values.basicSettings.configFiles }}
         - name: {{ .name }}
@@ -89,6 +89,10 @@ spec:
         - name: {{ .name }}
           mountPath: {{ .path }}
           readOnly: true
+        {{- end }}
+        {{- range .Values.advancedSettings.persistentVolumes }}
+        - name: {{ .name }}
+          mountPath: {{ .path }}
         {{- end }}
         {{- end }}
       {{- with .Values.advancedSettings.nodeSelector }}
@@ -103,7 +107,7 @@ spec:
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- if or .Values.basicSettings.configFiles .Values.basicSettings.secretFiles }}
+      {{- if or .Values.basicSettings.configFiles .Values.basicSettings.secretFiles .Values.advancedSettings.persistentVolumes }}
       volumes:
       {{- range .Values.basicSettings.configFiles }}
       - name: {{ .name }}
@@ -114,6 +118,10 @@ spec:
       - name: {{ .name }}
         secret:
           secretName: {{ include "tomtom-base-chart.fullname" $ }}-{{ .name }}-file-es
+      {{- end }}
+      {{- range .Values.advancedSettings.persistentVolumes }}
+      - name: {{ .name }}
+        {{- toYaml .claim | nindent 8 }}
       {{- end }}
       {{- end }}
   {{- if .Values.advancedSettings.strategy }}
