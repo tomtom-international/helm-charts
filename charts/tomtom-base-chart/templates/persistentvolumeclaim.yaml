@@ -1,0 +1,9 @@
+{{- range .Values.advancedSettings.persistentVolumes -}}
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ .claim.persistentVolumeClaim.claimName }}
+spec:
+  {{- toYaml .claimSpec | nindent 2 }}
+{{- end }}
