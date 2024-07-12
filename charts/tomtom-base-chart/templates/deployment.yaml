@@ -79,7 +79,7 @@ spec:
           {{- toYaml .Values.basicSettings.resources | nindent 10 }}
         securityContext:
           {{- toYaml .Values.advancedSettings.securityContext | nindent 12 }}
-        {{- if or .Values.basicSettings.configFiles .Values.basicSettings.secretFiles .Values.advancedSettings.persistentVolumes }}
+        {{- if or .Values.basicSettings.configFiles .Values.basicSettings.secretFiles .Values.advancedSettings.persistentVolumes .Values.advancedSettings.customConfigFiles }}
         volumeMounts:
         {{- range .Values.basicSettings.configFiles }}
         - name: {{ .name }}
@@ -89,6 +89,10 @@ spec:
         - name: {{ .name }}
           mountPath: {{ .path }}
           readOnly: true
+        {{- end }}
+        {{- range .Values.advancedSettings.customConfigFiles }}
+        - name: {{ .name }}
+          mountPath: {{ .path }}
         {{- end }}
         {{- range .Values.advancedSettings.persistentVolumes }}
         - name: {{ .name }}
@@ -107,7 +111,7 @@ spec:
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- if or .Values.basicSettings.configFiles .Values.basicSettings.secretFiles .Values.advancedSettings.persistentVolumes }}
+      {{- if or .Values.basicSettings.configFiles .Values.basicSettings.secretFiles .Values.advancedSettings.persistentVolumes .Values.advancedSettings.customConfigFiles }}
       volumes:
       {{- range .Values.basicSettings.configFiles }}
       - name: {{ .name }}
@@ -118,6 +122,18 @@ spec:
       - name: {{ .name }}
         secret:
           secretName: {{ include "tomtom-base-chart.fullname" $ }}-{{ .name }}-file-es
+      {{- end }}
+      {{- range .Values.advancedSettings.customConfigFiles }}
+      - name: {{ .name }}
+        configMap:
+          name: {{ .name }}
+          {{- if .items }}
+          items:
+          {{- range .items }}
+          - key: {{ .key }}
+            path: {{ .path }}
+          {{- end }}
+          {{- end }}
       {{- end }}
       {{- range .Values.advancedSettings.persistentVolumes }}
       - name: {{ .name }}
