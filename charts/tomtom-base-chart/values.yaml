@@ -248,3 +248,11 @@ advancedSettings:
 
   # ref: https://kubernetes.io/docs/concepts/storage/volumes/#persistentvolumeclaim
   persistentVolumes: []
+
+  # ref: https://kubernetes.io/docs/concepts/configuration/configmap
+  customConfigFiles: []
+  # - name: emaple
+  #   path: /etc/config/example
+  #   items:
+  #   - key: nginx.conf
+  #     path: nginx.conf
