@@ -1,0 +1,18 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: {{ include "tomtom-base-chart.serviceMonitorName" . }}
+  labels:
+    {{- include "tomtom-base-chart.labels" . | nindent 4 }}
+    {{- if .Values.serviceMonitor.additionalLabels }}
+      {{- toYaml .Values.serviceMonitor.additionalLabels | nindent 4 }}
+    {{- end }}
+spec:
+  jobLabel: {{ .Chart.Name }}
+  selector:
+    matchLabels:
+      {{- include "tomtom-base-chart.selectorLabels" . | nindent 6 }}
+  endpoints:
+    - port: http
+      interval: {{ .Values.serviceMonitor.scrapeConfig.interval }}
+      scrapeTimeout: {{ .Values.serviceMonitor.scrapeConfig.scrapeTimeout }}

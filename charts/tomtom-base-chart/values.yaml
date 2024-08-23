@@ -256,3 +256,11 @@ advancedSettings:
   #   items:
   #   - key: nginx.conf
   #     path: nginx.conf
+
+  serviceMonitor:
+    create: false
+    name: ""
+    additionalLabels: {}
+    scrapeConfig:
+      interval: 15s
+      scrapeTimeout: 10s

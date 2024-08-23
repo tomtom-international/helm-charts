@@ -47,4 +47,14 @@ Create the name of the service account to use
 {{- else }}
 {{- default "default" .Values.advancedSettings.serviceAccount.name }}
 {{- end }}
+
+{{/*
+Create the name of the Service Monitor to use
+*/}}
+{{- define "tomtom-base-chart.serviceMonitorName" -}}
+{{- if .Values.advancedSettings.serviceMonitor.create }}
+{{- default (include "tomtom-base-chart.fullname" .) .Values.advancedSettings.serviceMonitor.name }}
+{{- else }}
+{{- default "default" .Values.advancedSettings.serviceMonitor.name }}
+{{- end }}
 {{- end }}
