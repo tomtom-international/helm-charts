@@ -216,6 +216,11 @@ advancedSettings:
   service:
     type: ClusterIP
 
+  additionalEndpoints: []
+  # - name: example-name
+  #   port: 8080
+  #   ingressPath: /path
+
   ingress:
     enabled: false
     className: istio
