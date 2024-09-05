@@ -75,6 +75,11 @@ spec:
         - name: http
           containerPort: {{ .Values.basicSettings.port }}
           protocol: TCP
+        {{- range .Values.advancedSettings.additionalEndpoints }}
+        - name: {{ .name }}
+          containerPort: {{ .port }}
+          protocol: TCP
+        {{- end }}
         resources:
           {{- toYaml .Values.basicSettings.resources | nindent 10 }}
         securityContext:
