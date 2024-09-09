@@ -90,11 +90,11 @@ spec:
           backend:
             {{- if semverCompare ">=1.19-0" $.Capabilities.KubeVersion.GitVersion }}
             service:
-              name: {{ $fullName }}
+              name: {{ $fullName }}-{{ .name }}
               port:
                 number: {{ .port }}
             {{- else }}
-            serviceName: {{ $fullName }}
+            serviceName: {{ $fullName }}-{{ .name }}
             servicePort: {{ .port }}
             {{- end }}
         {{- end }}
