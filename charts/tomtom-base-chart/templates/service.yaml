@@ -12,23 +12,11 @@ spec:
     targetPort: http
     protocol: TCP
     name: http
-  selector:
-    {{- include "tomtom-base-chart.selectorLabels" . | nindent 4 }}
-{{- range .Values.advancedSettings.additionalEndpoints -}}
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: {{ include "tomtom-base-chart.fullname" $ }}-{{ .name }}
-  labels:
-    {{- include "tomtom-base-chart.labels" $ | nindent 4 }}
-spec:
-  type: {{ $.Values.advancedSettings.service.type }}
-  ports:
+{{- range .Values.advancedSettings.additionalEndpoints }}
   - port: {{ .port }}
     targetPort: {{ .name }}
     protocol: TCP
     name: {{ .name }}
-  selector:
-    {{- include "tomtom-base-chart.selectorLabels" $ | nindent 4 }}
 {{- end }}
+  selector:
+    {{- include "tomtom-base-chart.selectorLabels" . | nindent 4 }}
