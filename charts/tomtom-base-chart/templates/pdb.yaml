@@ -1,0 +1,32 @@
+{{- if .Values.advancedSettings.pdb.enabled }}
+{{- if .Values.advancedSettings.pdb.minAvailable }}
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: {{ include "tomtom-base-chart.fullname" . }}-pdb-min
+  labels:
+    {{- include "tomtom-base-chart.labels" . | nindent 4 }}
+spec:
+  minAvailable: {{ required "minAvailable must be set and cannot be empty" .Values.advancedSettings.pdb.minAvailable }}
+  selector:
+    matchLabels:
+      {{- include "tomtom-base-chart.selectorLabels" . | nindent 6 }}
+{{- end }}
+
+
+{{- if .Values.advancedSettings.pdb.maxUnavailable }}
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: {{ include "tomtom-base-chart.fullname" . }}-pdb-max
+  labels:
+    {{- include "tomtom-base-chart.labels" . | nindent 4 }}
+spec:
+  maxUnavailable: {{ .Values.advancedSettings.pdb.maxUnavailable }}
+  selector:
+    matchLabels:
+      {{- include "tomtom-base-chart.selectorLabels" . | nindent 6 }}
+{{- end }}
+{{- end }}
