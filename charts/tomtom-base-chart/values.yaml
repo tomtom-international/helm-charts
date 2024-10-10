@@ -45,12 +45,12 @@ basicSettings:
   port: 80
 
   # Probes
-  #   
+  #
   #   liveness:  Used to determine if the application is alive or experiencing problems.
   #              If this fails, the container will be restarted.
   #   readiness: Used to determine if the pod is ready to receive requests.
   #              If this fails, the pod will not receive traffic.
-  #   
+  #
   #   "settings" can be used for custom probe options for both probes.
   #   See https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/
   probe: {}
@@ -70,7 +70,7 @@ basicSettings:
   # Allowed IP Ranges (IP Allowlist)
   #   Range of IP addresses that are allowed to access this application through ingress
   allowedIpRanges:
-  - "0.0.0.0/0"
+    - "0.0.0.0/0"
 
   # Resource Requests & Limits
   #   CPU and memory usage requests and limits
@@ -122,7 +122,7 @@ basicSettings:
   #       secrets:
   #         <secret-key>: <remote-secret-name>
   #   The example below creates a secret named "my-secrets" using the pre-created secret store
-  #     "azure-kv-store" and all secrets listed under "secrets" will be accessible by the 
+  #     "azure-kv-store" and all secrets listed under "secrets" will be accessible by the
   #     application through environment variables.
   secretEnvs: []
   # - name: my-secrets
@@ -158,7 +158,6 @@ basicSettings:
     maxReplicas: 10
     targetCPUUtilizationPercentage: 75
     # targetMemoryUtilizationPercentage: 80
-
 
 #
 # ADVANCED SETTINGS
@@ -261,3 +260,12 @@ advancedSettings:
   #   items:
   #   - key: nginx.conf
   #     path: nginx.conf
+
+  # Pod Disruption Budget (PDB)
+  #   Enables a PodDisruptionBudget resource to control voluntary disruptions to your pods.
+  #   minAvailable: Minimum number of pods that must remain available during disruptions.
+  #   maxUnavailable: Maximum number of pods that can be unavailable during disruptions.
+  pdb:
+    enabled: false # Set to true to enable the PDB
+    minAvailable: 1 # Minimum number of pods that must be available
+    maxUnavailable: 2 # Maximum number of pods that can be unavailable
