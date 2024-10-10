@@ -1,6 +1,6 @@
 apiVersion: v2
 name: tomtom-base-chart
-description: A base Helm chart for all TomTom product units 
+description: A base Helm chart for all TomTom product units
 type: application
-version: 0.0.14
+version: 0.0.15
 appVersion: "1.0.0"
