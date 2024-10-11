@@ -153,7 +153,7 @@ basicSettings:
   #   Enabled by default, creates a HorizontalPodAutoscaler resource
   #   This resource scales the deployment based on CPU (set to 75% by default) or memory usage.
   autoscaling:
-    enabled: false
+    enabled: true
     minReplicas: 2
     maxReplicas: 10
     targetCPUUtilizationPercentage: 75
@@ -285,4 +285,4 @@ advancedSettings:
   pdb:
     enabled: false # Set to true to enable the PDB
     minAvailable: 1 # Minimum number of pods that must be available
-    maxUnavailable: 2 # Maximum number of pods that can be unavailable
+    # maxUnavailable: 2 # Maximum number of pods that can be unavailable
