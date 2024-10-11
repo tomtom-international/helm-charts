@@ -53,8 +53,7 @@ basicSettings:
   #
   #   "settings" can be used for custom probe options for both probes.
   #   See https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/
-  probe:
-    {}
+  probe: {}
     # liveness:
     #   path: /healthz
     #   settings:
@@ -78,8 +77,7 @@ basicSettings:
   #   The average usage under regular load needs to be specified under 'requests'.
   #   The resource limits need to be specified under 'limits'.
   #   Please refer to https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
-  resources:
-    {}
+  resources: {}
     # limits:
     #   cpu: 100m
     #   memory: 128Mi
@@ -92,8 +90,7 @@ basicSettings:
   #   This will create a Kubernetes ConfigMap and create envs referring to that.
   #   IMPORTANT: Use secretEnvs for sensitive environment variables. Such variables should not be
   #              a part of the Helm values and must be fetched from an external secret store like AKV.
-  envs:
-    {}
+  envs: {}
     # MY_ENV: value
 
   # Configuration files
@@ -156,7 +153,7 @@ basicSettings:
   #   Enabled by default, creates a HorizontalPodAutoscaler resource
   #   This resource scales the deployment based on CPU (set to 75% by default) or memory usage.
   autoscaling:
-    enabled: true
+    enabled: false
     minReplicas: 2
     maxReplicas: 10
     targetCPUUtilizationPercentage: 75
