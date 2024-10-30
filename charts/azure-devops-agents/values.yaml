@@ -40,6 +40,8 @@ nodeSelector:
 
 tolerations: []
 
+affinity: {}
+
 agentPoolInfo:
   url: "https://dev.azure.com/myorg"
   poolname: "keda self-hosted"

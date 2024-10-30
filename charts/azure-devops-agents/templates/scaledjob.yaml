@@ -7,6 +7,11 @@ metadata:
 spec:
   jobTargetRef:
     template:
+      metadata:
+        {{- with .Values.podAnnotations }}
+        annotations:
+          {{- toYaml . | nindent 10 }}
+        {{- end }}
       spec:
         restartPolicy: Never
         containers:
@@ -45,6 +50,10 @@ spec:
         {{- end }}
         {{- with .Values.tolerations }}
         tolerations:
+          {{- toYaml . | nindent 10 }}
+        {{- end }}
+        {{- with .Values.affinity }}
+        affinity:
           {{- toYaml . | nindent 10 }}
         {{- end }}
         {{- with .Values.imagePullSecrets }}
