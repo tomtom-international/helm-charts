@@ -23,6 +23,7 @@ basicSettings:
 
     # Image pull credentials
     #   For this section to work, the secret store needs to be created in advance.
+    #   Set to `~` (nil) to rely on kubelet identity to pull images.
     #   See docs for more information about how to create this.
     pullSecret:
       # Name of the secret store
