@@ -26,8 +26,10 @@ spec:
       {{- toYaml . | nindent 6 }}
       {{- end }}
       {{- else }}
+      {{- if .Values.basicSettings.pullSecret }}
       imagePullSecrets:
       - name: {{ .Release.Name }}-imagepullsecret
+      {{- end }}
       {{- end }}
       serviceAccountName: {{ include "tomtom-base-chart.serviceAccountName" . }}
       securityContext:
