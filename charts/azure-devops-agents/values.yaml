@@ -35,8 +35,8 @@ autoscaling:
   # successfulJobsHistoryLimit: 0
   # failedJobsHistoryLimit: 5
 
-nodeSelector:
-  agentpool: additionalpool
+nodeSelector: {}
+  # agentpool: additionalpool
 
 tolerations: []
 
