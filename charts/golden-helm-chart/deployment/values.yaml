@@ -1,0 +1,116 @@
+---
+nameOverride: ""
+fullnameOverride: ""
+
+replicas: 1
+
+autoscaling:
+  enabled: false
+  # minReplicas: 1
+  # maxReplicas: 10
+  # targetCPUUtilizationPercentage: 80
+  # targetMemoryUtilizationPercentage: 80
+  # behavior:
+  #   scaleDown:
+  #     stabilizationWindowSeconds: 300
+  #     policies:
+  #       - type: Percent
+  #         value: 100
+  #         periodSeconds: 60
+  #   scaleUp:
+  #     stabilizationWindowSeconds: 0
+  #     policies:
+  #       - type: Percent
+  #         value: 100
+  #         periodSeconds: 30
+  #       - type: Pods
+  #         value: 4
+  #         periodSeconds: 30
+  #     selectPolicy: Max
+
+image:
+  repository: nginx
+  pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: ""
+
+  # TODO: under development
+  externalPullSecret:
+  - secretStore: azure-store
+    secretKey: regcred
+  existingPullSecrets:
+  - name: regcred
+
+containerCommand:   # TODO: rethink naming
+  enabled: false
+  shell: "/bin/sh"
+  command: ""
+
+envs: {}
+configFiles: []
+customConfigFiles: []   # TODO: check if this is needed
+secretEnvs: []
+secretFiles: []
+
+probe: {}
+  # liveness:
+  #   path: /healthz
+  #   settings:
+  #     periodSeconds: 60
+  # readiness:
+  #   path: /ready
+  #   settings: {}
+
+
+probe2: {}
+  # liveness: 
+  #   httpGet:
+  #     path: /
+  #     port: http
+  # readiness:
+  #   httpGet:
+  #     path: /
+  #     port: http
+
+fqdn: ""
+
+# Port number of first endpoint is used for probes
+endpoints:
+- name: http
+  port: 8080
+  path: /
+
+resources: {}
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+
+securityContext: {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+persistentVolumes: []
+
+podAnnotations: {}
+podLabels: {}
+
+podSecurityContext: {}
+  # fsGroup: 2000
+
+nodeSelector: {}
+tolerations: []
+affinity: {}
+
+service:
+  type: ClusterIP
+
+# TODO: support IP allowlisting for multiple ingress types
+# allowedIpRanges:
+# - "0.0.0.0/0"

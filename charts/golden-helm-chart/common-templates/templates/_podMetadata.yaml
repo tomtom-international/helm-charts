@@ -1,0 +1,11 @@
+{{- define "common-templates.podMetadata" -}}
+{{- with .Values.podAnnotations }}
+annotations:
+  {{- toYaml . | nindent 2 }}
+{{- end }}
+labels:
+  {{- include "common-templates.labels" . | nindent 2 }}
+  {{- with .Values.podLabels }}
+  {{- toYaml . | nindent 2 }}
+  {{- end }}
+{{- end }}
