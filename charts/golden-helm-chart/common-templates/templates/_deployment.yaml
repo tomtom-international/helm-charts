@@ -1,0 +1,26 @@
+{{/* TODO: support for custom fields */}}
+{{- define "common-templates.deployment.tpl" -}}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "common-templates.fullname" . }}
+  {{/* 
+    TODO: ability to rollout deployment upon configmap change.
+    See https://helm.sh/docs/howto/charts_tips_and_tricks/#automatically-roll-deployments
+  */}}
+  labels:
+    {{- include "common-templates.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicas }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "common-templates.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- include "common-templates.podMetadata" . | nindent 6 }}
+    spec:
+      {{- include "common-templates.podSpec" . | nindent 6 }}
+{{- end }}

@@ -1,0 +1,36 @@
+{{- define "common-templates.configmap.env-cm-name" -}}
+{{ include "common-templates.fullname" . }}-env-cm
+{{- end }}
+
+{{- define "common-templates.configmap.file-cm-name" -}}
+{{ include "common-templates.fullname" . }}-{{ .name }}-file-cm
+{{- end }}
+
+{{- define "common-templates.configmap.tpl" -}}
+{{- if .Values.envs }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "common-templates.configmap.env-cm-name" . }}
+  labels:
+    {{- include "common-templates.labels" . | nindent 4 }}
+data:
+{{- range $key, $val := .Values.envs }}
+  {{ $key }}: {{ $val | quote }}
+{{- end }}
+{{- end }}
+{{- range .Values.configFiles }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "common-templates.configmap.file-cm-name" (merge (dict "name" .name) $) }}
+  labels:
+    {{- include "common-templates.labels" $ | nindent 4 }}
+data:
+{{- range $key, $val := .files }}
+  {{ $key }}: {{ $val | quote }}
+{{- end }}
+{{- end }}
+{{- end }}

@@ -1,0 +1,9 @@
+apiVersion: v2
+name: tomtom-deployment
+description: TomTom Golden Helm Chart for deployments
+type: application
+version: 0.1.0
+dependencies:
+  - name: common-templates
+    version: 0.1.0
+    repository: file://../common-templates

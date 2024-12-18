@@ -1,0 +1,10 @@
+envs:
+  SOME_ENV: and_its_value
+
+configFiles:
+- name: example-config
+  path: /etc/config
+  files:
+    example.ini: |
+      [GLOBAL]
+      foo = bar

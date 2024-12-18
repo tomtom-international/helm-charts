@@ -1,0 +1,81 @@
+{{/* TODO: reorder */}}
+
+{{- define "common-templates.container" -}}
+name: {{ .Release.Name }}
+  {{- if .Values.containerCommand.enabled }}
+command:
+- {{ .Values.shell }}
+args:
+- -c
+- {{ .Values.command | quote }}
+  {{- end }}
+image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+imagePullPolicy: {{ .Values.image.pullPolicy }}
+envFrom:
+  {{- if .Values.envs }}
+- configMapRef:
+    name: {{ include "common-templates.configmap.env-cm-name" . }}
+  {{- end }}
+  {{- range .Values.secretEnvs }}
+- secretRef:
+    name: {{ include "common-templates.fullname" $ }}-{{ .name }}-env-es
+  {{- end }}
+ports:
+  {{- range .Values.endpoints }}
+- name: {{ .name }}
+  containerPort: {{ .port }}
+  protocol: TCP
+  {{- end }}
+resources:
+  {{- toYaml .Values.resources | nindent 2 }}
+securityContext:
+  {{- toYaml .Values.securityContext | nindent 2 }}
+
+  {{- if or .Values.configFiles .Values.secretFiles .Values.persistentVolumes .Values.customConfigFiles }}
+volumeMounts:
+    {{- range .Values.configFiles }}
+- name: {{ .name }}
+  mountPath: {{ .path }}
+    {{- end }}
+    {{- range .Values.secretFiles }}
+- name: {{ .name }}
+  mountPath: {{ .path }}
+  readOnly: true
+    {{- end }}
+    {{/* TODO: check if customConfigFiles is needed */}}
+    {{- range .Values.customConfigFiles }}
+- name: {{ .name }}
+  mountPath: {{ .path }}
+    {{- end }}
+
+    {{/* TODO: any way we can simplify this? */}}
+    {{- range .Values.persistentVolumes }}
+- name: {{ .name }}
+  mountPath: {{ .path }}
+    {{- end }}
+  {{- end }}
+
+
+  {{/* TODO: decide between simple (this) and customizable (use Kubernetes manifest directly) */}}
+  {{- if .Values.probe.liveness }}
+livenessProbe:
+  httpGet:
+    path: {{ .Values.probe.liveness.path }}
+    port: {{ (.Values.endpoints | first).port }}
+    scheme: HTTP
+    {{- with .Values.probe.liveness.settings }}
+    {{- toYaml . | nindent 10 }}
+    {{- end }}
+  {{- end }}
+  {{- if .Values.probe.readiness }}
+readinessProbe:
+  httpGet:
+    path: {{ .Values.probe.readiness.path }}
+    port: {{ (.Values.endpoints | first).port }}
+    scheme: HTTP
+    {{- with .Values.probe.readiness.settings }}
+      {{- toYaml . | nindent 10 }}
+    {{- end }}
+  {{- end }}
+
+{{- end }}
