@@ -225,6 +225,22 @@ entries:
     version: 0.1.0
   gha-runner-scale-set:
   - apiVersion: v2
+    appVersion: 0.10.1
+    created: "2025-01-10T10:59:24.106210049Z"
+    description: A Helm chart for deploying an AutoScalingRunnerSet
+    digest: 4751a6fc4a3b35d0d49e69f0ad79a17def49cbc03f323ccc934ca58c78a7b62b
+    home: https://github.com/actions/actions-runner-controller
+    maintainers:
+    - name: actions
+      url: https://github.com/actions
+    name: gha-runner-scale-set
+    sources:
+    - https://github.com/actions/actions-runner-controller
+    type: application
+    urls:
+    - https://github.com/tomtom-international/helm-charts/releases/download/gha-runner-scale-set-0.10.1/gha-runner-scale-set-0.10.1.tgz
+    version: 0.10.1
+  - apiVersion: v2
     appVersion: 0.8.3
     created: "2024-05-16T08:43:00.356169865Z"
     description: A Helm chart for deploying an AutoScalingRunnerSet
@@ -337,6 +353,22 @@ entries:
     - https://github.com/tomtom-international/helm-charts/releases/download/gha-runner-scale-set-0.3.0/gha-runner-scale-set-0.3.0.tgz
     version: 0.3.0
   gha-runner-scale-set-controller:
+  - apiVersion: v2
+    appVersion: 0.10.1
+    created: "2025-01-10T10:59:24.349056782Z"
+    description: A Helm chart for install actions-runner-controller CRD
+    digest: b0313fb52e335bd72e4b283447c228f5f51ae7e5f809e06a707bd4a7930b829c
+    home: https://github.com/actions/actions-runner-controller
+    maintainers:
+    - name: actions
+      url: https://github.com/actions
+    name: gha-runner-scale-set-controller
+    sources:
+    - https://github.com/actions/actions-runner-controller
+    type: application
+    urls:
+    - https://github.com/tomtom-international/helm-charts/releases/download/gha-runner-scale-set-controller-0.10.1/gha-runner-scale-set-controller-0.10.1.tgz
+    version: 0.10.1
   - apiVersion: v2
     appVersion: 0.8.3
     created: "2024-05-16T08:43:00.515492546Z"
@@ -626,4 +658,4 @@ entries:
     urls:
     - https://github.com/tomtom-international/helm-charts/releases/download/tomtom-base-chart-0.0.2/tomtom-base-chart-0.0.2.tgz
     version: 0.0.2
-generated: "2024-11-07T14:15:07.729931401Z"
+generated: "2025-01-10T10:59:24.349166767Z"
