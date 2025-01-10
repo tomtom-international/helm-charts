@@ -345,6 +345,7 @@ func TestTemplate_ControllerDeployment_Defaults(t *testing.T) {
 
 	assert.Len(t, deployment.Spec.Template.Spec.NodeSelector, 0)
 	assert.Nil(t, deployment.Spec.Template.Spec.Affinity)
+	assert.Len(t, deployment.Spec.Template.Spec.TopologySpreadConstraints, 0)
 	assert.Len(t, deployment.Spec.Template.Spec.Tolerations, 0)
 
 	managerImage := "ghcr.io/actions/gha-runner-scale-set-controller:dev"
@@ -424,6 +425,9 @@ func TestTemplate_ControllerDeployment_Customize(t *testing.T) {
 			"tolerations[0].key":           "foo",
 			"affinity.nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution.nodeSelectorTerms[0].matchExpressions[0].key":      "foo",
 			"affinity.nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution.nodeSelectorTerms[0].matchExpressions[0].operator": "bar",
+			"topologySpreadConstraints[0].labelSelector.matchLabels.foo":                                                             "bar",
+			"topologySpreadConstraints[0].maxSkew":                                                                                   "1",
+			"topologySpreadConstraints[0].topologyKey":                                                                               "foo",
 			"priorityClassName":         "test-priority-class",
 			"flags.updateStrategy":      "eventual",
 			"flags.logLevel":            "info",
@@ -486,6 +490,11 @@ func TestTemplate_ControllerDeployment_Customize(t *testing.T) {
 	assert.NotNil(t, deployment.Spec.Template.Spec.Affinity.NodeAffinity)
 	assert.Equal(t, "foo", deployment.Spec.Template.Spec.Affinity.NodeAffinity.RequiredDuringSchedulingIgnoredDuringExecution.NodeSelectorTerms[0].MatchExpressions[0].Key)
 	assert.Equal(t, "bar", string(deployment.Spec.Template.Spec.Affinity.NodeAffinity.RequiredDuringSchedulingIgnoredDuringExecution.NodeSelectorTerms[0].MatchExpressions[0].Operator))
+
+	assert.Len(t, deployment.Spec.Template.Spec.TopologySpreadConstraints, 1)
+	assert.Equal(t, "bar", deployment.Spec.Template.Spec.TopologySpreadConstraints[0].LabelSelector.MatchLabels["foo"])
+	assert.Equal(t, int32(1), deployment.Spec.Template.Spec.TopologySpreadConstraints[0].MaxSkew)
+	assert.Equal(t, "foo", deployment.Spec.Template.Spec.TopologySpreadConstraints[0].TopologyKey)
 
 	assert.Len(t, deployment.Spec.Template.Spec.Tolerations, 1)
 	assert.Equal(t, "foo", deployment.Spec.Template.Spec.Tolerations[0].Key)
@@ -745,6 +754,7 @@ func TestTemplate_ControllerDeployment_WatchSingleNamespace(t *testing.T) {
 
 	assert.Len(t, deployment.Spec.Template.Spec.NodeSelector, 0)
 	assert.Nil(t, deployment.Spec.Template.Spec.Affinity)
+	assert.Len(t, deployment.Spec.Template.Spec.TopologySpreadConstraints, 0)
 	assert.Len(t, deployment.Spec.Template.Spec.Tolerations, 0)
 
 	managerImage := "ghcr.io/actions/gha-runner-scale-set-controller:dev"
@@ -1024,4 +1034,42 @@ func TestControllerDeployment_MetricsPorts(t *testing.T) {
 	for key, value := range metricsFlags {
 		assert.Equal(t, value.frequency, 1, fmt.Sprintf("frequency of %q is not 1", key))
 	}
+}
+
+func TestDeployment_excludeLabelPropagationPrefixes(t *testing.T) {
+	t.Parallel()
+
+	// Path to the helm chart we will test
+	helmChartPath, err := filepath.Abs("../../gha-runner-scale-set-controller")
+	require.NoError(t, err)
+
+	chartContent, err := os.ReadFile(filepath.Join(helmChartPath, "Chart.yaml"))
+	require.NoError(t, err)
+
+	chart := new(Chart)
+	err = yaml.Unmarshal(chartContent, chart)
+	require.NoError(t, err)
+
+	releaseName := "test-arc"
+	namespaceName := "test-" + strings.ToLower(random.UniqueId())
+
+	options := &helm.Options{
+		Logger: logger.Discard,
+		SetValues: map[string]string{
+			"flags.excludeLabelPropagationPrefixes[0]": "prefix.com/",
+			"flags.excludeLabelPropagationPrefixes[1]": "complete.io/label",
+		},
+		KubectlOptions: k8s.NewKubectlOptions("", "", namespaceName),
+	}
+
+	output := helm.RenderTemplate(t, options, helmChartPath, releaseName, []string{"templates/deployment.yaml"})
+
+	var deployment appsv1.Deployment
+	helm.UnmarshalK8SYaml(t, output, &deployment)
+
+	require.Len(t, deployment.Spec.Template.Spec.Containers, 1, "Expected one container")
+	container := deployment.Spec.Template.Spec.Containers[0]
+
+	assert.Contains(t, container.Args, "--exclude-label-propagation-prefix=prefix.com/")
+	assert.Contains(t, container.Args, "--exclude-label-propagation-prefix=complete.io/label")
 }
