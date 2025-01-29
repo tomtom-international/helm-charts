@@ -1,6 +1,6 @@
 {{- if and .Values.basicSettings.fqdn (eq .Values.advancedSettings.ingress.className "traefik") -}}
 {{- $ingressFullName := include "tomtom-base-chart.fullname" . -}}
-apiVersion: traefik.containo.us/v1alpha1
+apiVersion: traefik.io/v1alpha1
 kind: Middleware
 metadata:
   name: {{ $ingressFullName }}-ipallowlist
