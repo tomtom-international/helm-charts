@@ -1,0 +1,5 @@
+apiVersion: v2
+name: common-templates
+description: Common templates for TomTom Golden Helm Chart
+type: library
+version: 0.1.0

@@ -1,0 +1,61 @@
+{{- define "common-templates.imagePullSecrets" -}}
+  {{- /* TODO: add externalsecrets support */}}
+- name: {{ .Values.imagePullSecrets }}
+{{- end }}
+
+
+{{- define "common-templates.podSpec" -}}
+imagePullSecrets:
+  {{- include "common-templates.imagePullSecrets" . }}
+  {{- /* TODO: indentation for containers */}}
+  {{- $container := include "common-templates.container" . | fromYaml }}
+containers:
+- 
+  {{- toYaml $container | nindent 4 }}
+  {{- /* TODO: sidecar support */}}
+serviceAccountName: {{/* TODO: figure out */}}
+securityContext: {}  {{/* decide if we want to allow this (existing implementation allows it) */}}
+volumes:
+  {{- range .Values.configFiles }}
+- name: {{ .name }}
+  configMap:
+    name: {{ include "common-templates.configmap.file-cm-name" (merge (dict "name" .name) $) }}
+  {{- end }}
+  {{- range .Values.secretFiles }}
+- name: {{ .name }}
+  secret:
+    secretName: {{ include "common-templates.fullname" $ }}-{{ .name }}-file-es   {{/* TODO: make template */}}
+  {{- end }}
+  {{- /* TODO: check if customConfigFiles is needed */}}
+  {{- range .Values.customConfigFiles }}
+- name: {{ .name }}
+  configMap:
+    name: {{ .name }}
+    {{- if .items }}
+    items:
+      {{- range .items }}
+    - key: {{ .key }}
+      path: {{ .path }}
+      {{- end }}
+    {{- end }}
+  {{- end }}
+
+  {{- /* TODO: any way we can simplify this? */}}
+  {{- range .Values.persistentVolumes }}
+- name: {{ .name }}
+    {{- toYaml .claim | nindent 8 }}
+  {{- end }}
+
+  {{- with .Values.nodeSelector }}
+nodeSelector:
+    {{- toYaml . | nindent 8 }}
+  {{- end }}
+  {{- with .Values.affinity }}
+affinity:
+    {{- toYaml . | nindent 8 }}
+  {{- end }}
+  {{- with .Values.tolerations }}
+tolerations:
+    {{- toYaml . | nindent 8 }}
+  {{- end }}
+{{- end }}
