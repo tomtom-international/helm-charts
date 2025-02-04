@@ -26,7 +26,7 @@ spec:
       {{- toYaml . | nindent 6 }}
       {{- end }}
       {{- else }}
-      {{- if .Values.basicSettings.pullSecret }}
+      {{- if .Values.basicSettings.image.pullSecret }}
       imagePullSecrets:
       - name: {{ .Release.Name }}-imagepullsecret
       {{- end }}
