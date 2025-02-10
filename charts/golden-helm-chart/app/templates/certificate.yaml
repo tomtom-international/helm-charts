@@ -1,0 +1,5 @@
+{{- range $k, $v := .Values.certificates -}}
+{{- if not (eq $v nil) }}
+{{ include "common.render" (dict "type" "certificate" "name" $k "spec" $v "$" $) }}
+{{- end -}}
+{{- end -}}

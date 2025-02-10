@@ -1,0 +1,10 @@
+{{- define "common.poddisruptionbudget" -}}
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata: {{- include "common.metadata" . | nindent 2 }}
+{{- if not (eq .minAvailable nil) }}
+{{- $_ := unset . "maxUnavailable" }}
+{{- end }}
+spec: {{- include "common.to-yaml" . | nindent 2 }}
+{{- end }}

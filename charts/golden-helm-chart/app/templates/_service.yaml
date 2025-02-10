@@ -1,0 +1,31 @@
+{{- define "common.service" -}}
+---
+apiVersion: v1
+kind: Service
+metadata: {{- include "common.metadata" . | nindent 2 }}
+spec:
+  type: {{ .type }}
+  {{- if and .clusterIP (eq .type "ClusterIP") }}
+  clusterIP: {{ .clusterIP }}
+  {{- end }}
+  {{- if .sessionAffinity }}
+  sessionAffinity: {{ .sessionAffinity }}
+  {{- end }}
+  {{- if .sessionAffinityConfig }}
+  sessionAffinityConfig: {{ .sessionAffinityConfig | nindent 4 }}
+  {{- end }}
+  {{- if or (eq .type "LoadBalancer") (eq .type "NodePort") }}
+  externalTrafficPolicy: {{ .externalTrafficPolicy }}
+  {{- end }}
+  {{- if and (eq .type "LoadBalancer") (not (empty .loadBalancerSourceRanges)) }}
+  loadBalancerSourceRanges: {{- toYaml .loadBalancerSourceRanges | nindent 4 }}
+  {{- end }}
+  {{- if and (eq .type "LoadBalancer") (not (empty .loadBalancerIP)) }}
+  loadBalancerIP: {{ .loadBalancerIP }}
+  {{- end }}
+  {{- if and (eq .type "LoadBalancer") .loadBalancerClass }}
+  loadBalancerClass: {{ .loadBalancerClass }}
+  {{- end }}
+  ports: {{- toYaml .ports | nindent 4 }}
+  selector: {{- toYaml .selector | nindent 4 }}
+{{- end }}

@@ -1,0 +1,19 @@
+{{- define "common.deployment" -}}
+{{- $pod := mergeOverwrite (deepCopy .common.pod) .pod (dict "labels" .selector.matchLabels "common" .common) }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata: {{- include "common.metadata" . | nindent 2 }}
+spec:
+  {{- if or .replicas (eq .replicas 0.0) }}
+  replicas: {{ .replicas }}
+  {{- end }}
+  revisionHistoryLimit: {{ .revisionHistoryLimit }}
+  {{- if .strategy }}
+  strategy: {{- toYaml .strategy | nindent 4 }}
+  {{- end }}
+  selector: {{- toYaml .selector | nindent 4 }}
+  template:
+    metadata: {{- include "common.metadata" $pod | nindent 6 }}
+    spec: {{- include "common.pod-spec" $pod | nindent 6 }}
+{{- end -}}

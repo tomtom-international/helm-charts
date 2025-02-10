@@ -1,0 +1,60 @@
+{{- define "common.containers" -}}
+{{- $common := .common }}
+{{- $containers := .containers }}
+{{- range (keys $containers) | sortAlpha }}
+{{- with get $containers . }}
+{{- if . }}
+{{- with mergeOverwrite (deepCopy $common.container) . }}
+- {{- include "common.container-spec" . | nindent 2 }}
+{{- end }}
+{{- end }}
+{{- end }}
+{{- end }}
+{{- end }}
+
+{{- define "common.container-spec" -}}
+name: {{ .name }}
+image: "{{ .image }}"
+imagePullPolicy: {{ .imagePullPolicy }}
+{{- if .securityContext }}
+securityContext: {{- toYaml .securityContext | nindent 2 }}
+{{- end }}
+{{- if .env }}
+env:
+{{- $env := .env }}
+{{- range (keys $env) | sortAlpha }}
+- name: {{ . }}
+  value: "{{ get $env . }}"
+{{- end }}
+{{- end }}
+{{- if .envFrom }}
+envFrom: {{- toYaml .envFrom | nindent 2 }}
+{{- end }}
+{{- if .command }}
+command: {{- toYaml .command | nindent 2 }}
+{{- end }}
+{{- if .args }}
+args: {{- toYaml .args | nindent 2 }}
+{{- end }}
+{{- if .lifecycleHooks }}
+lifecycle: {{- toYaml .lifecycleHooks | nindent 2 }}
+{{- end }}
+{{- if .ports }}
+ports: {{- toYaml .ports | nindent 2 }}
+{{- end }}
+{{- if .livenessProbe }}
+livenessProbe: {{- toYaml .livenessProbe | nindent 2 }}
+{{- end }}
+{{- if .readinessProbe }}
+readinessProbe: {{- toYaml .readinessProbe | nindent 2 }}
+{{- end }}
+{{- if .startupProbe }}
+startupProbe: {{- toYaml .startupProbe | nindent 2 }}
+{{- end }}
+{{- if .resources }}
+resources: {{- toYaml .resources | nindent 2 }}
+{{- end }}
+{{- if .volumeMounts }}
+volumeMounts: {{- toYaml .volumeMounts | nindent 2 }}
+{{- end }}
+{{- end }}

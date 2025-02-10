@@ -1,0 +1,11 @@
+{{- define "common.horizontalpodautoscaler" -}}
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata: {{- include "common.metadata" . | nindent 2 }}
+spec:
+  scaleTargetRef: {{- toYaml .scaleTargetRef | nindent 4 }}
+  metrics: {{- toYaml .metrics | nindent 4 }}
+  minReplicas: {{ .minReplicas }}
+  maxReplicas: {{ .maxReplicas }}
+{{- end -}}

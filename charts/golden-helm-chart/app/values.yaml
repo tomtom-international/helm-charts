@@ -1,0 +1,170 @@
+---
+common:
+  labels: {}
+  annotations: {}
+
+  serviceAccount:
+    {}
+
+  secretStore:
+    {}
+
+  externalSecret:
+    refreshInterval: 1h
+    secretStoreRef:
+      kind: SecretStore
+    target:
+      template: {}
+      creationPolicy: Owner
+
+  configMap:
+    {}
+
+  persistentVolumeClaim:
+    {}
+
+  container:
+    image: busybox:latest
+    imagePullPolicy: IfNotPresent
+    securityContext:
+      seLinuxOptions: null
+      runAsUser: 1001
+      runAsGroup: 1001
+      runAsNonRoot: true
+      privileged: false
+      readOnlyRootFilesystem: true
+      allowPrivilegeEscalation: false
+      capabilities:
+        drop: ["ALL"]
+      seccompProfile:
+        type: "RuntimeDefault"
+    env: {}
+    command: []
+    args: []
+    lifecycleHooks: {}
+    ports: []
+    startupProbe: {}
+    readinessProbe: {}
+    livenessProbe: {}
+    resources: {}
+    volumeMounts: []
+
+  pod:
+    labels: {}
+    annotations: {}
+    serviceAccountName: default
+    automountServiceAccountToken: false
+    hostAliases: []
+    affinity: {}
+    hostNetwork: false
+    hostIPC: false
+    dnsPolicy: ""
+    dnsConfig: {}
+    priorityClassName: ""
+    nodeSelector: {}
+    tolerations: []
+    schedulerName: ""
+    securityContext:
+      fsGroupChangePolicy: Always
+      supplementalGroups: []
+      fsGroup: 1001
+      ## sysctl settings
+      ## Example:
+      ## sysctls:
+      ## - name: net.core.somaxconn
+      ##   value: "10000"
+      ##
+      sysctls: []
+    terminationGracePeriodSeconds: 30
+    restartPolicy: Always
+    initContainers: {}
+    containers: {}
+    volumes: []
+
+  cronJob:
+    concurrencyPolicy: Forbid
+    failedJobsHistoryLimit: 1
+    successfulJobsHistoryLimit: 1
+
+  deployment:
+    revisionHistoryLimit: 3
+    strategy:
+      type: RollingUpdate
+    selector:
+      matchLabels: {}
+    pod: {}
+    autoscaling:
+      enabled: false
+    pdb:
+      enabled: false
+
+  service:
+    labels: {}
+    annotations: {}
+    type: ClusterIP
+    clusterIP: ~
+    sessionAffinity: ~
+    sessionAffinityConfig: ~
+    externalTrafficPolicy: Cluster
+    loadBalancerSourceRanges: ~
+    loadBalancerIP: ~
+    loadBalancerClass: ~
+    ports: []
+    selector: {}
+
+  podDisruptionBudget:
+    maxUnavailable: 1
+    selector: {}
+
+  horizontalPodAutoscaler:
+    scaleTargetRef:
+      apiVersion: apps/v1
+      kind: Deployment
+    metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 75
+    minReplicas: 2
+    maxReplicas: 10
+
+  httpRoute:
+    parentRefs: []
+
+  ingress:
+    ingressClassName: istio
+    tls: []
+    rules: []
+
+  istioVirtualService:
+    hosts: []
+    gateways: []
+    http: []
+
+  istioGateway:
+    selector:
+      istio-gateway: gateway-internal
+    targetRefs: []
+
+  authorizationPolicy:
+    action: ALLOW
+    selector: {}
+    targetRefs: []
+
+  application:
+    helm: {}
+    syncPolicy:
+      automated: {}
+
+  certificate:
+    issuerRef:
+      name: hydrantid
+      kind: ClusterIssuer
+      group: cert-manager.io
+    usages:
+      - digital signature
+      - key encipherment
+
+  hooks: {}

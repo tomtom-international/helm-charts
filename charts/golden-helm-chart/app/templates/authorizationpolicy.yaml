@@ -1,0 +1,5 @@
+{{- range $k, $v := .Values.authorizationPolicies -}}
+{{- if not (eq $v nil) }}
+{{ include "common.render" (dict "type" "authorizationPolicy" "name" $k "spec" $v "$" $) }}
+{{- end -}}
+{{- end -}}

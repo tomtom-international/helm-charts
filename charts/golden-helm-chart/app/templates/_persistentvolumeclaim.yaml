@@ -1,0 +1,7 @@
+{{- define "common.persistentvolumeclaim" -}}
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata: {{- include "common.metadata" . | nindent 2 }}
+spec: {{- include "common.to-yaml" . | nindent 2 }}
+{{- end }}
