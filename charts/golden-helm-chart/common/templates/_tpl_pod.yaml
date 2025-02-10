@@ -36,9 +36,9 @@ terminationGracePeriodSeconds: {{ .terminationGracePeriodSeconds }}
 restartPolicy: {{ .restartPolicy }}
 enableServiceLinks: false
 {{- if .initContainers }}
-initContainers: {{- include "common.containers" (dict "containers" (concat .common.pod.initContainers .initContainers) "common" .common "Values" .Values) | default "[]" | nindent 2 }}
+initContainers: {{- include "common.containers" (dict "containers" (concat .common.pod.initContainers .initContainers) "common" .common) | default "[]" | nindent 2 }}
 {{- end }}
-containers: {{- include "common.containers" (dict "containers" (concat .common.pod.containers .containers) "common" .common "Values" .Values) | default "[]" | nindent 2 }}
+containers: {{- include "common.containers" (dict "containers" (concat .common.pod.containers .containers) "common" .common) | default "[]" | nindent 2 }}
 {{- if .volumes }}
 volumes: {{- toYaml .volumes | nindent 2 }}
 {{- end }}

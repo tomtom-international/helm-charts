@@ -1,0 +1,6 @@
+{{- range $k, $v := .Values.applications }}
+{{- if not (eq $v nil) }}
+---
+{{- include "common.application" (mergeOverwrite (deepCopy $.Values.common.application) $v (dict "name" $k "common" $.Values.common)) }}
+{{- end }}
+{{- end }}
