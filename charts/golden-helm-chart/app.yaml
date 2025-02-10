@@ -1,5 +1,5 @@
 ---
-appName: xxx
+# appName: xxx
 
 common:
   labels: # {}

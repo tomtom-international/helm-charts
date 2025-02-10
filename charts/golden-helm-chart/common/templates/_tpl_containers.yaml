@@ -1,10 +1,9 @@
 {{- define "common.containers" -}}
 {{- $common := .common }}
-{{- $values := .Values }}
 {{- range .containers }}
 {{- with mergeOverwrite $common.container . }}
 - name: {{ .name }}
-  image: {{ tpl .image (dict "Values" $values "Template" (dict "BasePath" "<inline>" "Name" "<noname>")) }}
+  image: {{ .image }}
   imagePullPolicy: {{ .imagePullPolicy | quote }}
   {{- if .securityContext.enabled }}
   securityContext: {{- toYaml (omit .securityContext "enabled") | nindent 4 }}

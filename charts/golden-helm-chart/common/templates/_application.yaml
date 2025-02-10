@@ -1,0 +1,19 @@
+{{- define "common.application" -}}
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata: {{- include "common.metadata" . | nindent 2 }}
+spec:
+  project: {{ .project }}
+  source:
+    repoURL: {{ .repoUrl }}
+    targetRevision: {{ .targetRevision }}
+    path: {{ .path }}
+    helm: {{- toYaml .helm | nindent 6 }}
+  destination:
+    server: https://kubernetes.default.svc
+    {{/* TODO
+    # namespace: {{ coalesce .namespace $.Values.global.namespace }}
+    */}}
+  syncPolicy: {{- toYaml .syncPolicy | nindent 4 }}
+{{- end }}

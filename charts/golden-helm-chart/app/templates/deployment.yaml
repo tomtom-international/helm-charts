@@ -1,5 +1,5 @@
 {{- range $k, $v := .Values.deployments }}
 {{- if $v }}
-{{- include "common.deployment" (mergeOverwrite (deepCopy $.Values.common.deployment) $v (dict "name" (tpl $k (dict "Values" $.Values "Template" (dict "BasePath" "<inline>" "Name" "<noname>"))) "common" $.Values.common "Values" $.Values)) }}
+{{- tpl (include "common.deployment" (mergeOverwrite (deepCopy $.Values.common.deployment) $v (dict "name" $k "common" $.Values.common "Values" $.Values))) (merge (dict "Template" (dict "BasePath" "<inline>" "Name" "<noname>")) $) }}
 {{- end }}
 {{- end }}
