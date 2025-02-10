@@ -1,0 +1,19 @@
+{{- if eq .Values.type "CronJob" }}
+{{- with .Values }}
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: {{ $.Release.Name }}
+  {{- include "common.metadata" (merge dict . (dict "Values" .Values)) | nindent 2 }}
+spec:
+  concurrencyPolicy: Forbid
+  failedJobsHistoryLimit: 1
+  successfulJobsHistoryLimit: 1
+  schedule: "{{ .schedule }}"
+  jobTemplate:
+    spec:
+      template:
+        spec: {{- include "common.pod" .pod | nindent 10 }}
+{{- end }}
+{{- end }}

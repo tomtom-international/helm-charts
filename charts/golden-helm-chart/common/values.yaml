@@ -1,0 +1,103 @@
+---
+# appName: app
+labels: {}
+annotations: {}
+
+pod:
+  labels: {}
+  annotations: {}
+  serviceAccount:
+    create: false
+    name: default
+  automountServiceAccountToken: false
+  hostAliases: []
+  affinity: {}
+  hostNetwork: false
+  hostIPC: false
+  dnsPolicy: ""
+  dnsConfig: {}
+  priorityClassName: ""
+  nodeSelector: {}
+  tolerations: []
+  schedulerName: ""
+  securityContext:
+    enabled: true
+    fsGroupChangePolicy: Always
+    supplementalGroups: []
+    fsGroup: 1001
+    ## sysctl settings
+    ## Example:
+    ## sysctls:
+    ## - name: net.core.somaxconn
+    ##   value: "10000"
+    ##
+    sysctls: []
+  terminationGracePeriodSeconds: 30
+  restartPolicy: Always
+  initContainers: []
+  containers: []
+  # - name: a1
+  #   image: a1:latest
+
+  volumes: []
+  # extras:
+  #   volumes: []
+  #   # configMaps: {}
+
+container:
+  image: busybox:latest
+  imagePullPolicy: IfNotPresent
+  securityContext:
+    enabled: true
+    seLinuxOptions: null
+    runAsUser: 1001
+    runAsGroup: 1001
+    runAsNonRoot: true
+    privileged: false
+    readOnlyRootFilesystem: true
+    allowPrivilegeEscalation: false
+    capabilities:
+      drop: ["ALL"]
+    seccompProfile:
+      type: "RuntimeDefault"
+  env: []
+  command: []
+  args: []
+  lifecycleHooks: {}
+  ports: []
+  startupProbe: {}
+  readinessProbe: {}
+  livenessProbe: {}
+  resources: {}
+  volumeMounts: []
+  # extras:
+  #   volumeMounts: []
+
+deployment:
+  replicaCount: 1
+  revisionHistoryLimit: 10
+  updateStrategy:
+    type: RollingUpdate
+    # rollingUpdate: {}
+  pod:
+    selectorLabels: {}
+  autoscaling:
+    enabled: false
+
+service:
+  labels: {}
+  annotations: {}
+  type: ClusterIP
+  clusterIP: ~
+  sessionAffinity: ~
+  sessionAffinityConfig: ~
+  externalTrafficPolicy: Cluster
+  loadBalancerSourceRanges: ~
+  loadBalancerIP: ~
+  loadBalancerClass: ~
+  ports: []
+  selector: {}
+
+certs: []
+
+hooks: {}

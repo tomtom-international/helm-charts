@@ -1,0 +1,5 @@
+{{- range $k, $v := .Values.configMaps }}
+{{- if $v }}
+{{- include "common.configmap" (mergeOverwrite (dict "name" $k "data" $v "common" $.Values.common)) }}
+{{- end }}
+{{- end }}

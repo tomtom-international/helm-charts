@@ -1,0 +1,20 @@
+{{- define "common.deployment" -}}
+{{- $pod := mergeOverwrite (omit .common.pod "containers" "initContainers") .pod (dict "labels" .pod.selectorLabels "common" .common "Values" .Values) }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata: {{- include "common.metadata" (merge dict . (dict "Values" .Values)) | nindent 2 }}
+spec:
+  {{- if not .autoscaling.enabled }}
+  replicas: {{ .replicaCount }}
+  {{- end }}
+  revisionHistoryLimit: {{ .revisionHistoryLimit }}
+  {{- if .updateStrategy }}
+  strategy: {{- toYaml .updateStrategy | nindent 4 }}
+  {{- end }}
+  selector:
+    matchLabels: {{- toYaml $pod.selectorLabels | nindent 6 }}
+  template:
+    metadata: {{- include "common.metadata" (merge $pod (dict "Values" .Values)) | nindent 6 }}
+    spec: {{- include "common.pod" $pod | nindent 6 }}
+{{- end }}

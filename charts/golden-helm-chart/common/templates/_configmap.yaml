@@ -1,0 +1,7 @@
+{{- define "common.configmap" }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata: {{- include "common.metadata" (merge dict . (dict "Values" .Values)) | nindent 2 }}
+data: {{- toYaml .data | nindent 2 }}
+{{- end }}
