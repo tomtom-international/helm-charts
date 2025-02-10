@@ -1,0 +1,24 @@
+{{- range .Values.certs }}
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: {{ .name }}
+spec:
+  secretName: {{ .name }}-cert
+  commonName: {{ .cn }}
+  dnsNames:
+    {{- range .sans }}
+    - "{{ . }}"
+    {{- end }}
+  usages:
+    - digital signature
+    - key encipherment
+    - server auth
+  duration: 8760h # 365d
+  renewBefore: 720h # 30d
+  issuerRef:
+    name: {{ .issuer | default "ca" }}
+    kind: ClusterIssuer
+    group: cert-manager.io
+{{- end }}

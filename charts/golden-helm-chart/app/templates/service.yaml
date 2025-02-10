@@ -1,0 +1,5 @@
+{{- range $k, $v := .Values.services }}
+{{- if $v }}
+{{- include "common.service" (mergeOverwrite (deepCopy $.Values.common.service) $v (dict "name" (tpl $k (dict "Values" $.Values "Template" (dict "BasePath" "<inline>" "Name" "<noname>"))) "common" $.Values.common)) }}
+{{- end }}
+{{- end }}
