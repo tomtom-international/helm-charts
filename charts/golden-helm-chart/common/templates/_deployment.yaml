@@ -17,4 +17,4 @@ spec:
   template:
     metadata: {{- include "common.metadata" $pod | nindent 6 }}
     spec: {{- include "common.pod" $pod | nindent 6 }}
-{{- end }}
+{{- end -}}

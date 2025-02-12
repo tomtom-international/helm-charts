@@ -1,5 +1,5 @@
 ---
-# appName: app
+
 labels: {}
 annotations: {}
 
@@ -97,6 +97,38 @@ service:
   loadBalancerClass: ~
   ports: []
   selector: {}
+
+hpa:
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 75
+  minReplicas: 2
+  maxReplicas: 10
+
+httpRoute:
+  gateway: gateway-internal
+
+ingress:
+  ingressClassName: istio
+  tls: []
+  rules: []
+
+gateway:
+  selector:
+    istio: gateway-internal
+  targetRefs: []
+
+authorizationPolicy:
+  action: ALLOW
+  selector: {}
+  targetRefs: []
+
+application:
+  helm: {}
 
 certs: []
 

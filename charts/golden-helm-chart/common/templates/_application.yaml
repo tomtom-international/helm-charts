@@ -1,19 +1,29 @@
+{{- define "common.application-annotations" -}}
+annotations:
+  argocd-image-updater.argoproj.io/image-list: {{ .name }}={{ .imageUpdater.image.repository }}/{{ .name }}
+  argocd-image-updater.argoproj.io/{{ .name }}.pull-secret: pullsecret:{{ .namespace }}/image-pull-secret
+  argocd-image-updater.argoproj.io/{{ .name }}.helm.image-name: image.repository
+  argocd-image-updater.argoproj.io/{{ .name }}.helm.image-tag: image.tag
+  argocd-image-updater.argoproj.io/{{ .name }}.update-strategy: newest-build
+  argocd-image-updater.argoproj.io/{{ .name }}.ignore-tags: latest, newest-build
+{{- end }}
+
 {{- define "common.application" -}}
 ---
 apiVersion: argoproj.io/v1alpha1
 kind: Application
-metadata: {{- include "common.metadata" . | nindent 2 }}
+metadata: {{- include "common.metadata" (mergeOverwrite (fromYaml (include "common.application-annotations" .)) .) | nindent 2 }}
 spec:
   project: {{ .project }}
   source:
     repoURL: {{ .repoUrl }}
     targetRevision: {{ .targetRevision }}
     path: {{ .path }}
-    helm: {{- toYaml .helm | nindent 6 }}
+    helm: {{- toYaml (mergeOverwrite (dict "releaseName" .name) .helm) | nindent 6 }}
   destination:
     server: https://kubernetes.default.svc
     {{/* TODO
     # namespace: {{ coalesce .namespace $.Values.global.namespace }}
     */}}
   syncPolicy: {{- toYaml .syncPolicy | nindent 4 }}
-{{- end }}
+{{- end -}}
