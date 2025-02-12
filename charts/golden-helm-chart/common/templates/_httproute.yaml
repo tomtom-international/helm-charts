@@ -1,0 +1,14 @@
+{{- define "common.httproute" -}}
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata: {{- include "common.metadata" . | nindent 2 }}
+spec:
+  parentRefs:
+  - group: gateway.networking.k8s.io
+    kind: Gateway
+    name: {{ .gateway }}
+    namespace: istio-ingress
+  hostnames: {{- toYaml .hostnames | nindent 4 }}
+  rules: {{- toYaml .rules | nindent 4 }}
+{{- end -}}

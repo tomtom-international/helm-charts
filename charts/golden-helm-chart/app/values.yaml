@@ -1,7 +1,8 @@
 ---
 deployments: {}
 services: {}
-configMaps: {}
+httpRoutes: {}
+# configMaps: {}
   # c0:
   #   c0-f2.txt: |
   #     file c1-f2

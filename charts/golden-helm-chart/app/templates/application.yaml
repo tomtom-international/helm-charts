@@ -1,6 +1,5 @@
-{{- range $k, $v := .Values.applications }}
+{{- range $k, $v := .Values.applications -}}
 {{- if not (eq $v nil) }}
----
-{{- include "common.application" (mergeOverwrite (deepCopy $.Values.common.application) $v (dict "name" $k "common" $.Values.common)) }}
-{{- end }}
-{{- end }}
+{{ tpl (include "common.application" (mergeOverwrite (deepCopy $.Values.common.application) $v (dict "name" $k "common" $.Values.common "Values" $.Values))) (merge (dict "name" $k "Template" (dict "BasePath" "<inline>" "Name" "<noname>")) $) }}
+{{- end -}}
+{{- end -}}
