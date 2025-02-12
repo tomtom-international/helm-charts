@@ -22,8 +22,6 @@ spec:
     helm: {{- toYaml (mergeOverwrite (dict "releaseName" .name) .helm) | nindent 6 }}
   destination:
     server: https://kubernetes.default.svc
-    {{/* TODO
-    # namespace: {{ coalesce .namespace $.Values.global.namespace }}
-    */}}
+    namespace: {{ .namespace }}
   syncPolicy: {{- toYaml .syncPolicy | nindent 4 }}
 {{- end -}}
