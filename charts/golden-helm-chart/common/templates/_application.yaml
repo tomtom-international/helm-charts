@@ -18,7 +18,7 @@ spec:
   sources:
   {{- $name := .name -}}
   {{- range $k, $v :=.sources }}
-  - {{- toYaml (mergeOverwrite (dict "helm" (dict "releaseName" $name)) $v) | nindent 4 }}
+  - {{- toYaml $v | nindent 4 }}
   {{- end }}
   destination:
     server: https://kubernetes.default.svc
