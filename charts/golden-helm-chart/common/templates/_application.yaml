@@ -1,6 +1,6 @@
 {{- define "common.application-annotations" -}}
 annotations:
-  argocd-image-updater.argoproj.io/image-list: {{ .name }}={{ .imageUpdater.image.repository }}/{{ .name }}
+  argocd-image-updater.argoproj.io/image-list: {{ .name }}={{ .imageUpdater.image.repository }}
   argocd-image-updater.argoproj.io/{{ .name }}.pull-secret: pullsecret:{{ .namespace }}/image-pull-secret
   argocd-image-updater.argoproj.io/{{ .name }}.helm.image-name: image.repository
   argocd-image-updater.argoproj.io/{{ .name }}.helm.image-tag: image.tag
