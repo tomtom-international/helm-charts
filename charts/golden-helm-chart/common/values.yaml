@@ -3,6 +3,16 @@
 labels: {}
 annotations: {}
 
+serviceAccount:
+  name: default
+
+secretStore:
+  {}
+
+externalSecret:
+  target:
+    template: {}
+
 pod:
   labels: {}
   annotations: {}
