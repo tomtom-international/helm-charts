@@ -15,11 +15,11 @@ kind: Application
 metadata: {{- include "common.metadata" (mergeOverwrite (fromYaml (include "common.application-annotations" .)) .) | nindent 2 }}
 spec:
   project: {{ .project }}
-  source:
-    repoURL: {{ .repoUrl }}
-    targetRevision: {{ .targetRevision }}
-    path: {{ .path }}
-    helm: {{- toYaml (mergeOverwrite (dict "releaseName" .name) .helm) | nindent 6 }}
+  sources:
+  {{- $name := .name -}}
+  {{- range $k, $v :=.sources }}
+  - {{- toYaml (mergeOverwrite (dict "helm" (dict "releaseName" $name)) $v) | nindent 4 }}
+  {{- end }}
   destination:
     server: https://kubernetes.default.svc
     namespace: {{ .namespace }}
