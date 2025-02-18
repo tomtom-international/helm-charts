@@ -1,7 +1,8 @@
 ---
-deployments: {}
-services: {}
-httpRoutes: {}
+# deployments: {}
+# services: {}
+# virtualServices: {}
+# httpRoutes: {}
 # configMaps: {}
   # c0:
   #   c0-f2.txt: |
