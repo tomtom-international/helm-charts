@@ -1,4 +1,4 @@
-{{- define "common.pod" -}}
+{{- define "common.pod-spec" -}}
 serviceAccountName: {{ .serviceAccount.name }}
 automountServiceAccountToken: {{ .automountServiceAccountToken }}
 {{- if .hostAliases }}
