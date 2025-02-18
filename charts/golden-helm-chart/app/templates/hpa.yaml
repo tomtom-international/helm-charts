@@ -1,12 +1,13 @@
 {{- range $k, $v := .Values.deployments -}}
 {{- $deployment := mergeOverwrite (deepCopy $.Values.common.deployment) $v (dict "name" $k "common" $.Values.common "Values" $.Values) -}}
 {{- if and (not (eq $v nil)) ($deployment.autoscaling.enabled) }}
-{{ tpl (include "common.hpa" (mergeOverwrite (deepCopy $.Values.common.hpa) $deployment.autoscaling (dict "name" $k "target" (dict "type" "Deployment" "name" $k) "common" $.Values.common "Values" $.Values))) (merge (dict "Template" (dict "BasePath" "<inline>" "Name" "<noname>")) $) }}
+{{- $hpa := (mergeOverwrite (deepCopy $deployment.autoscaling) (dict "target" (dict "type" "Deployment" "name" $k))) }}
+{{ include "common.render" (dict "type" "hpa" "name" $k "spec" $hpa "$" $) }}
 {{- end -}}
 {{- end -}}
 
 {{- range $k, $v := .Values.hpas -}}
 {{- if not (eq $v nil) }}
-{{ include "common.hpa" (mergeOverwrite (deepCopy $.Values.common.hpa) $v (dict "name" $k "common" $.Values.common "Values" $.Values)) }}
+{{ include "common.render" (dict "type" "hpa" "name" $k "spec" $v "$" $) }}
 {{- end -}}
 {{- end -}}

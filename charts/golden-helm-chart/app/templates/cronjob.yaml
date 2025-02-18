@@ -1,5 +1,5 @@
 {{- range $k, $v := .Values.cronjobs -}}
 {{- if not (eq $v nil) }}
-{{ tpl (include "common.cronjob" (mergeOverwrite (deepCopy $.Values.common.cronjob) $v (dict "name" $k "common" $.Values.common "Values" $.Values))) (merge (dict "Template" (dict "BasePath" "<inline>" "Name" "<noname>")) $) }}
+{{ include "common.render" (dict "type" "cronJob" "name" $k "spec" $v "$" $) }}
 {{- end -}}
 {{- end -}}
