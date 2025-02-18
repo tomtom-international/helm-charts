@@ -1,0 +1,5 @@
+{{- range $k, $v := .Values.pdbs }}
+{{- if not (eq $v nil) }}
+{{ include "common.render" (dict "type" "pdb" "name" $k "spec" $v "$" $) }}
+{{- end -}}
+{{- end -}}
