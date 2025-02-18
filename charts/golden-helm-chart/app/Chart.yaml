@@ -3,7 +3,7 @@ name: app
 description: Common templates for TomTom Golden Helm Chart
 type: application
 version: 0.1.0
-dependencies:
-  - name: common
-    version: 0.1.0
-    repository: file://../common
+# dependencies:
+#   - name: common
+#     version: 0.1.0
+#     repository: file://../common
