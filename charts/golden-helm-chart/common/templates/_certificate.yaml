@@ -1,24 +1,17 @@
-{{- range .Values.certs }}
+{{- define "common.certificate" -}}
 ---
 apiVersion: cert-manager.io/v1
 kind: Certificate
-metadata:
-  name: {{ .name }}
+metadata: {{- include "common.metadata" . | nindent 2 }}
 spec:
-  secretName: {{ .name }}-cert
-  commonName: {{ .cn }}
-  dnsNames:
-    {{- range .sans }}
-    - "{{ . }}"
-    {{- end }}
+  secretName: {{ .name }}
+  commonName: {{ .commonName }}
+  dnsNames: {{- toYaml .dnsNames | nindent 4 }}
   usages:
     - digital signature
     - key encipherment
     - server auth
-  duration: 8760h # 365d
-  renewBefore: 720h # 30d
-  issuerRef:
-    name: {{ .issuer | default "ca" }}
-    kind: ClusterIssuer
-    group: cert-manager.io
+  duration: {{ .duration }}
+  renewBefore: {{ .renewBefore }}
+  issuerRef: {{- toYaml .issuerRef | nindent 4 }}
 {{- end }}

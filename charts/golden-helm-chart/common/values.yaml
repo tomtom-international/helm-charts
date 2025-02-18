@@ -145,6 +145,13 @@ authorizationPolicy:
 application:
   helm: {}
 
-certs: []
+certificate:
+  dnsNames: []
+  duration: 8760h # 365d
+  renewBefore: 720h # 30d
+  issuerRef:
+    name: ca
+    kind: ClusterIssuer
+    group: cert-manager.io
 
 hooks: {}
