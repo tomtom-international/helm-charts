@@ -1,19 +1,15 @@
-{{- if eq .Values.type "CronJob" }}
-{{- with .Values }}
+{{- define "common.cronjob" -}}
 ---
 apiVersion: batch/v1
 kind: CronJob
-metadata:
-  name: {{ $.Release.Name }}
-  {{- include "common.metadata" . | nindent 2 }}
+metadata: {{- include "common.metadata" . | nindent 2 }}
 spec:
-  concurrencyPolicy: Forbid
-  failedJobsHistoryLimit: 1
-  successfulJobsHistoryLimit: 1
+  concurrencyPolicy: {{ .concurrencyPolicy }}
+  failedJobsHistoryLimit: {{ .failedJobsHistoryLimit }}
+  successfulJobsHistoryLimit: {{ .successfulJobsHistoryLimit }}
   schedule: "{{ .schedule }}"
   jobTemplate:
     spec:
       template:
-        spec: {{- include "common.pod" .pod | nindent 10 }}
-{{- end }}
+        spec: {{- include "common.pod-spec" .pod | nindent 10 }}
 {{- end }}

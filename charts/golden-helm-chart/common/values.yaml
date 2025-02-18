@@ -13,6 +13,35 @@ externalSecret:
   target:
     template: {}
 
+container:
+  image: busybox:latest
+  imagePullPolicy: IfNotPresent
+  securityContext:
+    enabled: true
+    seLinuxOptions: null
+    runAsUser: 1001
+    runAsGroup: 1001
+    runAsNonRoot: true
+    privileged: false
+    readOnlyRootFilesystem: true
+    allowPrivilegeEscalation: false
+    capabilities:
+      drop: ["ALL"]
+    seccompProfile:
+      type: "RuntimeDefault"
+  env: []
+  command: []
+  args: []
+  lifecycleHooks: {}
+  ports: []
+  startupProbe: {}
+  readinessProbe: {}
+  livenessProbe: {}
+  resources: {}
+  volumeMounts: []
+  # extras:
+  #   volumeMounts: []
+
 pod:
   labels: {}
   annotations: {}
@@ -54,34 +83,10 @@ pod:
   #   volumes: []
   #   # configMaps: {}
 
-container:
-  image: busybox:latest
-  imagePullPolicy: IfNotPresent
-  securityContext:
-    enabled: true
-    seLinuxOptions: null
-    runAsUser: 1001
-    runAsGroup: 1001
-    runAsNonRoot: true
-    privileged: false
-    readOnlyRootFilesystem: true
-    allowPrivilegeEscalation: false
-    capabilities:
-      drop: ["ALL"]
-    seccompProfile:
-      type: "RuntimeDefault"
-  env: []
-  command: []
-  args: []
-  lifecycleHooks: {}
-  ports: []
-  startupProbe: {}
-  readinessProbe: {}
-  livenessProbe: {}
-  resources: {}
-  volumeMounts: []
-  # extras:
-  #   volumeMounts: []
+cronjob:
+  concurrencyPolicy: Forbid
+  failedJobsHistoryLimit: 1
+  successfulJobsHistoryLimit: 1
 
 deployment:
   replicaCount: 1

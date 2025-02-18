@@ -1,11 +1,7 @@
-{{- if eq .Values.type "Pod" }}
-{{- with .Values.pod }}
+{{- define "common.pod" }}
 ---
 apiVersion: v1
 kind: Pod
-metadata:
-  name: {{ $.Release.Name }}
-  {{- include "common.metadata" . | nindent 2 }}
-spec: {{- include "common.pod" . | nindent 2 }}
-{{- end }}
+metadata: {{- include "common.metadata" . | nindent 2 }}
+spec: {{- include "common.pod-spec" . | nindent 2 }}
 {{- end }}

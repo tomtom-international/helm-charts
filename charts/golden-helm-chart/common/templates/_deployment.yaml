@@ -16,5 +16,5 @@ spec:
     matchLabels: {{- toYaml $pod.selectorLabels | nindent 6 }}
   template:
     metadata: {{- include "common.metadata" $pod | nindent 6 }}
-    spec: {{- include "common.pod" $pod | nindent 6 }}
+    spec: {{- include "common.pod-spec" $pod | nindent 6 }}
 {{- end -}}
