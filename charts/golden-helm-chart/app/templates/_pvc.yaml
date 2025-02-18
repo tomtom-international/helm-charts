@@ -1,8 +1,7 @@
-{{- range $k, $v := .Values.persistentVolumes }}
+{{- define "common.pvc" -}}
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
-metadata:
-  name: {{ $k }}
-spec: {{ $v | toYaml | nindent 2 }}
+metadata: {{- include "common.metadata" . | nindent 2 }}
+spec: {{- include "common.to-yaml" . | nindent 2 }}
 {{- end }}

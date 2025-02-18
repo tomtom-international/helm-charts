@@ -1,5 +1,5 @@
 {{- range $k, $v := .Values.certificates -}}
 {{- if not (eq $v nil) }}
-{{ tpl (include "common.certificate" (mergeOverwrite (deepCopy $.Values.common.certificate) $v (dict "name" $k "common" $.Values.common "Values" $.Values))) (merge (dict "Template" (dict "BasePath" "<inline>" "Name" "<noname>")) $) }}
+{{ include "common.render" (dict "type" "certificate" "name" $k "spec" $v "$" $) }}
 {{- end -}}
 {{- end -}}

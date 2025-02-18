@@ -13,6 +13,12 @@ common:
     target:
       template: {}
 
+  configMap:
+    {}
+
+  pvc:
+    {}
+
   container:
     image: busybox:latest
     imagePullPolicy: IfNotPresent
@@ -75,7 +81,7 @@ common:
     containers: []
     volumes: []
 
-  cronjob:
+  cronJob:
     concurrencyPolicy: Forbid
     failedJobsHistoryLimit: 1
     successfulJobsHistoryLimit: 1
