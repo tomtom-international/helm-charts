@@ -1,23 +1,24 @@
 {{- define "common.application-annotations" -}}
 annotations:
-  argocd-image-updater.argoproj.io/image-list: {{ .name }}={{ .imageUpdater.image.repository }}
-  argocd-image-updater.argoproj.io/{{ .name }}.pull-secret: pullsecret:{{ .namespace }}/image-pull-secret
-  argocd-image-updater.argoproj.io/{{ .name }}.helm.image-name: image.repository
-  argocd-image-updater.argoproj.io/{{ .name }}.helm.image-tag: image.tag
-  argocd-image-updater.argoproj.io/{{ .name }}.update-strategy: newest-build
-  argocd-image-updater.argoproj.io/{{ .name }}.ignore-tags: latest, newest-build
+  {{- $imageUpdater := . }}
+  argocd-image-updater.argoproj.io/image-list: "{{ range $i, $k := keys . }}{{ if $i }}, {{ end }}{{ $k }}={{ (get $imageUpdater $k).image }}{{ end }}"
+  {{- range $k, $v := . }}
+  {{- range $k2, $v2 := omit $v "image" }}
+  argocd-image-updater.argoproj.io/{{ $k }}.{{ $k2 }}: {{ $v2 }}
+  {{- end }}
+  {{- end }}
 {{- end }}
 
 {{- define "common.application" -}}
 ---
 apiVersion: argoproj.io/v1alpha1
 kind: Application
-metadata: {{- include "common.metadata" (mergeOverwrite (fromYaml (include "common.application-annotations" .)) .) | nindent 2 }}
+metadata: {{- include "common.metadata" (mergeOverwrite (fromYaml (include "common.application-annotations" .imageUpdater)) .) | nindent 2 }}
 spec:
   project: {{ .project }}
   sources:
   {{- $name := .name -}}
-  {{- range $k, $v :=.sources }}
+  {{- range $k, $v := .sources }}
   - {{- toYaml $v | nindent 4 }}
   {{- end }}
   destination:
