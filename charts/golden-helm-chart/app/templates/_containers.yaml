@@ -3,7 +3,7 @@
 {{- range .containers }}
 {{- with mergeOverwrite $common.container . }}
 - name: {{ .name }}
-  image: {{ .image }}
+  image: "{{ .image }}"
   imagePullPolicy: {{ .imagePullPolicy | quote }}
   {{- if .securityContext.enabled }}
   securityContext: {{- toYaml (omit .securityContext "enabled") | nindent 4 }}
