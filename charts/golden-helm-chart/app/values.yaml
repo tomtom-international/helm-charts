@@ -151,6 +151,8 @@ common:
 
   application:
     helm: {}
+    syncPolicy:
+      automated: {}
 
   certificate:
     dnsNames: []
