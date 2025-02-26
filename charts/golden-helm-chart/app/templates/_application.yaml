@@ -17,12 +17,20 @@ metadata: {{- include "common.metadata" (mergeOverwrite (fromYaml (include "comm
 spec:
   project: {{ .project }}
   sources:
-  {{- $name := .name -}}
   {{- range $k, $v := .sources }}
   - {{- toYaml $v | nindent 4 }}
   {{- end }}
   destination:
     server: https://kubernetes.default.svc
     namespace: {{ .namespace }}
-  syncPolicy: {{- toYaml .syncPolicy | nindent 4 }}
+  syncPolicy:
+    automated:
+      {{- if or (empty .syncPolicy.automated) (and (not .syncPolicy.automated.prune) (not .syncPolicy.automated.selfHeal) (not .syncPolicy.automated.allowEmpty)) }}
+      {}
+      {{- else }}
+      {{- toYaml .syncPolicy.automated | nindent 6 }}
+      {{- end }}
+    {{- if not (empty (omit .syncPolicy "automated")) }}
+    {{- toYaml (omit .syncPolicy "automated") | nindent 4 }}
+    {{- end }}
 {{- end -}}
