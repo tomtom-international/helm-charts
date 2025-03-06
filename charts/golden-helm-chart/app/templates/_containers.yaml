@@ -11,6 +11,9 @@
   {{- if .env }}
   env: {{- toYaml .env | nindent 4 }}
   {{- end }}
+  {{- if .envFrom }}
+  envFrom: {{- toYaml .envFrom | nindent 4 }}
+  {{- end }}
   {{- if .command }}
   command: {{- toYaml .command | nindent 4 }}
   {{- end }}
