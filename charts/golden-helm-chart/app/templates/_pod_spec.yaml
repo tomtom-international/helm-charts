@@ -1,5 +1,5 @@
 {{- define "common.pod-spec" -}}
-serviceAccountName: {{ .serviceAccount.name }}
+serviceAccountName: {{ .serviceAccountName }}
 automountServiceAccountToken: {{ .automountServiceAccountToken }}
 {{- if .hostAliases }}
 hostAliases: {{- toYaml .hostAliases | nindent 2 }}
@@ -26,6 +26,9 @@ tolerations: {{- toYaml .tolerations | nindent 2 }}
 {{- end }}
 {{- if .schedulerName }}
 schedulerName: {{ .schedulerName | quote }}
+{{- end }}
+{{- if .imagePullSecrets }}
+imagePullSecrets: {{- toYaml .imagePullSecrets | nindent 2 }}
 {{- end }}
 {{- if .securityContext.enabled }}
 securityContext: {{- toYaml (omit .securityContext "enabled") | nindent 2 }}

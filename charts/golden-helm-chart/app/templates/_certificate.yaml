@@ -5,13 +5,12 @@ kind: Certificate
 metadata: {{- include "common.metadata" . | nindent 2 }}
 spec:
   secretName: {{ .name }}
+  {{- if .commonName }}
   commonName: {{ .commonName }}
+  {{- end }}
   dnsNames: {{- toYaml .dnsNames | nindent 4 }}
   usages:
     - digital signature
     - key encipherment
-    - server auth
-  duration: {{ .duration }}
-  renewBefore: {{ .renewBefore }}
   issuerRef: {{- toYaml .issuerRef | nindent 4 }}
 {{- end }}

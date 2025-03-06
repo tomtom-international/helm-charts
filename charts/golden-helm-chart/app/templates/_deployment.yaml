@@ -9,8 +9,8 @@ spec:
   replicas: {{ .replicaCount }}
   {{- end }}
   revisionHistoryLimit: {{ .revisionHistoryLimit }}
-  {{- if .updateStrategy }}
-  strategy: {{- toYaml .updateStrategy | nindent 4 }}
+  {{- if .strategy }}
+  strategy: {{- toYaml .strategy | nindent 4 }}
   {{- end }}
   selector: {{- toYaml $pod.selector | nindent 4 }}
   template:
