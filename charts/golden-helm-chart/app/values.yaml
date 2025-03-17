@@ -110,7 +110,7 @@ common:
     ports: []
     selector: {}
 
-  pdb:
+  podDisruptionBudget:
     maxUnavailable: 1
     selector: {}
 

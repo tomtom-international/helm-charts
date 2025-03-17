@@ -1,4 +1,4 @@
-{{- define "common.pdb" -}}
+{{- define "common.poddisruptionbudget" -}}
 ---
 apiVersion: policy/v1
 kind: PodDisruptionBudget
