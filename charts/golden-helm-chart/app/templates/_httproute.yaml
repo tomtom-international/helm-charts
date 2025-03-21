@@ -5,10 +5,13 @@ kind: HTTPRoute
 metadata: {{- include "common.metadata" . | nindent 2 }}
 spec:
   parentRefs:
+  {{- range .parentRefs }}
   - group: gateway.networking.k8s.io
     kind: Gateway
-    name: {{ .gateway }}
+    name: {{ .name }}
     namespace: istio-ingress
+    port: {{ .port | default 443 }}
+  {{- end }}
   hostnames: {{- toYaml .hostnames | nindent 4 }}
   rules: {{- toYaml .rules | nindent 4 }}
 {{- end -}}
