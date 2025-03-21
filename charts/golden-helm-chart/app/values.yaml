@@ -15,6 +15,7 @@ common:
       kind: SecretStore
     target:
       template: {}
+      creationPolicy: Owner
 
   configMap:
     {}
