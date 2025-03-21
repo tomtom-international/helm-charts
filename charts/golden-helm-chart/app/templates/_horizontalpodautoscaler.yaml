@@ -4,7 +4,7 @@ apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata: {{- include "common.metadata" . | nindent 2 }}
 spec:
-  scaleTargetRef: {{- include "common.target-ref" .target | nindent 4 }}
+  scaleTargetRef: {{- include "common.target-ref" .scaleTargetRef | nindent 4 }}
   metrics: {{- toYaml .metrics | nindent 4 }}
   minReplicas: {{ .minReplicas }}
   maxReplicas: {{ .maxReplicas }}
