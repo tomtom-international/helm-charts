@@ -30,8 +30,8 @@ schedulerName: {{ .schedulerName | quote }}
 {{- if .imagePullSecrets }}
 imagePullSecrets: {{- toYaml .imagePullSecrets | nindent 2 }}
 {{- end }}
-{{- if .securityContext.enabled }}
-securityContext: {{- toYaml (omit .securityContext "enabled") | nindent 2 }}
+{{- if .securityContext }}
+securityContext: {{- toYaml .securityContext | nindent 2 }}
 {{- end }}
 {{- if .terminationGracePeriodSeconds }}
 terminationGracePeriodSeconds: {{ .terminationGracePeriodSeconds }}

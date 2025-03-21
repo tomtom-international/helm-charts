@@ -24,7 +24,6 @@ common:
     image: busybox:latest
     imagePullPolicy: IfNotPresent
     securityContext:
-      enabled: true
       seLinuxOptions: null
       runAsUser: 1001
       runAsGroup: 1001
@@ -63,7 +62,6 @@ common:
     tolerations: []
     schedulerName: ""
     securityContext:
-      enabled: true
       fsGroupChangePolicy: Always
       supplementalGroups: []
       fsGroup: 1001
