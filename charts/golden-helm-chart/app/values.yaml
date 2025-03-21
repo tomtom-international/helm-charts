@@ -133,12 +133,12 @@ common:
     tls: []
     rules: []
 
-  virtualService:
+  istioVirtualService:
     hosts: []
     gateways: []
     http: []
 
-  gateway:
+  istioGateway:
     selector:
       istio: gateway-internal
     targetRefs: []
