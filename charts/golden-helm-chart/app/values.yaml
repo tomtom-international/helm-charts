@@ -88,9 +88,9 @@ common:
     revisionHistoryLimit: 10
     strategy:
       type: RollingUpdate
-    pod:
-      selector:
-        matchLabels: {}
+    selector:
+      matchLabels: {}
+    pod: {}
     autoscaling:
       enabled: false
 
