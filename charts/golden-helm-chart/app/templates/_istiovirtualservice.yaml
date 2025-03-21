@@ -1,4 +1,4 @@
-{{- define "common.virtualservice" -}}
+{{- define "common.istiovirtualservice" -}}
 ---
 apiVersion: networking.istio.io/v1beta1
 kind: VirtualService

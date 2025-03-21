@@ -1,0 +1,5 @@
+{{- range $k, $v := .Values.istioVirtualServices -}}
+{{- if not (eq $v nil) }}
+{{ include "common.render" (dict "type" "istioVirtualService" "name" $k "spec" $v "$" $) }}
+{{- end -}}
+{{- end -}}
