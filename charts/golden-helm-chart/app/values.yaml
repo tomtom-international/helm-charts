@@ -124,7 +124,7 @@ common:
     maxReplicas: 10
 
   httpRoute:
-    gateway: gateway-internal
+    parentRefs: []
 
   ingress:
     ingressClassName: istio
