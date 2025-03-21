@@ -5,8 +5,8 @@
 - name: {{ .name }}
   image: "{{ .image }}"
   imagePullPolicy: {{ .imagePullPolicy | quote }}
-  {{- if .securityContext.enabled }}
-  securityContext: {{- toYaml (omit .securityContext "enabled") | nindent 4 }}
+  {{- if .securityContext }}
+  securityContext: {{- toYaml .securityContext | nindent 4 }}
   {{- end }}
   {{- if .env }}
   env: {{- toYaml .env | nindent 4 }}
