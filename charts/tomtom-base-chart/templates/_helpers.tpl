@@ -39,6 +39,15 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
 {{/*
+Custom Labels
+*/}}
+{{- define "tomtom-base-chart.customLabels" -}}
+{{- with .Values.basicSettings.customLabels }}
+{{- toYaml . }}
+{{- end }}
+{{- end }}
+
+{{/*
 Create the name of the service account to use
 */}}
 {{- define "tomtom-base-chart.serviceAccountName" -}}
