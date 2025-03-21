@@ -11,6 +11,8 @@ common:
 
   externalSecret:
     refreshInterval: 1h
+    secretStoreRef:
+      kind: SecretStore
     target:
       template: {}
 
