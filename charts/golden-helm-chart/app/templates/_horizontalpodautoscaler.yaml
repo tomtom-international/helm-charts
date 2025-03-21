@@ -1,4 +1,4 @@
-{{- define "common.hpa" -}}
+{{- define "common.horizontalpodautoscaler" -}}
 ---
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
