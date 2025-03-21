@@ -1,4 +1,4 @@
-{{- define "common.pvc" -}}
+{{- define "common.persistentvolumeclaim" -}}
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
