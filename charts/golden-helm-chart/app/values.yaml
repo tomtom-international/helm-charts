@@ -87,7 +87,7 @@ common:
     successfulJobsHistoryLimit: 1
 
   deployment:
-    replicaCount: 1
+    replicas: 1
     revisionHistoryLimit: 10
     strategy:
       type: RollingUpdate
