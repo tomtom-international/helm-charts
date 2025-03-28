@@ -143,7 +143,7 @@ common:
 
   istioGateway:
     selector:
-      istio: gateway-internal
+      istio-gateway: gateway-internal
     targetRefs: []
 
   authorizationPolicy:
