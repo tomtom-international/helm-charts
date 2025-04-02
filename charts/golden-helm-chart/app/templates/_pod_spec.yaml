@@ -16,7 +16,7 @@ dnsPolicy: {{ .dnsPolicy }}
 dnsConfig: {{- toYaml .dnsConfig | nindent 2 }}
 {{- end }}
 {{- if .priorityClassName }}
-priorityClassName: {{ .priorityClassName | quote }}
+priorityClassName: {{ .priorityClassName }}
 {{- end }}
 {{- if .nodeSelector }}
 nodeSelector: {{- toYaml .nodeSelector | nindent 2 }}
@@ -25,7 +25,7 @@ nodeSelector: {{- toYaml .nodeSelector | nindent 2 }}
 tolerations: {{- toYaml .tolerations | nindent 2 }}
 {{- end }}
 {{- if .schedulerName }}
-schedulerName: {{ .schedulerName | quote }}
+schedulerName: {{ .schedulerName }}
 {{- end }}
 {{- if .imagePullSecrets }}
 imagePullSecrets: {{- toYaml .imagePullSecrets | nindent 2 }}

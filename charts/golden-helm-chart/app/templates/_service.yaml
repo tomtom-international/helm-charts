@@ -15,7 +15,7 @@ spec:
   sessionAffinityConfig: {{ .sessionAffinityConfig | nindent 4 }}
   {{- end }}
   {{- if or (eq .type "LoadBalancer") (eq .type "NodePort") }}
-  externalTrafficPolicy: {{ .externalTrafficPolicy | quote }}
+  externalTrafficPolicy: {{ .externalTrafficPolicy }}
   {{- end }}
   {{- if and (eq .type "LoadBalancer") (not (empty .loadBalancerSourceRanges)) }}
   loadBalancerSourceRanges: {{- toYaml .loadBalancerSourceRanges | nindent 4 }}

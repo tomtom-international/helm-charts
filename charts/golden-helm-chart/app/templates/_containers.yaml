@@ -10,7 +10,7 @@
 {{- define "common.container-spec" -}}
 name: {{ .name }}
 image: "{{ .image }}"
-imagePullPolicy: {{ .imagePullPolicy | quote }}
+imagePullPolicy: {{ .imagePullPolicy }}
 {{- if .securityContext }}
 securityContext: {{- toYaml .securityContext | nindent 2 }}
 {{- end }}
