@@ -1,4 +1,5 @@
 {{- define "common.cronjob" -}}
+{{- $pod := mergeOverwrite (deepCopy .common.pod) .pod }}
 ---
 apiVersion: batch/v1
 kind: CronJob
@@ -11,5 +12,5 @@ spec:
   jobTemplate:
     spec:
       template:
-        spec: {{- include "common.pod-spec" .pod | nindent 10 }}
+        spec: {{- include "common.pod-spec" $pod | nindent 10 }}
 {{- end }}
