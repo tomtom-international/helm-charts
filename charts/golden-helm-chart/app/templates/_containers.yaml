@@ -2,45 +2,49 @@
 {{- $common := .common }}
 {{- range .containers }}
 {{- with mergeOverwrite $common.container . }}
-- name: {{ .name }}
-  image: "{{ .image }}"
-  imagePullPolicy: {{ .imagePullPolicy | quote }}
-  {{- if .securityContext }}
-  securityContext: {{- toYaml .securityContext | nindent 4 }}
-  {{- end }}
-  {{- if .env }}
-  env: {{- toYaml .env | nindent 4 }}
-  {{- end }}
-  {{- if .envFrom }}
-  envFrom: {{- toYaml .envFrom | nindent 4 }}
-  {{- end }}
-  {{- if .command }}
-  command: {{- toYaml .command | nindent 4 }}
-  {{- end }}
-  {{- if .args }}
-  args: {{- toYaml .args | nindent 4 }}
-  {{- end }}
-  {{- if .lifecycleHooks }}
-  lifecycle: {{- toYaml .lifecycleHooks | nindent 4 }}
-  {{- end }}
-  {{- if .ports }}
-  ports: {{- toYaml .ports | nindent 4 }}
-  {{- end }}
-  {{- if .livenessProbe }}
-  livenessProbe: {{- toYaml .livenessProbe | nindent 4 }}
-  {{- end }}
-  {{- if .readinessProbe }}
-  readinessProbe: {{- toYaml .readinessProbe | nindent 4 }}
-  {{- end }}
-  {{- if .startupProbe }}
-  startupProbe: {{- toYaml .startupProbe | nindent 4 }}
-  {{- end }}
-  {{- if .resources }}
-  resources: {{- toYaml .resources | nindent 4 }}
-  {{- end }}
-  {{- if .volumeMounts }}
-  volumeMounts: {{- toYaml .volumeMounts | nindent 4 }}
-  {{- end }}
+- {{- include "common.container-spec" . | nindent 2 }}
 {{- end }}
+{{- end }}
+{{- end }}
+
+{{- define "common.container-spec" -}}
+name: {{ .name }}
+image: "{{ .image }}"
+imagePullPolicy: {{ .imagePullPolicy | quote }}
+{{- if .securityContext }}
+securityContext: {{- toYaml .securityContext | nindent 2 }}
+{{- end }}
+{{- if .env }}
+env: {{- toYaml .env | nindent 2 }}
+{{- end }}
+{{- if .envFrom }}
+envFrom: {{- toYaml .envFrom | nindent 2 }}
+{{- end }}
+{{- if .command }}
+command: {{- toYaml .command | nindent 2 }}
+{{- end }}
+{{- if .args }}
+args: {{- toYaml .args | nindent 2 }}
+{{- end }}
+{{- if .lifecycleHooks }}
+lifecycle: {{- toYaml .lifecycleHooks | nindent 2 }}
+{{- end }}
+{{- if .ports }}
+ports: {{- toYaml .ports | nindent 2 }}
+{{- end }}
+{{- if .livenessProbe }}
+livenessProbe: {{- toYaml .livenessProbe | nindent 2 }}
+{{- end }}
+{{- if .readinessProbe }}
+readinessProbe: {{- toYaml .readinessProbe | nindent 2 }}
+{{- end }}
+{{- if .startupProbe }}
+startupProbe: {{- toYaml .startupProbe | nindent 2 }}
+{{- end }}
+{{- if .resources }}
+resources: {{- toYaml .resources | nindent 2 }}
+{{- end }}
+{{- if .volumeMounts }}
+volumeMounts: {{- toYaml .volumeMounts | nindent 2 }}
 {{- end }}
 {{- end }}
