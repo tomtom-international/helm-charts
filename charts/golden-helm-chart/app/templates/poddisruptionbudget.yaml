@@ -1,11 +1,3 @@
-{{- range $k, $v := .Values.deployments -}}
-{{- $deployment := mergeOverwrite (deepCopy $.Values.common.deployment) $v (dict "name" $k "common" $.Values.common "Values" $.Values) -}}
-{{- if and (not (eq $v nil)) ($deployment.pdb.enabled) }}
-{{- $pdb := (mergeOverwrite (omit $deployment.pdb "enabled") (dict "selector" .selector)) }}
-{{ include "common.render" (dict "type" "podDisruptionBudget" "name" $k "spec" $pdb "$" $) }}
-{{- end -}}
-{{- end -}}
-
 {{- range $k, $v := .Values.podDisruptionBudgets }}
 {{- if not (eq $v nil) }}
 {{ include "common.render" (dict "type" "podDisruptionBudget" "name" $k "spec" $v "$" $) }}

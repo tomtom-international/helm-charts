@@ -8,10 +8,3 @@
 {{- define "common.to-yaml" -}}
 {{ (omit . "name" "common" "Values" "Release" "Template") | toYaml }}
 {{- end -}}
-
-{{- define "common.target-ref" -}}
-{{- $targetVersions := dict "Deployment" "apps/v1" -}}
-apiVersion: {{ get $targetVersions .type }}
-kind: {{ .type }}
-name: {{ .name }}
-{{- end -}}

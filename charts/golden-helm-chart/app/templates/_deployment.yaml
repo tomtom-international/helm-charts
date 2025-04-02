@@ -5,7 +5,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata: {{- include "common.metadata" . | nindent 2 }}
 spec:
-  {{- if not .autoscaling.enabled }}
+  {{- if or .replicas (eq .replicas 0.0) }}
   replicas: {{ .replicas }}
   {{- end }}
   revisionHistoryLimit: {{ .revisionHistoryLimit }}

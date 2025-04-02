@@ -87,7 +87,6 @@ common:
     successfulJobsHistoryLimit: 1
 
   deployment:
-    replicas: 1
     revisionHistoryLimit: 3
     strategy:
       type: RollingUpdate
@@ -118,6 +117,9 @@ common:
     selector: {}
 
   horizontalPodAutoscaler:
+    scaleTargetRef:
+      apiVersion: apps/v1
+      kind: Deployment
     metrics:
     - type: Resource
       resource:
