@@ -20,7 +20,12 @@ imagePullPolicy: {{ .imagePullPolicy }}
 securityContext: {{- toYaml .securityContext | nindent 2 }}
 {{- end }}
 {{- if .env }}
-env: {{- toYaml .env | nindent 2 }}
+env:
+{{- $env := .env }}
+{{- range (keys $env) | sortAlpha }}
+- name: {{ . }}
+  value: "{{ get $env . }}"
+{{- end }}
 {{- end }}
 {{- if .envFrom }}
 envFrom: {{- toYaml .envFrom | nindent 2 }}

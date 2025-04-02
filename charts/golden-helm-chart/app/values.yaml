@@ -38,7 +38,7 @@ common:
         drop: ["ALL"]
       seccompProfile:
         type: "RuntimeDefault"
-    env: []
+    env: {}
     command: []
     args: []
     lifecycleHooks: {}
