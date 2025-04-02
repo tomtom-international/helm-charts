@@ -77,8 +77,8 @@ common:
       sysctls: []
     terminationGracePeriodSeconds: 30
     restartPolicy: Always
-    initContainers: []
-    containers: []
+    initContainers: {}
+    containers: {}
     volumes: []
 
   cronJob:

@@ -1,8 +1,10 @@
 {{- define "common.containers" -}}
 {{- $common := .common }}
 {{- range .containers }}
-{{- with mergeOverwrite $common.container . }}
+{{- if . }}
+{{- with mergeOverwrite (deepCopy $common.container) . }}
 - {{- include "common.container-spec" . | nindent 2 }}
+{{- end }}
 {{- end }}
 {{- end }}
 {{- end }}
