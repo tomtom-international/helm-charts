@@ -88,7 +88,7 @@ common:
 
   deployment:
     replicas: 1
-    revisionHistoryLimit: 10
+    revisionHistoryLimit: 3
     strategy:
       type: RollingUpdate
     selector:
