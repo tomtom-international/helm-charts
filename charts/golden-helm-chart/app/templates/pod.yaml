@@ -1,0 +1,5 @@
+{{- range $k, $v := .Values.pods -}}
+{{- if not (eq $v nil) }}
+{{ include "common.render" (dict "type" "pod" "name" $k "spec" $v "$" $) }}
+{{- end -}}
+{{- end -}}

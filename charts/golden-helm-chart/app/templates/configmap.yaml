@@ -1,0 +1,5 @@
+{{- range $k, $v := .Values.configMaps -}}
+{{- if not (eq $v nil) }}
+{{ include "common.render" (dict "type" "configMap" "name" $k "spec" $v "$" $) }}
+{{- end -}}
+{{- end -}}

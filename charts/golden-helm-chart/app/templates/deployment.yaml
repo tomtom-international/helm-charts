@@ -1,0 +1,5 @@
+{{- range $k, $v := .Values.deployments -}}
+{{- if not (eq $v nil) }}
+{{ include "common.render" (dict "type" "deployment" "name" $k "spec" $v "$" $) }}
+{{- end -}}
+{{- end -}}

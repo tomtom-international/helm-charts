@@ -1,0 +1,36 @@
+{{- define "common.application-annotations" -}}
+annotations:
+  {{- $imageUpdater := . }}
+  argocd-image-updater.argoproj.io/image-list: "{{ range $i, $k := keys . }}{{ if $i }}, {{ end }}{{ $k }}={{ (get $imageUpdater $k).image }}{{ end }}"
+  {{- range $k, $v := . }}
+  {{- range $k2, $v2 := omit $v "image" }}
+  argocd-image-updater.argoproj.io/{{ $k }}.{{ $k2 }}: {{ $v2 }}
+  {{- end }}
+  {{- end }}
+{{- end }}
+
+{{- define "common.application" -}}
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata: {{- include "common.metadata" (mergeOverwrite (fromYaml (include "common.application-annotations" .imageUpdater)) .) | nindent 2 }}
+spec:
+  project: {{ .project }}
+  sources:
+  {{- range $k, $v := .sources }}
+  - {{- toYaml $v | nindent 4 }}
+  {{- end }}
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: {{ .namespace }}
+  syncPolicy:
+    automated:
+      {{- if or (empty .syncPolicy.automated) (and (not .syncPolicy.automated.prune) (not .syncPolicy.automated.selfHeal) (not .syncPolicy.automated.allowEmpty)) }}
+      {}
+      {{- else }}
+      {{- toYaml .syncPolicy.automated | nindent 6 }}
+      {{- end }}
+    {{- if not (empty (omit .syncPolicy "automated")) }}
+    {{- toYaml (omit .syncPolicy "automated") | nindent 4 }}
+    {{- end }}
+{{- end -}}

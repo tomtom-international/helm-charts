@@ -1,0 +1,5 @@
+{{- range $k, $v := .Values.httpRoutes -}}
+{{- if not (eq $v nil) }}
+{{ include "common.render" (dict "type" "httpRoute" "name" $k "spec" $v "$" $) }}
+{{- end -}}
+{{- end -}}

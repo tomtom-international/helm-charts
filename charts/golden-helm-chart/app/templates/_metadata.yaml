@@ -1,0 +1,12 @@
+{{- define "common.metadata" -}}
+{{- $metadata := mergeOverwrite (deepCopy .common) . -}}
+{{- if $metadata.name }}
+name: {{ $metadata.name }}
+{{- end }}
+{{- if $metadata.labels }}
+labels: {{- toYaml $metadata.labels | nindent 2 }}
+{{- end }}
+{{- if $metadata.annotations }}
+annotations: {{- toYaml $metadata.annotations | nindent 2 }}
+{{- end }}
+{{- end }}

@@ -1,0 +1,16 @@
+{{- define "common.cronjob" -}}
+{{- $pod := mergeOverwrite (deepCopy .common.pod) .pod }}
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata: {{- include "common.metadata" . | nindent 2 }}
+spec:
+  concurrencyPolicy: {{ .concurrencyPolicy }}
+  failedJobsHistoryLimit: {{ .failedJobsHistoryLimit }}
+  successfulJobsHistoryLimit: {{ .successfulJobsHistoryLimit }}
+  schedule: "{{ .schedule }}"
+  jobTemplate:
+    spec:
+      template:
+        spec: {{- include "common.pod-spec" $pod | nindent 10 }}
+{{- end }}
