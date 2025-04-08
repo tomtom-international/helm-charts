@@ -93,10 +93,6 @@ common:
     selector:
       matchLabels: {}
     pod: {}
-    autoscaling:
-      enabled: false
-    pdb:
-      enabled: false
 
   service:
     labels: {}
