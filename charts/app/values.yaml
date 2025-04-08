@@ -163,4 +163,6 @@ common:
       - digital signature
       - key encipherment
 
+  networkPolicy: {}
+
   hooks: {}
