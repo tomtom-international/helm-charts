@@ -1,4 +1,4 @@
-{{- range $k, $v := .Values.cronjobs -}}
+{{- range $k, $v := .Values.cronJobs -}}
 {{- if not (eq $v nil) }}
 {{ include "common.render" (dict "type" "cronJob" "name" $k "spec" $v "$" $) }}
 {{- end -}}

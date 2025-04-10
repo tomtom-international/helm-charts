@@ -21,7 +21,9 @@ common:
     {}
 
   persistentVolumeClaim:
-    {}
+    accessModes:
+      - ReadWriteOnce
+    storageClassName: managed-csi
 
   container:
     image: busybox:latest
@@ -85,6 +87,7 @@ common:
     concurrencyPolicy: Forbid
     failedJobsHistoryLimit: 1
     successfulJobsHistoryLimit: 1
+    suspend: false
 
   deployment:
     revisionHistoryLimit: 3
@@ -93,10 +96,6 @@ common:
     selector:
       matchLabels: {}
     pod: {}
-    autoscaling:
-      enabled: false
-    pdb:
-      enabled: false
 
   service:
     labels: {}
@@ -166,5 +165,7 @@ common:
     usages:
       - digital signature
       - key encipherment
+
+  networkPolicy: {}
 
   hooks: {}
