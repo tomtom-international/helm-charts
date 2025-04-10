@@ -21,7 +21,9 @@ common:
     {}
 
   persistentVolumeClaim:
-    {}
+    accessModes:
+      - ReadWriteOnce
+    storageClassName: managed-csi
 
   container:
     image: busybox:latest
