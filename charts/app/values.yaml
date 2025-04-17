@@ -7,7 +7,9 @@ common:
     {}
 
   secretStore:
-    {}
+    provider:
+      azurekv:
+        authType: WorkloadIdentity
 
   externalSecret:
     refreshInterval: 1h
@@ -21,9 +23,13 @@ common:
     {}
 
   persistentVolumeClaim:
+    storageClassName: managed-csi
     accessModes:
       - ReadWriteOnce
-    storageClassName: managed-csi
+    resources:
+      requests:
+        storage: 1Gi
+    volumeMode: Filesystem
 
   container:
     image: busybox:latest
