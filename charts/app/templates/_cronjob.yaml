@@ -13,5 +13,6 @@ spec:
   jobTemplate:
     spec:
       template:
+        metadata: {{- include "common.metadata" $pod | nindent 10 }}
         spec: {{- include "common.pod-spec" $pod | nindent 10 }}
 {{- end }}
