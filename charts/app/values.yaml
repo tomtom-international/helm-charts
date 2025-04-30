@@ -174,4 +174,8 @@ common:
 
   networkPolicy: {}
 
+  vmAlertmanagerConfig: {}
+
+  vmRule: {}
+
   hooks: {}

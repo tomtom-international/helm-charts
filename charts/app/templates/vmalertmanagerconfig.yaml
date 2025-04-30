@@ -1,0 +1,5 @@
+{{- range $k, $v := .Values.vmAlertmanagerConfigs -}}
+{{- if not (eq $v nil) }}
+{{ include "common.render" (dict "type" "vmAlertmanagerConfig" "name" $k "spec" $v "$" $) }}
+{{- end -}}
+{{- end -}}

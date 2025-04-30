@@ -1,0 +1,31 @@
+{{- define "common.vmalertmanagerconfig" -}}
+---
+apiVersion: operator.victoriametrics.com/v1beta1
+kind: VMAlertmanagerConfig
+metadata: {{- include "common.metadata" . | nindent 2 }}
+spec:
+  {{- with .route }}
+  route:
+    receiver: {{ .receiver }}
+    group_interval: {{ .group_interval | default "1m" }}
+    routes:
+    {{- $routes := .routes }}
+    {{- range $k := ((keys $routes) | sortAlpha) }}
+      {{- with get $routes . }}
+      - matchers: {{ toYaml .matchers | nindent 10 }}
+        receiver: {{ .receiver | default $k }}
+        continue: {{ .continue | default "true" }}
+      {{- end }}
+    {{- end }}
+  {{- end }}
+  receivers:
+    {{- range $k, $v := .receivers }}
+    - name: {{ get $v "name" | default $k }}
+      {{- range $rk, $rv := (omit $v "name") }}
+      {{ $rk }}:
+        {{- range $rk2, $rv2 := $rv }}
+        - {{ toYaml $rv2 | nindent 10 }}
+        {{- end }}
+      {{- end }}
+    {{- end }}
+{{- end -}}
