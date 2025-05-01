@@ -13,7 +13,11 @@ annotations:
 ---
 apiVersion: argoproj.io/v1alpha1
 kind: Application
-metadata: {{- include "common.metadata" (mergeOverwrite (fromYaml (include "common.application-annotations" .imageUpdater)) .) | nindent 2 }}
+{{- $metadata := . }}
+{{- if .imageUpdater }}
+{{- $metadata := mergeOverwrite (fromYaml (include "common.application-annotations" .imageUpdater)) $metadata }}
+{{- end }}
+metadata: {{- include "common.metadata" $metadata | nindent 2 }}
 spec:
   project: {{ .project }}
   sources:
