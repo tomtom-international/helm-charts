@@ -1,23 +1,8 @@
-{{- define "common.application-annotations" -}}
-annotations:
-  {{- $imageUpdater := . }}
-  argocd-image-updater.argoproj.io/image-list: "{{ range $i, $k := keys . }}{{ if $i }}, {{ end }}{{ $k }}={{ (get $imageUpdater $k).image }}{{ end }}"
-  {{- range $k, $v := . }}
-  {{- range $k2, $v2 := omit $v "image" }}
-  argocd-image-updater.argoproj.io/{{ $k }}.{{ $k2 }}: {{ $v2 }}
-  {{- end }}
-  {{- end }}
-{{- end }}
-
 {{- define "common.application" -}}
 ---
 apiVersion: argoproj.io/v1alpha1
 kind: Application
-{{- $metadata := . }}
-{{- if .imageUpdater }}
-{{- $metadata := mergeOverwrite (fromYaml (include "common.application-annotations" .imageUpdater)) $metadata }}
-{{- end }}
-metadata: {{- include "common.metadata" $metadata | nindent 2 }}
+metadata: {{- include "common.metadata" . | nindent 2 }}
 spec:
   project: {{ .project }}
   sources:
