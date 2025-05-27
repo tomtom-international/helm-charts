@@ -4,13 +4,6 @@ apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata: {{- include "common.metadata" . | nindent 2 }}
 spec:
-  secretName: {{ .name }}
-  {{- if .commonName }}
-  commonName: {{ .commonName }}
-  {{- end }}
-  dnsNames: {{- toYaml .dnsNames | nindent 4 }}
-  usages:
-    - digital signature
-    - key encipherment
-  issuerRef: {{- toYaml .issuerRef | nindent 4 }}
+  secretName: {{ .secretName | default .name }}
+  {{- include "common.to-yaml" (omit . "secretName") | nindent 2 }}
 {{- end }}
