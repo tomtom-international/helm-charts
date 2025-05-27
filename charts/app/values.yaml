@@ -35,17 +35,10 @@ common:
     image: busybox:latest
     imagePullPolicy: IfNotPresent
     securityContext:
-      seLinuxOptions: null
-      runAsUser: 1001
-      runAsGroup: 1001
-      runAsNonRoot: true
-      privileged: false
       readOnlyRootFilesystem: true
       allowPrivilegeEscalation: false
       capabilities:
         drop: ["ALL"]
-      seccompProfile:
-        type: "RuntimeDefault"
     env: {}
     command: []
     args: []
@@ -73,16 +66,8 @@ common:
     tolerations: []
     schedulerName: ""
     securityContext:
-      fsGroupChangePolicy: Always
-      supplementalGroups: []
-      fsGroup: 1001
-      ## sysctl settings
-      ## Example:
-      ## sysctls:
-      ## - name: net.core.somaxconn
-      ##   value: "10000"
-      ##
-      sysctls: []
+      seccompProfile:
+        type: "RuntimeDefault"
     terminationGracePeriodSeconds: 30
     restartPolicy: Always
     initContainers: {}
