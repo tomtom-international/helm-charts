@@ -24,7 +24,11 @@ env:
 {{- $env := .env }}
 {{- range (keys $env) | sortAlpha }}
 - name: {{ . }}
+{{- if kindIs "string" (get $env .) }}
   value: "{{ get $env . }}"
+{{- else }}
+  {{- toYaml (get $env .) | nindent 2 }}
+{{- end }}
 {{- end }}
 {{- end }}
 {{- if .envFrom }}
