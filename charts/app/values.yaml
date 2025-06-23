@@ -43,25 +43,11 @@ common:
     annotations: {}
     serviceAccountName: default
     automountServiceAccountToken: false
-    hostAliases: []
-    affinity: {}
-    hostNetwork: false
-    hostIPC: false
-    dnsPolicy: ""
-    dnsConfig: {}
-    priorityClassName: ""
-    nodeSelector: {}
-    tolerations: []
-    schedulerName: ""
     enableServiceLinks: false
     securityContext:
       seccompProfile:
         type: "RuntimeDefault"
     terminationGracePeriodSeconds: 30
-    restartPolicy: Always
-    initContainers: {}
-    containers: {}
-    volumes: []
 
   cronJob:
     concurrencyPolicy: Forbid

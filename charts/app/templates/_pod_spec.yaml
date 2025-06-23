@@ -1,48 +1,6 @@
 {{- define "common.pod-spec" -}}
-serviceAccountName: {{ .serviceAccountName }}
-automountServiceAccountToken: {{ .automountServiceAccountToken }}
-{{- if .hostAliases }}
-hostAliases: {{- toYaml .hostAliases | nindent 2 }}
-{{- end }}
-{{- if .affinity }}
-affinity: {{- toYaml .affinity | nindent 2 }}
-{{- end }}
-hostNetwork: {{ .hostNetwork }}
-hostIPC: {{ .hostIPC }}
-{{- if .dnsPolicy  }}
-dnsPolicy: {{ .dnsPolicy }}
-{{- end }}
-{{- if .dnsConfig }}
-dnsConfig: {{- toYaml .dnsConfig | nindent 2 }}
-{{- end }}
-{{- if .priorityClassName }}
-priorityClassName: {{ .priorityClassName }}
-{{- end }}
-{{- if .nodeSelector }}
-nodeSelector: {{- toYaml .nodeSelector | nindent 2 }}
-{{- end }}
-{{- if .tolerations }}
-tolerations: {{- toYaml .tolerations | nindent 2 }}
-{{- end }}
-{{- if .schedulerName }}
-schedulerName: {{ .schedulerName }}
-{{- end }}
-{{- if .imagePullSecrets }}
-imagePullSecrets: {{- toYaml .imagePullSecrets | nindent 2 }}
-{{- end }}
-{{- if .securityContext }}
-securityContext: {{- toYaml .securityContext | nindent 2 }}
-{{- end }}
-{{- if .terminationGracePeriodSeconds }}
-terminationGracePeriodSeconds: {{ .terminationGracePeriodSeconds }}
-{{- end }}
-restartPolicy: {{ .restartPolicy }}
-enableServiceLinks: {{ .enableServiceLinks }}
-{{- if .initContainers }}
-initContainers: {{- include "common.to-list" (dict "$values" .initContainers "$common" .common.container "$helper" "common.container-spec") | nindent 0 }}
-{{- end }}
-containers: {{- include "common.to-list" (dict "$values" .containers "$common" .common.container "$helper" "common.container-spec") | nindent 0 }}
-{{- if .volumes }}
-volumes: {{- include "common.to-list" .volumes | nindent 0 }}
-{{- end }}
+{{- if .initContainers }}{{ $_ := set . "initContainers" (include "common.to-list" (dict "$values" .initContainers "$common" .common.container "$helper" "common.container-spec") | fromYamlArray) }}{{ end }}
+{{- $_ := set . "containers" (include "common.to-list" (dict "$values" .containers "$common" .common.container "$helper" "common.container-spec") | fromYamlArray) }}
+{{- if .volumes }}{{ $_ := set . "volumes" (include "common.to-list" .volumes | fromYamlArray) }}{{ end }}
+{{- toYaml (omit . "Values" "common" "name" "namespace" "labels" "annotations") }}
 {{- end }}
