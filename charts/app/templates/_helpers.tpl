@@ -20,13 +20,19 @@
   {{- $key := get . "$keyAt" | default "name" -}}
   {{- $value := get . "$valueAt" | default "value" -}}
   {{- $values := get . "$values" | default . -}}
+  {{- $common := get . "$common" | default dict -}}
+  {{- $helper := get . "$helper" -}}
+  {{- $lst := list }}
   {{- range $k := keys $values | sortAlpha }}
     {{- $v := get $values $k }}
     {{- if not $v }}{{ continue }}{{ end }}
     {{- if kindIs "string" $v }}{{ $path := regexSplit "\\." $value -1 | reverse }}{{ range $x := $path }}{{ $v = dict $x $v }}{{ end }}{{ end }}
     {{- if $hasKey }}{{ $v = mergeOverwrite (dict $key $k) $v }}{{ end }}
-- {{- toYaml $v | nindent 2 }}
+    {{- $v = mergeOverwrite (deepCopy $common) $v }}
+    {{- if $helper }}{{ $v = include $helper $v | fromYaml }}{{ end }}
+    {{- $lst = append $lst $v }}
   {{- end }}
+{{- toYaml $lst }}
 {{- end }}
 {{- end }}
 {{- end -}}
