@@ -31,8 +31,8 @@ command: {{- toYaml .command | nindent 2 }}
 {{- if .args }}
 args: {{- toYaml .args | nindent 2 }}
 {{- end }}
-{{- if .lifecycleHooks }}
-lifecycle: {{- toYaml .lifecycleHooks | nindent 2 }}
+{{- if .lifecycle }}
+lifecycle: {{- toYaml .lifecycle | nindent 2 }}
 {{- end }}
 {{- if .ports }}
 ports: {{- include "common.to-list" .ports | nindent 2 }}

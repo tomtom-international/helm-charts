@@ -39,10 +39,10 @@ common:
       allowPrivilegeEscalation: false
       capabilities:
         drop: ["ALL"]
-    env: {}
+    env: []
     command: []
     args: []
-    lifecycleHooks: {}
+    lifecycle: {}
     ports: []
     startupProbe: {}
     readinessProbe: {}
