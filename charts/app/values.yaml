@@ -32,23 +32,11 @@ common:
     volumeMode: Filesystem
 
   container:
-    image: busybox:latest
-    imagePullPolicy: IfNotPresent
     securityContext:
       readOnlyRootFilesystem: true
       allowPrivilegeEscalation: false
       capabilities:
         drop: ["ALL"]
-    env: []
-    command: []
-    args: []
-    lifecycle: {}
-    ports: []
-    startupProbe: {}
-    readinessProbe: {}
-    livenessProbe: {}
-    resources: {}
-    volumeMounts: []
 
   pod:
     labels: {}
@@ -65,6 +53,7 @@ common:
     nodeSelector: {}
     tolerations: []
     schedulerName: ""
+    enableServiceLinks: false
     securityContext:
       seccompProfile:
         type: "RuntimeDefault"

@@ -1,0 +1,6 @@
+{{- define "common.container-spec" -}}
+{{- if .env }}{{ $_ := set . "env" (include "common.to-list" .env | fromYamlArray) }}{{ end }}
+{{- if .ports }}{{ $_ := set . "ports" (include "common.to-list" .ports | fromYamlArray) }}{{ end }}
+{{- if .volumeMounts }}{{ $_ := set . "volumeMounts" (include "common.to-list" .volumeMounts | fromYamlArray) }}{{ end }}
+{{- toYaml . }}
+{{- end }}

@@ -37,12 +37,12 @@ securityContext: {{- toYaml .securityContext | nindent 2 }}
 terminationGracePeriodSeconds: {{ .terminationGracePeriodSeconds }}
 {{- end }}
 restartPolicy: {{ .restartPolicy }}
-enableServiceLinks: false
+enableServiceLinks: {{ .enableServiceLinks }}
 {{- if .initContainers }}
-initContainers: {{- include "common.containers" (dict "containers" .initContainers "common" .common) | default "[]" | nindent 2 }}
+initContainers: {{- include "common.to-list" (dict "$values" .initContainers "$common" .common.container "$helper" "common.container-spec") | nindent 0 }}
 {{- end }}
-containers: {{- include "common.containers" (dict "containers" .containers "common" .common) | default "[]" | nindent 2 }}
+containers: {{- include "common.to-list" (dict "$values" .containers "$common" .common.container "$helper" "common.container-spec") | nindent 0 }}
 {{- if .volumes }}
-volumes: {{- include "common.to-list" .volumes | nindent 2 }}
+volumes: {{- include "common.to-list" .volumes | nindent 0 }}
 {{- end }}
 {{- end }}
