@@ -26,6 +26,6 @@ spec:
   {{- if and (eq .type "LoadBalancer") .loadBalancerClass }}
   loadBalancerClass: {{ .loadBalancerClass }}
   {{- end }}
-  ports: {{- toYaml .ports | nindent 4 }}
+  ports: {{- include "common.to-list" .ports | nindent 4 }}
   selector: {{- toYaml .selector | nindent 4 }}
 {{- end }}

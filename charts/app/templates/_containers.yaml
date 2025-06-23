@@ -35,7 +35,7 @@ args: {{- toYaml .args | nindent 2 }}
 lifecycle: {{- toYaml .lifecycleHooks | nindent 2 }}
 {{- end }}
 {{- if .ports }}
-ports: {{- toYaml .ports | nindent 2 }}
+ports: {{- include "common.to-list" .ports | nindent 2 }}
 {{- end }}
 {{- if .livenessProbe }}
 livenessProbe: {{- toYaml .livenessProbe | nindent 2 }}
