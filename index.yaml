@@ -2,6 +2,15 @@ apiVersion: v1
 entries:
   app:
   - apiVersion: v2
+    created: "2025-06-23T12:35:35.562615796Z"
+    description: TomTom App Helm Chart
+    digest: 72f4ead03f9c19968b2fa6a2e38fa73ff4f595dee9bda392f1d4cad6f60de17c
+    name: app
+    type: application
+    urls:
+    - https://github.com/tomtom-international/helm-charts/releases/download/app-0.1.8/app-0.1.8.tgz
+    version: 0.1.8
+  - apiVersion: v2
     created: "2025-06-23T12:18:18.027609427Z"
     description: TomTom App Helm Chart
     digest: dfa2ac2ceac68ec98e5d012a9a3bac1a7628143f047ca655c47163d830692685
@@ -803,4 +812,4 @@ entries:
     urls:
     - https://github.com/tomtom-international/helm-charts/releases/download/tomtom-base-chart-0.0.2/tomtom-base-chart-0.0.2.tgz
     version: 0.0.2
-generated: "2025-06-23T12:18:18.027768675Z"
+generated: "2025-06-23T12:35:35.562758453Z"
