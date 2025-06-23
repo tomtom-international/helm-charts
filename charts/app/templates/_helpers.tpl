@@ -8,3 +8,25 @@
 {{- define "common.to-yaml" -}}
 {{ (omit . "name" "common" "Values" "Release" "Template") | toYaml }}
 {{- end -}}
+
+{{- define "common.to-list" -}}
+{{- if kindIs "slice" . }}
+{{ toYaml . }}
+{{- else }}
+{{- if kindIs "slice" (get . "$values") }}
+{{ toYaml (get . "$values") }}
+{{- else }}
+  {{- $hasKey := or (not (hasKey . "$keyAt")) (get . "$keyAt") }}
+  {{- $key := get . "$keyAt" | default "name" -}}
+  {{- $value := get . "$valueAt" | default "value" -}}
+  {{- $values := get . "$values" | default . -}}
+  {{- range $k := keys $values | sortAlpha }}
+    {{- $v := get $values $k }}
+    {{- if not $v }}{{ continue }}{{ end }}
+    {{- if kindIs "string" $v }}{{ $path := regexSplit "\\." $value -1 | reverse }}{{ range $x := $path }}{{ $v = dict $x $v }}{{ end }}{{ end }}
+    {{- if $hasKey }}{{ $v = mergeOverwrite (dict $key $k) $v }}{{ end }}
+- {{- toYaml $v | nindent 2 }}
+  {{- end }}
+{{- end }}
+{{- end }}
+{{- end -}}

@@ -20,16 +20,7 @@ imagePullPolicy: {{ .imagePullPolicy }}
 securityContext: {{- toYaml .securityContext | nindent 2 }}
 {{- end }}
 {{- if .env }}
-env:
-{{- $env := .env }}
-{{- range (keys $env) | sortAlpha }}
-- name: {{ . }}
-{{- if kindIs "string" (get $env .) }}
-  value: "{{ get $env . }}"
-{{- else }}
-  {{- toYaml (get $env .) | nindent 2 }}
-{{- end }}
-{{- end }}
+env: {{- include "common.to-list" .env | nindent 2 }}
 {{- end }}
 {{- if .envFrom }}
 envFrom: {{- toYaml .envFrom | nindent 2 }}
@@ -44,7 +35,7 @@ args: {{- toYaml .args | nindent 2 }}
 lifecycle: {{- toYaml .lifecycleHooks | nindent 2 }}
 {{- end }}
 {{- if .ports }}
-ports: {{- toYaml .ports | nindent 2 }}
+ports: {{- include "common.to-list" .ports | nindent 2 }}
 {{- end }}
 {{- if .livenessProbe }}
 livenessProbe: {{- toYaml .livenessProbe | nindent 2 }}
@@ -59,6 +50,6 @@ startupProbe: {{- toYaml .startupProbe | nindent 2 }}
 resources: {{- toYaml .resources | nindent 2 }}
 {{- end }}
 {{- if .volumeMounts }}
-volumeMounts: {{- toYaml .volumeMounts | nindent 2 }}
+volumeMounts: {{- include "common.to-list" .volumeMounts | nindent 2 }}
 {{- end }}
 {{- end }}
