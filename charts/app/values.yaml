@@ -66,6 +66,7 @@ common:
     tolerations: []
     schedulerName: ""
     securityContext:
+      runAsNonRoot: true
       seccompProfile:
         type: "RuntimeDefault"
     terminationGracePeriodSeconds: 30
