@@ -43,6 +43,6 @@ initContainers: {{- include "common.containers" (dict "containers" .initContaine
 {{- end }}
 containers: {{- include "common.containers" (dict "containers" .containers "common" .common) | default "[]" | nindent 2 }}
 {{- if .volumes }}
-volumes: {{- toYaml .volumes | nindent 2 }}
+volumes: {{- include "common.to-list" .volumes | nindent 2 -}}
 {{- end }}
 {{- end }}

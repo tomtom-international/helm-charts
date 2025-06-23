@@ -59,6 +59,6 @@ startupProbe: {{- toYaml .startupProbe | nindent 2 }}
 resources: {{- toYaml .resources | nindent 2 }}
 {{- end }}
 {{- if .volumeMounts }}
-volumeMounts: {{- toYaml .volumeMounts | nindent 2 }}
+volumeMounts: {{- include "common.to-list" .volumeMounts | nindent 2 }}
 {{- end }}
 {{- end }}
