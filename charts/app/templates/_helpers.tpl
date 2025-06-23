@@ -16,6 +16,7 @@
 {{- if kindIs "slice" (get . "$values") }}
 {{ toYaml (get . "$values") }}
 {{- else }}
+  {{- $hasKey := or (not (hasKey . "$keyAt")) (get . "$keyAt") }}
   {{- $key := get . "$keyAt" | default "name" -}}
   {{- $value := get . "$valueAt" | default "value" -}}
   {{- $values := get . "$values" | default . -}}
@@ -23,7 +24,8 @@
     {{- $v := get $values $k }}
     {{- if not $v }}{{ continue }}{{ end }}
     {{- if kindIs "string" $v }}{{ $path := regexSplit "\\." $value -1 | reverse }}{{ range $x := $path }}{{ $v = dict $x $v }}{{ end }}{{ end }}
-- {{- toYaml (mergeOverwrite (dict $key $k) $v) | nindent 2 }}
+    {{- if $hasKey }}{{ $v = mergeOverwrite (dict $key $k) $v }}{{ end }}
+- {{- toYaml $v | nindent 2 }}
   {{- end }}
 {{- end }}
 {{- end }}
