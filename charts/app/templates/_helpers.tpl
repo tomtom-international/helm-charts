@@ -13,12 +13,18 @@
 {{- if kindIs "slice" . }}
 {{ toYaml . }}
 {{- else }}
-  {{- $dict := . }}
-  {{- range $k := (keys $dict | sortAlpha) }}
-    {{- $v := get $dict $k }}
+{{- if kindIs "slice" (get . "$values") }}
+{{ toYaml (get . "$values") }}
+{{- else }}
+  {{- $key := get . "$keyAt" | default "name" -}}
+  {{- $value := get . "$valueAt" | default "value" -}}
+  {{- $values := get . "$values" | default . -}}
+  {{- range $k := keys $values | sortAlpha }}
+    {{- $v := get $values $k }}
     {{- if not $v }}{{ continue }}{{ end }}
-    {{- if kindIs "string" $v }}{{ $v = dict "value" $v }}{{ end }}
-- {{- toYaml (mergeOverwrite (dict "name" $k) $v) | nindent 2 }}
+    {{- if kindIs "string" $v }}{{ $path := regexSplit "\\." $value -1 | reverse }}{{ range $x := $path }}{{ $v = dict $x $v }}{{ end }}{{ end }}
+- {{- toYaml (mergeOverwrite (dict $key $k) $v) | nindent 2 }}
   {{- end }}
+{{- end }}
 {{- end }}
 {{- end -}}
