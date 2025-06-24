@@ -93,10 +93,7 @@ common:
 
   istioVirtualService: {}
 
-  istioGateway:
-    selector:
-      istio-gateway: gateway-internal
-    targetRefs: []
+  istioGateway: {}
 
   authorizationPolicy:
     action: ALLOW

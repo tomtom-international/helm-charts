@@ -3,11 +3,5 @@
 apiVersion: networking.istio.io/v1
 kind: Gateway
 metadata: {{- include "common.metadata" . | nindent 2 }}
-spec:
-  {{- if .selector }}
-  selector: {{- toYaml .selector | nindent 4 }}
-  {{- end }}
-  {{- if .servers }}
-  servers: {{- toYaml .servers | nindent 4 }}
-  {{- end }}
+spec: {{- include "common.render-spec" . | nindent 2 }}
 {{- end -}}
