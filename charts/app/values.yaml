@@ -83,8 +83,7 @@ common:
     minReplicas: 2
     maxReplicas: 10
 
-  httpRoute:
-    parentRefs: []
+  httpRoute: {}
 
   ingress:
     ingressClassName: istio
