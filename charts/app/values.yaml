@@ -63,19 +63,7 @@ common:
       matchLabels: {}
     pod: {}
 
-  service:
-    labels: {}
-    annotations: {}
-    type: ClusterIP
-    clusterIP: ~
-    sessionAffinity: ~
-    sessionAffinityConfig: ~
-    externalTrafficPolicy: Cluster
-    loadBalancerSourceRanges: ~
-    loadBalancerIP: ~
-    loadBalancerClass: ~
-    ports: []
-    selector: {}
+  service: {}
 
   podDisruptionBudget:
     maxUnavailable: 1
