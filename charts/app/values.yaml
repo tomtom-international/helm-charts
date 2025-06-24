@@ -68,7 +68,6 @@ common:
   podDisruptionBudget:
     maxUnavailable: 1
     unhealthyPodEvictionPolicy: AlwaysAllow
-    selector: {}
 
   horizontalPodAutoscaler:
     scaleTargetRef:
