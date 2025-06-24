@@ -36,7 +36,7 @@ common:
       readOnlyRootFilesystem: true
       allowPrivilegeEscalation: false
       capabilities:
-        drop: ["ALL"]
+        drop: [ALL]
 
   pod:
     labels: {}
@@ -46,7 +46,7 @@ common:
     enableServiceLinks: false
     securityContext:
       seccompProfile:
-        type: "RuntimeDefault"
+        type: RuntimeDefault
     terminationGracePeriodSeconds: 30
 
   cronJob:
