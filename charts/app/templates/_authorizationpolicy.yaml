@@ -3,13 +3,5 @@
 apiVersion: security.istio.io/v1
 kind: AuthorizationPolicy
 metadata: {{- include "common.metadata" . | nindent 2 }}
-spec:
-  action: {{ .action }}
-  {{- if .selector }}
-  selector: {{- toYaml .selector | nindent 4 }}
-  {{- end }}
-  {{- if .targetRefs }}
-  targetRefs: {{- toYaml .targetRefs | nindent 4 }}
-  {{- end }}
-  rules: {{- toYaml .rules | nindent 4 }}
+spec: {{- include "common.render-spec" . | nindent 2 }}
 {{- end -}}

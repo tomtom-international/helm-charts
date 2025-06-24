@@ -89,10 +89,7 @@ common:
 
   istioGateway: {}
 
-  authorizationPolicy:
-    action: ALLOW
-    selector: {}
-    targetRefs: []
+  authorizationPolicy: {}
 
   application:
     helm: {}
