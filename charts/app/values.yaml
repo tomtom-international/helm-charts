@@ -52,9 +52,6 @@ common:
     revisionHistoryLimit: 3
     strategy:
       type: RollingUpdate
-    selector:
-      matchLabels: {}
-    pod: {}
 
   service: {}
 

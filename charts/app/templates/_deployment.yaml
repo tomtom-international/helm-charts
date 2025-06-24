@@ -4,16 +4,8 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata: {{- include "common.metadata" . | nindent 2 }}
-spec:
-  {{- if or .replicas (eq .replicas 0.0) }}
-  replicas: {{ .replicas }}
-  {{- end }}
-  revisionHistoryLimit: {{ .revisionHistoryLimit }}
-  {{- if .strategy }}
-  strategy: {{- toYaml .strategy | nindent 4 }}
-  {{- end }}
-  selector: {{- toYaml .selector | nindent 4 }}
-  template:
-    metadata: {{- include "common.metadata" $pod | nindent 6 }}
-    spec: {{- include "common.pod-spec" $pod | nindent 6 }}
+{{- if not (or .replicas (eq .replicas 0.0)) }}{{ $_ := unset . "replicas" }}{{ end }}
+{{- $podTemplate := (dict "metadata" (include "common.metadata" $pod | fromYaml) "spec" (include "common.pod-spec" $pod | fromYaml)) }}
+{{ $_ := set . "template" $podTemplate }}
+spec: {{- include "common.render-spec" (omit . "pod") | nindent 2 }}
 {{- end -}}
