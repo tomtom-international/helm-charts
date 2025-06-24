@@ -3,8 +3,7 @@ common:
   labels: {}
   annotations: {}
 
-  serviceAccount:
-    {}
+  serviceAccount: {}
 
   secretStore:
     provider:
@@ -16,11 +15,9 @@ common:
     secretStoreRef:
       kind: SecretStore
     target:
-      template: {}
       creationPolicy: Owner
 
-  configMap:
-    {}
+  configMap: {}
 
   persistentVolumeClaim:
     storageClassName: managed-csi
