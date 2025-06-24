@@ -46,9 +46,7 @@ common:
 
   cronJob:
     concurrencyPolicy: Forbid
-    failedJobsHistoryLimit: 1
     successfulJobsHistoryLimit: 1
-    suspend: false
 
   deployment:
     revisionHistoryLimit: 3

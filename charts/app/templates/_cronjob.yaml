@@ -4,15 +4,7 @@
 apiVersion: batch/v1
 kind: CronJob
 metadata: {{- include "common.metadata" . | nindent 2 }}
-spec:
-  concurrencyPolicy: {{ .concurrencyPolicy }}
-  failedJobsHistoryLimit: {{ .failedJobsHistoryLimit }}
-  schedule: "{{ .schedule }}"
-  successfulJobsHistoryLimit: {{ .successfulJobsHistoryLimit }}
-  suspend: {{ .suspend }}
-  jobTemplate:
-    spec:
-      template:
-        metadata: {{- include "common.metadata" $pod | nindent 10 }}
-        spec: {{- include "common.pod-spec" $pod | nindent 10 }}
+{{- $podTemplate := (dict "metadata" (include "common.metadata" $pod | fromYaml) "spec" (include "common.pod-spec" $pod | fromYaml)) }}
+{{ $_ := set . "jobTemplate" (dict "spec" (dict "template" $podTemplate)) }}
+spec: {{- include "common.render-spec" (omit . "pod") | nindent 2 }}
 {{- end }}
