@@ -36,8 +36,6 @@ common:
         drop: [ALL]
 
   pod:
-    labels: {}
-    annotations: {}
     serviceAccountName: default
     automountServiceAccountToken: false
     enableServiceLinks: false
