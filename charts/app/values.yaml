@@ -88,8 +88,6 @@ common:
 
   ingress:
     ingressClassName: istio
-    tls: []
-    rules: []
 
   istioVirtualService: {}
 
