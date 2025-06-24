@@ -32,47 +32,22 @@ common:
     volumeMode: Filesystem
 
   container:
-    image: busybox:latest
-    imagePullPolicy: IfNotPresent
     securityContext:
       readOnlyRootFilesystem: true
       allowPrivilegeEscalation: false
       capabilities:
-        drop: ["ALL"]
-    env: []
-    command: []
-    args: []
-    lifecycle: {}
-    ports: []
-    startupProbe: {}
-    readinessProbe: {}
-    livenessProbe: {}
-    resources: {}
-    volumeMounts: []
+        drop: [ALL]
 
   pod:
     labels: {}
     annotations: {}
     serviceAccountName: default
     automountServiceAccountToken: false
-    hostAliases: []
-    affinity: {}
-    hostNetwork: false
-    hostIPC: false
-    dnsPolicy: ""
-    dnsConfig: {}
-    priorityClassName: ""
-    nodeSelector: {}
-    tolerations: []
-    schedulerName: ""
+    enableServiceLinks: false
     securityContext:
       seccompProfile:
-        type: "RuntimeDefault"
+        type: RuntimeDefault
     terminationGracePeriodSeconds: 30
-    restartPolicy: Always
-    initContainers: {}
-    containers: {}
-    volumes: []
 
   cronJob:
     concurrencyPolicy: Forbid
