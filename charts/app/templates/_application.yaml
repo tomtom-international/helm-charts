@@ -3,23 +3,9 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata: {{- include "common.metadata" . | nindent 2 }}
-spec:
-  project: {{ .project }}
-  sources:
-  {{- range $k, $v := .sources }}
-  - {{- toYaml $v | nindent 4 }}
-  {{- end }}
-  destination:
-    server: https://kubernetes.default.svc
-    namespace: {{ .namespace }}
-  syncPolicy:
-    automated:
-      {{- if or (empty .syncPolicy.automated) (and (not .syncPolicy.automated.prune) (not .syncPolicy.automated.selfHeal) (not .syncPolicy.automated.allowEmpty)) }}
-      {}
-      {{- else }}
-      {{- toYaml .syncPolicy.automated | nindent 6 }}
-      {{- end }}
-    {{- if not (empty (omit .syncPolicy "automated")) }}
-    {{- toYaml (omit .syncPolicy "automated") | nindent 4 }}
-    {{- end }}
+{{- if and (not .syncPolicy.automated.prune) (not .syncPolicy.automated.selfHeal) (not .syncPolicy.automated.allowEmpty) }}{{ $_ := set .syncPolicy "automated" dict }}{{ end }}
+{{- if .sources }}{{ $_ := set . "sources" (include "common.to-list" (dict "$values" .sources "$keyAt" nil) | fromYamlArray) }}{{ end }}
+{{- $destinationDefaults := dict "namespace" .namespace }}
+{{ if .destination }}{{ $_ := mergeOverwrite .destination $destinationDefaults (deepCopy .destination) }}{{ end }}
+spec: {{- include "common.render-spec" . | nindent 2 }}
 {{- end -}}
