@@ -91,10 +91,7 @@ common:
     tls: []
     rules: []
 
-  istioVirtualService:
-    hosts: []
-    gateways: []
-    http: []
+  istioVirtualService: {}
 
   istioGateway:
     selector:

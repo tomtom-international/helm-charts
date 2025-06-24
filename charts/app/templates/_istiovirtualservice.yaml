@@ -3,14 +3,5 @@
 apiVersion: networking.istio.io/v1beta1
 kind: VirtualService
 metadata: {{- include "common.metadata" . | nindent 2 }}
-spec:
-  {{- if .hosts }}
-  hosts: {{- toYaml .hosts | nindent 4 }}
-  {{- end -}}
-  {{- if .gateways }}
-  gateways: {{- toYaml .gateways | nindent 4 }}
-  {{- end -}}
-  {{- if .http }}
-  http: {{- toYaml .http | nindent 4 }}
-  {{- end -}}
+spec: {{- include "common.render-spec" . | nindent 2 }}
 {{- end -}}
