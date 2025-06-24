@@ -3,7 +3,7 @@
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata: {{- include "common.metadata" . | nindent 2 }}
-spec:
-  secretName: {{ .secretName | default .name }}
-  {{- include "common.render-spec" (omit . "secretName") | nindent 2 }}
+{{- $defaults := dict "secretName" .name }}
+{{ if .target }}{{ $_ := mergeOverwrite . $defaults (deepCopy .) }}{{ end }}
+spec: {{- include "common.render-spec" . | nindent 2 }}
 {{- end }}
