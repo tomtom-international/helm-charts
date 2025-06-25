@@ -44,31 +44,13 @@ pods:
   app: {}
 ```
 
-2. The `metadata` and `spec` nesting are reduced in all manifests. For example:
-
-```yaml
-pods:
-  app:
-    labels:
-      app: abc
-    serviceAccountName: app
-```
-
-3. Access to frequently used `PodTemplateSpec` across different manifest kinds (e.g. `spec.template`, `spec.jobTemplate.template`) is unified and shortened to just `pod`. For example:
-
-```yaml
-cronJobs:
-  app:
-    pod:
-      serviceAccountName: app
-```
-
-4. The `common` dictionary provides access to defaults applied to all manifests of specific kind across all rendered manifests. For example, define `pod` defaults across all `cronJobs` and `pods`:
+2. The `common` dictionary provides access to defaults applied to all manifests of specific kind across all rendered manifests. For example, define `pod` defaults across all `cronJobs` and `pods`:
 
 ```yaml
 common:
   pod:
-    serviceAccountName: other
+    spec:
+      serviceAccountName: other
 
 pods:
   app: {}
@@ -77,20 +59,22 @@ cronJobs:
   report: {}
 ```
 
-5. Frequently used manifest fields of `list` type can be presented as `dict`s, allowing overrides in more specific context. For example, override default `pod`s `container.image`:
+3. Frequently used manifest fields of `list` type can be presented as `dict`s, allowing overrides in more specific context. For example, override default `pod`s `container.image`:
 
 ```yaml
 common:
   pod:
-    containers:
-      app:
-        image: busybox:latest
+    spec:
+      containers:
+        app:
+          image: busybox:latest
 
 pods:
   app:
-    containers:
-      app:
-        image: busybox:19700101
+    spec:
+      containers:
+        app:
+          image: busybox:19700101
 
 cronJobs:
   report: {}
@@ -98,36 +82,39 @@ cronJobs:
 
 For more details refer to [`dict` to `list` expansion](#dict-to-list-expansion) section.
 
-6. The `~` (ie. shortened `null`) value set on a `list` field supporting expansion to `dict` in a narrower context removes item from the manifest. For example, remove an item from a list of `containers` in a `pod`:
+4. The `~` (ie. shortened `null`) value set on a `list` field supporting expansion to `dict` in a narrower context removes item from the manifest. For example, remove an item from a list of `containers` in a `pod`:
 
 ```yaml
 common:
   pod:
-    containers:
-      app:
-        image: busybox:latest
-      sidecar:
-        image: busybox:latest
+    spec:
+      containers:
+        app:
+          image: busybox:latest
+        sidecar:
+          image: busybox:latest
 
 pods:
   app:
-    containers:
-      sidecar: ~
+    spec:
+      containers:
+        sidecar: ~
 
 cronJobs:
   report: {}
 ```
 
-7. Kind-specific reducers, simplifying frequently used configurations. For example, pass container environment variables as simple key-values:
+5. Kind-specific reducers, simplifying frequently used configurations. For example, pass container environment variables as simple key-values:
 
 ```yaml
 common:
   pod:
-    containers:
-      app:
-        image: busybox:latest
-        env:
-          A: B
+    spec:
+      containers:
+        app:
+          image: busybox:latest
+          env:
+            A: B
 
 pods:
   app: {}
@@ -135,25 +122,27 @@ pods:
 
 For more details refer to [Reducers](#reducers) section.
 
-8. Some manifests support extra logic to aid common issues. For example: properly rendering `deployment.replicas` in Go template requires special/well-known care. For example, since both `0` and `null` equate to `false` in Go template, it must be rendered only when set to `0` (or other positive number):
+6. Some manifests support extra logic to aid common issues. For example: properly rendering `deployment.replicas` in Go template requires special/well-known care. For example, since both `0` and `null` equate to `false` in Go template, it must be rendered only when set to `0` (or other positive number):
 
 ```yaml
 deployments:
   app1:
-    selector:
-      matchLabels:
-        app: app1
-    replicas: 0
+    spec:
+      selector:
+        matchLabels:
+          app: app1
+      replicas: 0
   app2:
-    selector:
-      matchLabels:
-        app: app2
-    replicas: ~
+    spec:
+      selector:
+        matchLabels:
+          app: app2
+      replicas: ~
 ```
 
 For more details refer to [Extra logic](#extra-logic) section.
 
-9. Manifests post-rendering happens immediately after a top-level dictionary item is converted to a native Kubernetes manifest, providing a simple way to configure fields hidden deep in manifests structure without repetitive nested overrides. For example, render `image.tag` value inside a `container.image` field:
+7. Manifests post-rendering happens immediately after a top-level dictionary item is converted to a native Kubernetes manifest, providing a simple way to configure fields hidden deep in manifests structure without repetitive nested overrides. For example, render `image.tag` value inside a `container.image` field:
 
 ```yaml
 image:
@@ -161,9 +150,10 @@ image:
 
 pods:
   app:
-    containers:
-      app:
-        image: "busybox:{{ .Values.image.tag }}"
+    spec:
+      containers:
+        app:
+          image: "busybox:{{ .Values.image.tag }}"
 ```
 
 For more details refer to [Post-rendering](#post-rendering) section.
@@ -271,9 +261,10 @@ Or, for example, you could use `.Release.Name` as dynamic resource names, genera
 ```yaml
 pods:
   '{{ .Release.Name }}':
-    containers:
-      app:
-        image: 'xyz.azurecr.io/abc/{{ .Release.Name }}:latest'
+    spec:
+      containers:
+        app:
+          image: 'xyz.azurecr.io/abc/{{ .Release.Name }}:latest'
 ```
 
 In fact, `.` context passed into post-rendering provides access to all values passed to `helm` command, including pre-defined `.Release` and `.Namespace` Helm values.
