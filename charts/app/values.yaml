@@ -101,7 +101,9 @@ common:
 
   networkPolicy: {}
 
-  vmAlertmanagerConfig: {}
+  vmAlertmanagerConfig:
+    route:
+      group_interval: 1m
 
   vmRule: {}
 
