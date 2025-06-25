@@ -1,5 +1,5 @@
 {{- define "common.deployment" -}}
-{{- $pod := mergeOverwrite (deepCopy .common.pod) .pod (dict "labels" .selector.matchLabels "common" .common) }}
+{{- $pod := mergeOverwrite (deepCopy .common.pod) (.pod | default dict) (dict "labels" .selector.matchLabels "common" .common) }}
 ---
 apiVersion: apps/v1
 kind: Deployment

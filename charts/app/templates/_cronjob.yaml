@@ -1,5 +1,5 @@
 {{- define "common.cronjob" -}}
-{{- $pod := mergeOverwrite (deepCopy .common.pod) .pod (dict "common" .common) }}
+{{- $pod := mergeOverwrite (deepCopy .common.pod) (.pod | default dict) (dict "common" .common) }}
 ---
 apiVersion: batch/v1
 kind: CronJob
