@@ -3,8 +3,7 @@ common:
   labels: {}
   annotations: {}
 
-  serviceAccount:
-    {}
+  serviceAccount: {}
 
   secretStore:
     provider:
@@ -16,11 +15,9 @@ common:
     secretStoreRef:
       kind: SecretStore
     target:
-      template: {}
       creationPolicy: Owner
 
-  configMap:
-    {}
+  configMap: {}
 
   persistentVolumeClaim:
     storageClassName: managed-csi
@@ -39,8 +36,6 @@ common:
         drop: [ALL]
 
   pod:
-    labels: {}
-    annotations: {}
     serviceAccountName: default
     automountServiceAccountToken: false
     enableServiceLinks: false
@@ -51,36 +46,18 @@ common:
 
   cronJob:
     concurrencyPolicy: Forbid
-    failedJobsHistoryLimit: 1
     successfulJobsHistoryLimit: 1
-    suspend: false
 
   deployment:
     revisionHistoryLimit: 3
     strategy:
       type: RollingUpdate
-    selector:
-      matchLabels: {}
-    pod: {}
 
-  service:
-    labels: {}
-    annotations: {}
-    type: ClusterIP
-    clusterIP: ~
-    sessionAffinity: ~
-    sessionAffinityConfig: ~
-    externalTrafficPolicy: Cluster
-    loadBalancerSourceRanges: ~
-    loadBalancerIP: ~
-    loadBalancerClass: ~
-    ports: []
-    selector: {}
+  service: {}
 
   podDisruptionBudget:
     maxUnavailable: 1
     unhealthyPodEvictionPolicy: AlwaysAllow
-    selector: {}
 
   horizontalPodAutoscaler:
     scaleTargetRef:
@@ -96,31 +73,20 @@ common:
     minReplicas: 2
     maxReplicas: 10
 
-  httpRoute:
-    parentRefs: []
+  httpRoute: {}
 
   ingress:
     ingressClassName: istio
-    tls: []
-    rules: []
 
-  istioVirtualService:
-    hosts: []
-    gateways: []
-    http: []
+  istioVirtualService: {}
 
-  istioGateway:
-    selector:
-      istio-gateway: gateway-internal
-    targetRefs: []
+  istioGateway: {}
 
-  authorizationPolicy:
-    action: ALLOW
-    selector: {}
-    targetRefs: []
+  authorizationPolicy: {}
 
   application:
-    helm: {}
+    destination:
+      server: https://kubernetes.default.svc
     syncPolicy:
       automated: {}
 
@@ -135,7 +101,9 @@ common:
 
   networkPolicy: {}
 
-  vmAlertmanagerConfig: {}
+  vmAlertmanagerConfig:
+    route:
+      group_interval: 1m
 
   vmRule: {}
 

@@ -3,15 +3,5 @@
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata: {{- include "common.metadata" . | nindent 2 }}
-spec:
-  podSelector: {{- toYaml .podSelector | nindent 4 }}
-  {{- if .policyTypes }}
-  policyTypes: {{- toYaml .policyTypes | nindent 4 }}
-  {{- end }}
-  {{- $ctx := .  }}
-  {{- range list "ingress" "egress" }}
-  {{- if hasKey $ctx . }}
-  {{ . }}: {{ toYaml (get $ctx .)  | nindent 4 }}
-  {{- end }}
-  {{- end }}
+spec: {{- include "common.render-spec" . | nindent 2 }}
 {{- end -}}

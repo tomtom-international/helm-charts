@@ -1,8 +1,7 @@
 {{- define "common.pod" }}
-{{- $pod := mergeOverwrite (deepCopy .common.pod) . (dict "common" .common) }}
 ---
 apiVersion: v1
 kind: Pod
-metadata: {{- include "common.metadata" $pod | nindent 2 }}
-spec: {{- include "common.pod-spec" $pod | nindent 2 }}
+metadata: {{- include "common.metadata" . | nindent 2 }}
+spec: {{- include "common.pod-spec" . | nindent 2 }}
 {{- end }}

@@ -5,8 +5,8 @@
 {{ tpl $content (merge (dict "name" .name "Template" (dict "BasePath" "<inline>" "Name" "<noname>")) (deepCopy $spec) (get . "$")) }}
 {{- end -}}
 
-{{- define "common.to-yaml" -}}
-{{ (omit . "name" "common" "Values" "Release" "Template") | toYaml }}
+{{- define "common.render-spec" -}}
+{{- toYaml (omit . "name" "namespace" "labels" "annotations" "common" "Values") }}
 {{- end -}}
 
 {{- define "common.to-list" -}}
@@ -20,6 +20,7 @@
   {{- $key := get . "$keyAt" | default "name" -}}
   {{- $value := get . "$valueAt" | default "value" -}}
   {{- $values := get . "$values" | default . -}}
+  {{- if and (hasKey . "$values") (not (get . "$values")) }}{{ $values = dict }}{{ end }}
   {{- $common := get . "$common" | default dict -}}
   {{- $helper := get . "$helper" -}}
   {{- $lst := list }}

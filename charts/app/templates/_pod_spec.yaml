@@ -2,5 +2,5 @@
 {{- if .initContainers }}{{ $_ := set . "initContainers" (include "common.to-list" (dict "$values" .initContainers "$common" .common.container "$helper" "common.container-spec") | fromYamlArray) }}{{ end }}
 {{- $_ := set . "containers" (include "common.to-list" (dict "$values" .containers "$common" .common.container "$helper" "common.container-spec") | fromYamlArray) }}
 {{- if .volumes }}{{ $_ := set . "volumes" (include "common.to-list" .volumes | fromYamlArray) }}{{ end }}
-{{- toYaml (omit . "Values" "common" "name" "namespace" "labels" "annotations") }}
+{{- include "common.render-spec" . }}
 {{- end }}

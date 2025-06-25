@@ -3,17 +3,7 @@
 apiVersion: operator.victoriametrics.com/v1beta1
 kind: VMRule
 metadata: {{- include "common.metadata" . | nindent 2 }}
-spec:
-  groups:
-    {{- range $k, $v := .groups }}
-    - name: {{ .name | default $k }}
-      rules:
-      {{- range $k2, $v2 := $v.rules }}
-        - {{ toYaml (mergeOverwrite (dict "alert" $k2) $v2) | nindent 10 }}
-      {{- end }}
-      {{- $v := omit $v "name" "rules" }}
-      {{- if $v }}
-      {{ toYaml $v | nindent 6 }}
-      {{- end }}
-    {{- end }}
+{{- range $k, $v := .groups }}{{- $_ := set $v "rules" (include "common.to-list" (dict "$values" .rules "$keyAt" "alert") | fromYamlArray) }}{{ end }}
+{{- $_ := set . "groups" (include "common.to-list" .groups | fromYamlArray) }}
+spec: {{- include "common.render-spec" . | nindent 2 }}
 {{- end -}}
