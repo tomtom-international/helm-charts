@@ -20,6 +20,7 @@
   {{- $key := get . "$keyAt" | default "name" -}}
   {{- $value := get . "$valueAt" | default "value" -}}
   {{- $values := get . "$values" | default . -}}
+  {{- if and (hasKey . "$values") (not (get . "$values")) }}{{ $values = dict }}{{ end }}
   {{- $common := get . "$common" | default dict -}}
   {{- $helper := get . "$helper" -}}
   {{- $lst := list }}
