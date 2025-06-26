@@ -3,6 +3,7 @@
 apiVersion: v1
 kind: Service
 metadata: {{- include "common.metadata" . | nindent 2 }}
+{{/* dict-to-list: expand spec.ports dict to list of objects, with dict keys in name field */}}
 {{- $_ := set . "ports" (include "common.to-list" .ports | fromYamlArray) }}
 spec: {{- include "common.render-spec" . | nindent 2 }}
 {{- end }}

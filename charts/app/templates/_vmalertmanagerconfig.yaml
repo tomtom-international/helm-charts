@@ -3,10 +3,14 @@
 apiVersion: operator.victoriametrics.com/v1beta1
 kind: VMAlertmanagerConfig
 metadata: {{- include "common.metadata" . | nindent 2 }}
+{{/* dict-to-list: expand spec.route.routes dict to list of objects, with dict keys in receiver field */}}
+{{/* reducers: default spec.route.routes.*.continue to true */}}
 {{- $routes := .route.routes | default dict }}
 {{- $routeDefaults := dict "continue" true }}
 {{- $_ := set .route "routes" (include "common.to-list" (dict "$values" $routes "$common" $routeDefaults "$keyAt" "receiver") | fromYamlArray) }}
+{{/* dict-to-list: expand spec.receivers dict to list of objects, with dict keys in name field */}}
 {{- $_ := set . "receivers" (include "common.to-list" .receivers | fromYamlArray) }}
+{{/* dict-to-list: expand spec.receivers.* dicts to lists of objects, discarding keys */}}
 {{- range $r := .receivers }}{{ range $k, $v := $r }}{{ if not (eq $k "name") }}{{ $_ := set $r $k (include "common.to-list" (dict "$values" $v "$keyAt" nil) | fromYamlArray) }}{{ end }}{{ end }}{{ end }}
 spec: {{- include "common.render-spec" . | nindent 2 }}
 {{- end -}}

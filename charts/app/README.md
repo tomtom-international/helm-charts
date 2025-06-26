@@ -15,22 +15,20 @@ Contents:
 
 ## Why
 
-Helm is a very powerful tool, that quickly became standard-de-facto when it comes to defining configurable worklod manifests in Kubernetes.
+Helm is a very powerful tool, that quickly became standard-de-facto when it comes to defining configurable workload manifests in Kubernetes.
 
-At the same time, creating and maintaining Helm charts for thousands of workloads by hundreds of teams on global scale is expensive. Especially when done by engineers with diverse level of expertiese and background, it creates countless "ways of doing things" in Kubernetes with Helm, making hard to impossible code succession when ownership is passed between teams, or seeking support from engineers outside of own team. Most often:
-- Helm templates code/syntax and value names are highly influenced by the primary expertiese of engineers on a team (eg: Java, C, Python, JavaScript, ...)
+At the same time, creating and maintaining Helm charts for thousands of workloads by hundreds of teams on global scale is expensive. Especially when done by engineers with diverse level of expertise and background, it creates countless "ways of doing things" in Kubernetes with Helm, making hard to impossible costless code succession when ownership is passed between teams, or seeking support from engineers outside of own team. Most often:
+- Helm templates code/syntax and value names are highly influenced by the primary expertise of engineers on a team (e.g. Java, C, Python, JavaScript, ...)
 - Helm templates are very specific and tailored for one workload/service/team, rich with conditions and business logic specific to teams' business domains
-- engineers have limited/no prior experience with Kubernetes and/or Helm, requiring steep learning curve to uphold to Helm Best practices, which is hardly possible
-
-One might say that the above drawbacks are not specific to Helm and rather just a nature of things all organisations are balancing with. After all - we're just hoomans traveling on the rock in the endless space, and we do our best applying our skills with the best tools in hands.
+- engineers have limited/no prior experience with Kubernetes and/or Helm, requiring steep learning curve to uphold to Helm Best practices.
 
 ## What
 
-App Helm chart offers a view on the problem by suggesting a simple approach to define and override workloads with Helm values, with zero need of creating and maintaining own Helm charts specific to only 1 team and/or business domain.
+App Helm chart offers a view on the problem by suggesting a simple approach to define and override workloads with Helm values, with no need of creating and maintaining own Helm charts specific to only 1 team and/or business domain.
 
 It provides a transparent and finite (yet powerful) mechanism of Kubernetes manifests definition with minimal clean amount of code/configuration in the form of Helm values.
 
-The results of applying App Helm chart in a number of TT services demonstrate 20-40% lines of code/configuration reduction on average (up to x10 in proven cases), and significant time reduction spent on maintenance and support both within and outside of the team owning workloads.
+The results of applying App Helm chart in several TT services demonstrate 20-40% lines of code/configuration reduction on average (up to x10 in proven cases), and significant time reduction spent on maintenance and support both within and outside of the team owning workloads.
 
 ## How
 
@@ -46,7 +44,7 @@ pods:
   app: {}
 ```
 
-2. `metadata` and `spec` nesting is reduced in all manifests. For example:
+2. The `metadata` and `spec` nesting are reduced in all manifests. For example:
 
 ```yaml
 pods:
@@ -56,7 +54,7 @@ pods:
     serviceAccountName: app
 ```
 
-3. Access to frequently used `PodTemplateSpec` across different manifest kinds (eg: `spec.template`, `spec.jobTemplate.template`) is unified and shortened to just `pod`. For example:
+3. Access to frequently used `PodTemplateSpec` across different manifest kinds (e.g. `spec.template`, `spec.jobTemplate.template`) is unified and shortened to just `pod`. For example:
 
 ```yaml
 cronJobs:
@@ -65,7 +63,7 @@ cronJobs:
       serviceAccountName: app
 ```
 
-4. `common` dictionary provides access to defaults applied to all manifests of specific kind across all rendered manifefsts. For example, define `pod` defaults across all `cronJobs` and `pods`:
+4. The `common` dictionary provides access to defaults applied to all manifests of specific kind across all rendered manifests. For example, define `pod` defaults across all `cronJobs` and `pods`:
 
 ```yaml
 common:
@@ -100,7 +98,7 @@ cronJobs:
 
 For more details refer to [`dict` to `list` expansion](#dict-to-list-expansion) section.
 
-6. `~` (ie. shortened `null`) value set on a `list` field supporting expansion to `dict` in a more narrow context removes item from the manifest. For example, remove an item from a list of `containers` in a `pod`:
+6. The `~` (ie. shortened `null`) value set on a `list` field supporting expansion to `dict` in a narrower context removes item from the manifest. For example, remove an item from a list of `containers` in a `pod`:
 
 ```yaml
 common:
@@ -193,11 +191,11 @@ helm template tomtom-international/app -f values.yaml
 
 #### `dict` to `list` expansion
 
-Some manifests have fields of type `list` (eg: `Pod#spec.containers`) while Helm can only deep-merge `dict`s.
+Some manifests have fields of type `list` (e.g. `Pod#spec.containers`) while Helm can only deep-merge `dict`s.
 
 App Helm chart allows to represent selected manifest fields as dictionaries, allowing simple overrides of particular item on destination list.
 
-While key-value pairs in `dict` are not ordered (comparing to `list` items), keys in dictionaries define an order of each item in destination `list` by their alphabetical order. In addition to that, keys are used as default destination items' `name` field value (can be overridden or disabled), helping to reduce LoC without readability sacrifice.
+While key-value pairs in a `dict` are not ordered (comparing to `list` items), keys in dictionaries define an order of each item in destination `list` by their alphabetical order. In addition to that, keys are used as default destination items' `name` field value (can be overridden or disabled), helping to reduce LoC without readability sacrifice.
 
 NB: when using keys as `name` field, order of items in destination `list` will follow alphabetical order of keys. When key needs to change to adjust order, not affecting `name` field, specify desired `name` field in items explicitly.
 
@@ -214,6 +212,8 @@ VMRule#spec.groups
 VMRule#spec.groups.*.rules
 # each: Pod#spec, CronJob#spec.jobTemplate.template.spec, Deployment#spec.template.spec
 *.volumes
+*.containers
+*.initContainers
 *.containers.*.env
 *.containers.*.ports
 *.containers.*.volumeMounts
@@ -222,40 +222,49 @@ VMRule#spec.groups.*.rules
 *.initContainers.*.volumeMounts
 ```
 
+For implementation details on all supported manifests and fields, please search for `dict-to-list:` phrase in the sources.
+
 #### Reducers
 
-Besides default values supplied by App Helm chart for some manifests, there is a number of frequent use cases, where specifying or overriding a value brings lots of repetitive boilerplate. A good example is `ContainerSpec#env` field, which can be reduced to simple key-value dictionary, expanding during rendering into a `list` of `{name: <name>, value: <value>}` dictionaries expected by Kubernetes.
+Besides default values supplied by App Helm chart for some manifests, there is several frequent use cases, where specifying or overriding a value adds a lot of repetitive boilerplate code. A good example is the `ContainerSpec#env` field, which can be reduced to simple key-value dictionary, expanding during rendering into a `list` of `{name: <name>, value: <value>}` dictionaries as expected by Kubernetes.
 
 ##### List of fields supporting reducers
 
 ```
+Application#spec.destination.namespace
+Certificate#spec.target.secretName
 ExternalSecret#spec
+HTTPRoute#spec.parentRefs.*.name
+VMAlertmanagerConfig#spec.route.routes.*.continue
 # each: Pod#spec, CronJob#spec.jobTemplate.template.spec, Deployment#spec.template.spec
 *.containers.*.env
 *.initContainers.*.env
 ```
 
+For implementation details on all supported manifests and fields, please search for `reducers:` phrase in the sources.
+
 #### Extra logic
 
 App Helm chart assumes control of a small number of manifest fields that require special care in normal circumstances.
 
-To keep App Helm chart reusable across teams and business domains, only well-known quirks/behavior is being addressed. For example: setting `deployment.replicas` to `0` or specifying only one of the `podDisruptionBudget.{minAvailable,maxUnavaible}` fields but not both at the same time.
+To keep App Helm chart reusable across teams and business domains, only well-known quirks/behaviour is being addressed. For example: setting `deployment.replicas` to `0` or specifying only one of the `podDisruptionBudget.{minAvailable,maxUnavaible}` fields but not both at the same time.
 
 ##### List of fields supporting extra logic
 
 ```
+Application#spec.syncPolicy.automated
 Deployment#spec.replicas
 PodDisruptionBudget#spec.minAvailable
 PodDisruptionBudget#spec.maxUnavailable
 ```
 
-Please, refer to templates of corresponding kinds for details on exact behavior around these fields.
+For implementation details on all supported manifests and fields, please search for `extra-logic:` phrase in the sources.
 
 #### Post-rendering
 
-While most of the things can be accomplished by simple nested dictionary overrides and multiple value files, there are some situations when you'd want to render particular manifest fields from other values.
+While most of the things can be accomplished by simple nested dictionary overrides and multiple value files, there are some situations when you'd want to render manifest fields (including keys) from other values.
 
-One of the above examples demostrated custom `image.tag` value and its use to render `container.image` field, that often must be supplied as separate value/argument from a command line (eg: when using ArgoCD Image Updater).
+One of the above examples demonstrated custom `image.tag` value and its use to render `container.image` field, that often must be supplied as separate value/argument from a command line (e.g. when using ArgoCD Image Updater).
 
 Or, for example, you could use `.Release.Name` as dynamic resource names, generalising definition of multiple applications with same/similar manifests, different only in image name/tag or set of resources:
 
@@ -273,7 +282,7 @@ In fact, `.` context passed into post-rendering provides access to all values pa
 
 1. Use short and simple resource names.
 
-**Do**: use simple and repititive resource names across multiple manifest kinds, for example: `Pod` and `Secret` resources both named `redis` will help to unambiguously identify resource relationships without the need for extra characters.
+**Do**: use simple and repetitive resource names across multiple manifest kinds, for example: `Pod` and `Secret` resources both named `redis` will help to unambiguously identify resource relationships without the need for extra characters.
 
 **Don't**: use prefix/suffix resource names with resource types (or its abbreviation), for example: resource `Secret` with name `redis-secret` is better read if called just `redis`, it's already known to be of `Secret` kind.
 
