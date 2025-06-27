@@ -1,6 +1,9 @@
 {{- define "common.container-spec" -}}
+{{/* dict-to-list: expand env dict to list of {key, value} objects (if dict value is string), or a copy of dict's value */}}
 {{- if .env }}{{ $_ := set . "env" (include "common.to-list" .env | fromYamlArray) }}{{ end }}
+{{/* dict-to-list: expand ports dict to list of objects, with dict keys in name field */}}
 {{- if .ports }}{{ $_ := set . "ports" (include "common.to-list" .ports | fromYamlArray) }}{{ end }}
+{{/* dict-to-list: expand volumeMounts dict to list of objects, with dict keys in name field */}}
 {{- if .volumeMounts }}{{ $_ := set . "volumeMounts" (include "common.to-list" .volumeMounts | fromYamlArray) }}{{ end }}
 {{- toYaml . }}
 {{- end }}

@@ -1,6 +1,9 @@
 {{- define "common.pod-spec" -}}
+{{/* dict-to-list: expand initContainers dict to list of objects, with dict keys in name field */}}
 {{- if .initContainers }}{{ $_ := set . "initContainers" (include "common.to-list" (dict "$values" .initContainers "$common" .common.container "$helper" "common.container-spec") | fromYamlArray) }}{{ end }}
+{{/* dict-to-list: expand containers dict to list of objects, with dict keys in name field */}}
 {{- $_ := set . "containers" (include "common.to-list" (dict "$values" .containers "$common" .common.container "$helper" "common.container-spec") | fromYamlArray) }}
+{{/* dict-to-list: expand volumes dict to list of objects, with dict keys in name field */}}
 {{- if .volumes }}{{ $_ := set . "volumes" (include "common.to-list" .volumes | fromYamlArray) }}{{ end }}
 {{- include "common.render-spec" . }}
 {{- end }}
