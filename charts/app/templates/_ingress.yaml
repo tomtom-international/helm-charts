@@ -1,7 +1,0 @@
-{{- define "common.ingress" -}}
----
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata: {{- include "common.metadata" . | nindent 2 }}
-spec: {{- include "common.render-spec" . | nindent 2 }}
-{{- end -}}

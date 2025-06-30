@@ -1,5 +1,0 @@
-{{- range $k, $v := .Values.networkPolicies -}}
-{{- if not (eq $v nil) }}
-{{ include "common.render" (dict "type" "networkPolicy" "name" $k "spec" $v "$" $) }}
-{{- end -}}
-{{- end -}}

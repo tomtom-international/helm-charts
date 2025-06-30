@@ -1,7 +1,0 @@
-{{- define "common.istiogateway" -}}
----
-apiVersion: networking.istio.io/v1
-kind: Gateway
-metadata: {{- include "common.metadata" . | nindent 2 }}
-spec: {{- include "common.render-spec" . | nindent 2 }}
-{{- end -}}

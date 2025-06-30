@@ -1,4 +1,28 @@
 ---
+global:
+  supportedKinds:
+    applications: [argoproj.io/v1alpha1, Application, application, true]
+    authorizationPolicies: [security.istio.io/v1, AuthorizationPolicy, authorizationPolicy, false]
+    certificates: [cert-manager.io/v1, Certificate, certificate, true]
+    configMaps: [v1, ConfigMap, configMap, true]
+    cronJobs: [batch/v1, CronJob, cronJob, true]
+    deployments: [apps/v1, Deployment, deployment, true]
+    externalSecrets: [external-secrets.io/v1beta1, ExternalSecret, externalSecret, true]
+    horizontalPodAutoscalers: [autoscaling/v2, HorizontalPodAutoscaler, horizontalPodAutoscaler, false]
+    httpRoutes: [gateway.networking.k8s.io/v1, HTTPRoute, httpRoute, true]
+    ingresses: [networking.k8s.io/v1, Ingress, ingress, false]
+    istioGateways: [networking.istio.io/v1, Gateway, istioGateway, false]
+    istioVirtualServices: [networking.istio.io/v1beta1, VirtualService, istioVirtualService, false]
+    networkPolicies: [networking.k8s.io/v1, NetworkPolicy, networkPolicy, false]
+    persistentVolumeClaims: [v1, PersistentVolumeClaim, persistentVolumeClaim, false]
+    pods: [v1, Pod, pod, true]
+    podDisruptionBudgets: [policy/v1, PodDisruptionBudget, podDisruptionBudget, true]
+    secretStores: [external-secrets.io/v1beta1, SecretStore, secretStore, false]
+    services: [v1, Service, service, true]
+    serviceAccounts: [v1, ServiceAccount, serviceAccount, true]
+    vmAlertmanagerConfigs: [operator.victoriametrics.com/v1beta1, VMAlertmanagerConfig, vmAlertmanagerConfig, true]
+    vmRules: [operator.victoriametrics.com/v1beta1, VMRule, vmRule, true]
+
 common:
   labels: {}
   annotations: {}

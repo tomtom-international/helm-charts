@@ -1,17 +1,26 @@
 {{/*
 Renders manifests from a dict of resources, with defaults sources from common values and default resource name set to dict key.
-Passes original .Values and .common Helm values to a corresponding manifest template.
+Passes original .Values and .common Helm values to a corresponding manifest template or uses default renderer.
 Performs post-rendering using rendering output as plain Go template with global $ Helm context.
 */}}
 {{- define "common.render" -}}
+---
+apiVersion: {{ .apiVersion }}
+kind: {{ .kind }}
 {{- $values := (get . "$").Values }}
 {{- $spec := mergeOverwrite (dict "name" .name "common" $values.common "Values" $values) (deepCopy (get $values.common .type)) (deepCopy .spec) }}
-{{- $content := include (printf "common.%s" (lower .type)) $spec }}
+metadata: {{- include "common.metadata" $spec | nindent 2 }}
+{{- $content := "" }}
+{{- if .extended }}
+{{- $content = include (printf "common.%s" (lower .type)) $spec }}
+{{- else }}
+{{- $content = cat "spec:" (include "common.render-spec" $spec | nindent 2) }}
+{{- end }}
 {{ tpl $content (merge (dict "name" .name "Template" (dict "BasePath" "<inline>" "Name" "<noname>")) (deepCopy $spec) (get . "$")) }}
 {{- end -}}
 
 {{/*
-Renders manifest object as a plain YAML string.
+Renders object as a plain YAML string.
 */}}
 {{- define "common.render-spec" -}}
 {{- toYaml (omit . "name" "namespace" "labels" "annotations" "common" "Values") }}

@@ -1,7 +1,3 @@
 {{- define "common.pod" }}
----
-apiVersion: v1
-kind: Pod
-metadata: {{- include "common.metadata" . | nindent 2 }}
 spec: {{- include "common.pod-spec" . | nindent 2 }}
 {{- end }}

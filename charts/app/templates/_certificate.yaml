@@ -1,8 +1,4 @@
 {{- define "common.certificate" -}}
----
-apiVersion: cert-manager.io/v1
-kind: Certificate
-metadata: {{- include "common.metadata" . | nindent 2 }}
 {{/* reducers: default to own name for spec.target.secretName */}}
 {{- $defaults := dict "secretName" .name }}
 {{- if .target }}{{ $_ := mergeOverwrite . $defaults (deepCopy .) }}{{ end }}

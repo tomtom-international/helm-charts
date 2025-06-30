@@ -1,7 +1,0 @@
-{{- define "common.horizontalpodautoscaler" -}}
----
-apiVersion: autoscaling/v2
-kind: HorizontalPodAutoscaler
-metadata: {{- include "common.metadata" . | nindent 2 }}
-spec: {{- include "common.render-spec" . | nindent 2 }}
-{{- end -}}

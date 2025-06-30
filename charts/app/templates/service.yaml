@@ -1,5 +1,0 @@
-{{- range $k, $v := .Values.services -}}
-{{- if not (eq $v nil) }}
-{{ include "common.render" (dict "type" "service" "name" $k "spec" $v "$" $) }}
-{{- end -}}
-{{- end -}}

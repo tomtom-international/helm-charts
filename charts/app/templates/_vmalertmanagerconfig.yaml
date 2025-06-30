@@ -1,8 +1,4 @@
 {{- define "common.vmalertmanagerconfig" -}}
----
-apiVersion: operator.victoriametrics.com/v1beta1
-kind: VMAlertmanagerConfig
-metadata: {{- include "common.metadata" . | nindent 2 }}
 {{/* dict-to-list: expand spec.route.routes dict to list of objects, with dict keys in receiver field */}}
 {{/* reducers: default spec.route.routes.*.continue to true */}}
 {{- $routes := .route.routes | default dict }}

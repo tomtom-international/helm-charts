@@ -1,5 +1,0 @@
-{{- range $k, $v := .Values.podDisruptionBudgets }}
-{{- if not (eq $v nil) }}
-{{ include "common.render" (dict "type" "podDisruptionBudget" "name" $k "spec" $v "$" $) }}
-{{- end -}}
-{{- end -}}

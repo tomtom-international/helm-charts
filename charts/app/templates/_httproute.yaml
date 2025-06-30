@@ -1,8 +1,4 @@
 {{- define "common.httproute" -}}
----
-apiVersion: gateway.networking.k8s.io/v1
-kind: HTTPRoute
-metadata: {{- include "common.metadata" . | nindent 2 }}
 {{/* reducers: default to own name for spec.parentRefs.*.name (with other standard defaults) */}}
 {{- $parentRefDefaults := dict "group" "gateway.networking.k8s.io" "kind" "Gateway" "namespace" "istio-ingress" "port" 443 "name" .name }}
 {{ range $x := .parentRefs }}{{ $_ := mergeOverwrite $x $parentRefDefaults (deepCopy $x) }}{{ end }}

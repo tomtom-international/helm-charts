@@ -1,5 +1,0 @@
-{{- range $k, $v := .Values.ingresses -}}
-{{- if not (eq $v nil) }}
-{{ include "common.render" (dict "type" "ingress" "name" $k "spec" $v "$" $) }}
-{{- end -}}
-{{- end -}}

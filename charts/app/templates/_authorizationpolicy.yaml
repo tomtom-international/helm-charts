@@ -1,7 +1,0 @@
-{{- define "common.authorizationpolicy" -}}
----
-apiVersion: security.istio.io/v1
-kind: AuthorizationPolicy
-metadata: {{- include "common.metadata" . | nindent 2 }}
-spec: {{- include "common.render-spec" . | nindent 2 }}
-{{- end -}}
