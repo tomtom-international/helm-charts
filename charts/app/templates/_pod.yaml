@@ -6,5 +6,4 @@
 {{- /* dict-to-list: expand volumes dict to list of objects, with dict keys in name field */}}
 {{- if .spec.volumes }}{{ $_ := set .spec "volumes" (include "common.to-list" .spec.volumes | fromYamlArray) }}{{ end }}
 {{- $_ := unset . "common" }}
-{{- $_ := unset . "labels" }}
 {{- end -}}

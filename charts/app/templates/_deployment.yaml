@@ -2,7 +2,7 @@
 {{- /* extra-logic: distinguish zero and null spec.replicas values */}}
 {{- if not (or .spec.replicas (eq .spec.replicas 0.0)) }}{{ $_ := unset .spec "replicas" }}{{ end }}
 {{- /* extra-logic: set pod defaults from common.pod */}}
-{{- $pod := merge .spec.template .common.pod (dict "labels" .spec.selector.matchLabels "common" .common) }}
-{{- $_ := merge .spec.template (dict "metadata" (include "common.render-metadata" $pod | fromYaml)) }}
-{{- $_ := include "common.pod" $pod }}
+{{- $pod := merge .spec.template .common.pod (dict "metadata" (dict "labels" .spec.selector.matchLabels)) }}
+{{- $_ := merge $pod (include "common.render-metadata" $pod.metadata | fromYaml) }}
+{{- $_ := include "common.pod" (merge $pod (dict "common" .common)) }}
 {{- end -}}

@@ -7,29 +7,31 @@ Performs post-rendering using rendering output as plain Go template with global 
 ---
 apiVersion: {{ .apiVersion }}
 kind: {{ .kind }}
-{{- $values := (get . "$").Values }}
-{{- $manifest := mergeOverwrite (dict "name" .name "common" $values.common "Values" $values) (deepCopy (get $values.common .type)) (deepCopy .manifest) }}
-metadata: {{- include "common.render-metadata" $manifest | nindent 2 }}
+{{- $dollar := get . "$" }}
+{{- $common := deepCopy $dollar.Values.common }}
+{{- $manifest := mergeOverwrite (deepCopy (get $common .type | default dict)) (deepCopy .manifest) (dict "common" $common) }}
+{{- $_ := set $manifest "metadata" (merge ($manifest.metadata | default dict) $common.metadata (dict "name" .name)) }}
 {{- if .extended }}{{ $_ := include (printf "common.%s" (lower .type)) $manifest }}{{ end }}
 {{- $content := include "common.render-manifest" $manifest }}
-{{ tpl $content (merge (dict "name" .name "Template" (dict "BasePath" "<inline>" "Name" "<noname>")) (deepCopy $manifest) (get . "$")) }}
+{{- tpl $content (merge (dict "name" .name "Template" (dict "BasePath" "<inline>" "Name" "<noname>")) $manifest $dollar) }}
 {{- end -}}
 
 {{/*
 Renders manifest's metadata.
 */}}
 {{- define "common.render-metadata" -}}
-{{- $metadata := pick (mergeOverwrite (deepCopy .common) .) "name" "namespace" "labels" "annotations" -}}
+{{- $metadata := . -}}
 {{- range $k, $v := $metadata }}{{ if not $v }}{{ $_ := unset $metadata $k }}{{ end }}{{ end }}
-{{- toYaml $metadata }}
+metadata: {{- toYaml $metadata | nindent 2 }}
 {{- end -}}
 
 {{/*
-Renders the rest of the manifest.
+Renders a manifest.
 */}}
 {{- define "common.render-manifest" -}}
-{{- $manifest := (omit . "name" "namespace" "labels" "annotations" "common" "Values") }}
-{{- if $manifest }}{{ toYaml $manifest }}{{ end }}
+{{- include "common.render-metadata" .metadata }}
+{{- $manifest := omit . "metadata" "common" }}
+{{ if $manifest }}{{ toYaml $manifest }}{{ end }}
 {{- end -}}
 
 {{/*

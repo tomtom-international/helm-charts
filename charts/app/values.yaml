@@ -24,8 +24,9 @@ global:
     vmRules: [operator.victoriametrics.com/v1beta1, VMRule, vmRule, true]
 
 common:
-  labels: {}
-  annotations: {}
+  metadata:
+    labels: {}
+    annotations: {}
 
   serviceAccount: {}
 
@@ -70,7 +71,6 @@ common:
       securityContext:
         seccompProfile:
           type: RuntimeDefault
-      terminationGracePeriodSeconds: 30
 
   cronJob:
     spec:

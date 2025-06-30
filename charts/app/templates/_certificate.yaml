@@ -1,5 +1,5 @@
 {{- define "common.certificate" -}}
 {{- /* reducers: default to own name for spec.target.secretName */}}
-{{- $defaults := dict "secretName" .name }}
-{{- if .spec.target }}{{ $_ := mergeOverwrite .spec $defaults (deepCopy .spec) }}{{ end }}
+{{- $defaults := dict "secretName" .metadata.name }}
+{{- if .spec.target }}{{ $_ := merge .spec $defaults }}{{ end }}
 {{- end -}}
