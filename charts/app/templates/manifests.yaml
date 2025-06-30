@@ -1,8 +1,9 @@
 {{- range $kind, $values := $.Values }}
   {{- $info := get $.Values.global.supportedKinds $kind | default nil }}
+  {{- /* TODO: render as-is */}}
   {{- if not $info }}{{ continue }}{{ end }}
   {{- range $k, $v := $values -}}
     {{- if eq $v nil }}{{ continue }}{{ end }}
-    {{- include "common.render" (dict "apiVersion" (index $info 0) "kind" (index $info 1) "type" (index $info 2) "extended" (index $info 3) "name" $k "spec" $v "$" $) }}
+{{ include "common.render" (dict "apiVersion" (index $info 0) "kind" (index $info 1) "type" (index $info 2) "extended" (index $info 3) "name" $k "manifest" $v "$" $) }}
   {{- end -}}
 {{- end }}

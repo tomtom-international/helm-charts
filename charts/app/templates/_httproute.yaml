@@ -1,6 +1,5 @@
 {{- define "common.httproute" -}}
-{{/* reducers: default to own name for spec.parentRefs.*.name (with other standard defaults) */}}
+{{- /* reducers: default to own name for spec.parentRefs.*.name (with other standard defaults) */}}
 {{- $parentRefDefaults := dict "group" "gateway.networking.k8s.io" "kind" "Gateway" "namespace" "istio-ingress" "port" 443 "name" .name }}
-{{ range $x := .parentRefs }}{{ $_ := mergeOverwrite $x $parentRefDefaults (deepCopy $x) }}{{ end }}
-spec: {{- include "common.render-spec" . | nindent 2 }}
+{{- range $x := .spec.parentRefs }}{{ $_ := mergeOverwrite $x $parentRefDefaults (deepCopy $x) }}{{ end }}
 {{- end -}}

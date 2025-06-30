@@ -1,6 +1,5 @@
 {{- define "common.certificate" -}}
-{{/* reducers: default to own name for spec.target.secretName */}}
+{{- /* reducers: default to own name for spec.target.secretName */}}
 {{- $defaults := dict "secretName" .name }}
-{{- if .target }}{{ $_ := mergeOverwrite . $defaults (deepCopy .) }}{{ end }}
-spec: {{- include "common.render-spec" . | nindent 2 }}
-{{- end }}
+{{- if .spec.target }}{{ $_ := mergeOverwrite .spec $defaults (deepCopy .spec) }}{{ end }}
+{{- end -}}

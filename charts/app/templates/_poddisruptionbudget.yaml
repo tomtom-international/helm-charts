@@ -1,5 +1,4 @@
 {{- define "common.poddisruptionbudget" -}}
-{{/* extra-logic: can use only one of spec.minAvailable or spec.maxUnavailable, but not both at the same time */}}
-{{- if not (eq .minAvailable nil) }}{{ $_ := unset . "maxUnavailable" }}{{ end }}
-spec: {{- include "common.render-spec" . | nindent 2 }}
-{{- end }}
+{{- /* extra-logic: can use only one of spec.minAvailable or spec.maxUnavailable, but not both at the same time */}}
+{{- if not (eq .spec.minAvailable nil) }}{{ $_ := unset .spec "maxUnavailable" }}{{ end }}
+{{- end -}}

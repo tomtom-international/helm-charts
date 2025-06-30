@@ -1,6 +1,6 @@
 {{- define "common.cronjob" -}}
-{{- $pod := mergeOverwrite (deepCopy .common.pod) (.pod | default dict) (dict "common" .common) }}
-{{- $podTemplate := (dict "metadata" (include "common.metadata" $pod | fromYaml) "spec" (include "common.pod-spec" $pod | fromYaml)) }}
-{{ $_ := set . "jobTemplate" (dict "spec" (dict "template" $podTemplate)) }}
-spec: {{- include "common.render-spec" (omit . "pod") | nindent 2 }}
-{{- end }}
+{{- /* extra-logic: set pod defaults from common.pod */}}
+{{- $pod := merge .spec.jobTemplate.spec.template .common.pod (dict "common" .common) }}
+{{- $_ := merge .spec.jobTemplate.spec.template (dict "metadata" (include "common.render-metadata" $pod | fromYaml)) }}
+{{- $_ := include "common.pod" $pod }}
+{{- end -}}

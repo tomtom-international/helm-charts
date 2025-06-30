@@ -1,10 +1,9 @@
 {{- define "common.application" -}}
-{{/* extra-logic: empty spec.syncPolicy.automated when all fields are false */}}
-{{- if and (not .syncPolicy.automated.prune) (not .syncPolicy.automated.selfHeal) (not .syncPolicy.automated.allowEmpty) }}{{ $_ := set .syncPolicy "automated" dict }}{{ end }}
-{{/* dict-to-list: expand spec.sources dict to list of objects, discarding keys */}}
-{{- if .sources }}{{ $_ := set . "sources" (include "common.to-list" (dict "$values" .sources "$keyAt" nil) | fromYamlArray) }}{{ end }}
-{{/* reducers: default to own namespace for spec.destination.namespace */}}
+{{- /* extra-logic: empty spec.syncPolicy.automated when all fields are false */}}
+{{- if and (not .spec.syncPolicy.automated.prune) (not .spec.syncPolicy.automated.selfHeal) (not .spec.syncPolicy.automated.allowEmpty) }}{{ $_ := set .spec.syncPolicy "automated" dict }}{{ end }}
+{{- /* dict-to-list: expand spec.sources dict to list of objects, discarding keys */}}
+{{- if .spec.sources }}{{ $_ := set .spec "sources" (include "common.to-list" (dict "$values" .spec.sources "$keyAt" nil) | fromYamlArray) }}{{ end }}
+{{- /* reducers: default to own namespace for spec.destination.namespace */}}
 {{- $destinationDefaults := dict "namespace" .namespace }}
-{{ if .destination }}{{ $_ := mergeOverwrite .destination $destinationDefaults (deepCopy .destination) }}{{ end }}
-spec: {{- include "common.render-spec" . | nindent 2 }}
+{{- if .spec.destination }}{{ $_ := mergeOverwrite .spec.destination $destinationDefaults (deepCopy .spec.destination) }}{{ end }}
 {{- end -}}

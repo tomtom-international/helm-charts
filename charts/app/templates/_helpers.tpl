@@ -8,22 +8,28 @@ Performs post-rendering using rendering output as plain Go template with global 
 apiVersion: {{ .apiVersion }}
 kind: {{ .kind }}
 {{- $values := (get . "$").Values }}
-{{- $spec := mergeOverwrite (dict "name" .name "common" $values.common "Values" $values) (deepCopy (get $values.common .type)) (deepCopy .spec) }}
-metadata: {{- include "common.metadata" $spec | nindent 2 }}
-{{- $content := "" }}
-{{- if .extended }}
-{{- $content = include (printf "common.%s" (lower .type)) $spec }}
-{{- else }}
-{{- $content = cat "spec:" (include "common.render-spec" $spec | nindent 2) }}
-{{- end }}
-{{ tpl $content (merge (dict "name" .name "Template" (dict "BasePath" "<inline>" "Name" "<noname>")) (deepCopy $spec) (get . "$")) }}
+{{- $manifest := mergeOverwrite (dict "name" .name "common" $values.common "Values" $values) (deepCopy (get $values.common .type)) (deepCopy .manifest) }}
+metadata: {{- include "common.render-metadata" $manifest | nindent 2 }}
+{{- if .extended }}{{ $_ := include (printf "common.%s" (lower .type)) $manifest }}{{ end }}
+{{- $content := include "common.render-manifest" $manifest }}
+{{ tpl $content (merge (dict "name" .name "Template" (dict "BasePath" "<inline>" "Name" "<noname>")) (deepCopy $manifest) (get . "$")) }}
 {{- end -}}
 
 {{/*
-Renders object as a plain YAML string.
+Renders manifest's metadata.
 */}}
-{{- define "common.render-spec" -}}
-{{- toYaml (omit . "name" "namespace" "labels" "annotations" "common" "Values") }}
+{{- define "common.render-metadata" -}}
+{{- $metadata := pick (mergeOverwrite (deepCopy .common) .) "name" "namespace" "labels" "annotations" -}}
+{{- range $k, $v := $metadata }}{{ if not $v }}{{ $_ := unset $metadata $k }}{{ end }}{{ end }}
+{{- toYaml $metadata }}
+{{- end -}}
+
+{{/*
+Renders the rest of the manifest.
+*/}}
+{{- define "common.render-manifest" -}}
+{{- $manifest := (omit . "name" "namespace" "labels" "annotations" "common" "Values") }}
+{{- if $manifest }}{{ toYaml $manifest }}{{ end }}
 {{- end -}}
 
 {{/*
@@ -58,8 +64,8 @@ Parameters:
     {{- if not $v }}{{ continue }}{{ end }}
     {{- if kindIs "string" $v }}{{ $path := regexSplit "\\." $value -1 | reverse }}{{ range $x := $path }}{{ $v = dict $x $v }}{{ end }}{{ end }}
     {{- if $hasKey }}{{ $v = mergeOverwrite (dict $key $k) $v }}{{ end }}
-    {{- $v = mergeOverwrite (deepCopy $common) $v }}
-    {{- if $helper }}{{ $v = include $helper $v | fromYaml }}{{ end }}
+    {{- $_ := mergeOverwrite $v (deepCopy $common) $v }}
+    {{- if $helper }}{{ $_ := include $helper $v }}{{ end }}
     {{- $lst = append $lst $v }}
   {{- end }}
 {{- toYaml $lst }}

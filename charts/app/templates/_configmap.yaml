@@ -1,3 +1,0 @@
-{{- define "common.configmap" }}
-data: {{- toYaml .data | nindent 2 }}
-{{- end }}
