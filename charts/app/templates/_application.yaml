@@ -3,7 +3,7 @@
 {{- if and (not .spec.syncPolicy.automated.prune) (not .spec.syncPolicy.automated.selfHeal) (not .spec.syncPolicy.automated.allowEmpty) }}{{ $_ := set .spec.syncPolicy "automated" dict }}{{ end }}
 {{- /* dict-to-list: expand spec.sources dict to list of objects, discarding keys */}}
 {{- if .spec.sources }}{{ $_ := set .spec "sources" (include "common.to-list" (dict "$values" .spec.sources "$keyAt" nil) | fromYamlArray) }}{{ end }}
-{{- /* reducers: default to own namespace for spec.destination.namespace */}}
+{{- /* reducers: default to metadata.namespace for spec.destination.namespace */}}
 {{- $destinationDefaults := dict "namespace" .metadata.namespace }}
 {{- if .spec.destination }}{{ $_ := merge .spec.destination $destinationDefaults }}{{ end }}
 {{- end -}}

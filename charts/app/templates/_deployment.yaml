@@ -1,5 +1,5 @@
 {{- define "common.deployment" -}}
-{{- /* extra-logic: distinguish zero and null spec.replicas values */}}
+{{- /* extra-logic: distinguish 0 and null spec.replicas values */}}
 {{- if not (or .spec.replicas (eq .spec.replicas 0.0)) }}{{ $_ := unset .spec "replicas" }}{{ end }}
 {{- /* extra-logic: set pod defaults from common.pod */}}
 {{- $pod := merge .spec.template .common.pod (dict "metadata" (dict "labels" .spec.selector.matchLabels)) }}

@@ -1,7 +1,7 @@
 {{/*
 Renders manifests from a dict of resources, with defaults sources from common values and default resource name set to dict key.
-Passes original .Values and .common Helm values to a corresponding manifest template or uses default renderer.
-Performs post-rendering using rendering output as plain Go template with global $ Helm context.
+If found, uses manifest's helper to adjust manifest values before rendering.
+Performs post-rendering of rendering output as plain Go template with global $ Helm context.
 */}}
 {{- define "common.render" -}}
 ---
