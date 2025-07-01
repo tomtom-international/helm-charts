@@ -66,7 +66,7 @@ Parameters:
     {{- if not $v }}{{ continue }}{{ end }}
     {{- if kindIs "string" $v }}{{ $path := regexSplit "\\." $value -1 | reverse }}{{ range $x := $path }}{{ $v = dict $x $v }}{{ end }}{{ end }}
     {{- if $hasKey }}{{ $v = mergeOverwrite (dict $key $k) $v }}{{ end }}
-    {{- $_ := mergeOverwrite $v (deepCopy $common) $v }}
+    {{- if $common }}{{ $v = mergeOverwrite (deepCopy $common) $v }}{{ end }}
     {{- if $helper }}{{ $_ := include $helper $v }}{{ end }}
     {{- $lst = append $lst $v }}
   {{- end }}
