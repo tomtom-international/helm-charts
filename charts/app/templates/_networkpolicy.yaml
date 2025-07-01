@@ -1,7 +1,0 @@
-{{- define "common.networkpolicy" -}}
----
-apiVersion: networking.k8s.io/v1
-kind: NetworkPolicy
-metadata: {{- include "common.metadata" . | nindent 2 }}
-spec: {{- include "common.render-spec" . | nindent 2 }}
-{{- end -}}

@@ -1,5 +1,0 @@
-{{- range $k, $v := .Values.vmRules -}}
-{{- if not (eq $v nil) }}
-{{ include "common.render" (dict "type" "vmRule" "name" $k "spec" $v "$" $) }}
-{{- end -}}
-{{- end -}}

@@ -1,5 +1,0 @@
-{{- range $k, $v := .Values.applications -}}
-{{- if not (eq $v nil) }}
-{{ include "common.render" (dict "type" "application" "name" $k "spec" $v "$" $) }}
-{{- end -}}
-{{- end -}}

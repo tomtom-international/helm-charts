@@ -1,5 +1,0 @@
-{{- range $k, $v := .Values.persistentVolumeClaims }}
-{{- if not (eq $v nil) }}
-{{ include "common.render" (dict "type" "persistentVolumeClaim" "name" $k "spec" $v "$" $) }}
-{{- end -}}
-{{- end -}}

@@ -1,32 +1,60 @@
 ---
+global:
+  supportedKinds:
+    applications: [argoproj.io/v1alpha1, Application, application, true]
+    authorizationPolicies: [security.istio.io/v1, AuthorizationPolicy, authorizationPolicy, false]
+    certificates: [cert-manager.io/v1, Certificate, certificate, true]
+    configMaps: [v1, ConfigMap, configMap, false]
+    cronJobs: [batch/v1, CronJob, cronJob, true]
+    deployments: [apps/v1, Deployment, deployment, true]
+    externalSecrets: [external-secrets.io/v1beta1, ExternalSecret, externalSecret, true]
+    horizontalPodAutoscalers: [autoscaling/v2, HorizontalPodAutoscaler, horizontalPodAutoscaler, false]
+    httpRoutes: [gateway.networking.k8s.io/v1, HTTPRoute, httpRoute, true]
+    ingresses: [networking.k8s.io/v1, Ingress, ingress, false]
+    istioGateways: [networking.istio.io/v1, Gateway, istioGateway, false]
+    istioVirtualServices: [networking.istio.io/v1beta1, VirtualService, istioVirtualService, false]
+    networkPolicies: [networking.k8s.io/v1, NetworkPolicy, networkPolicy, false]
+    persistentVolumeClaims: [v1, PersistentVolumeClaim, persistentVolumeClaim, false]
+    pods: [v1, Pod, pod, true]
+    podDisruptionBudgets: [policy/v1, PodDisruptionBudget, podDisruptionBudget, true]
+    secretStores: [external-secrets.io/v1beta1, SecretStore, secretStore, false]
+    services: [v1, Service, service, true]
+    serviceAccounts: [v1, ServiceAccount, serviceAccount, false]
+    vmAlertmanagerConfigs: [operator.victoriametrics.com/v1beta1, VMAlertmanagerConfig, vmAlertmanagerConfig, true]
+    vmRules: [operator.victoriametrics.com/v1beta1, VMRule, vmRule, true]
+
 common:
-  labels: {}
-  annotations: {}
+  metadata:
+    labels: {}
+    annotations: {}
 
   serviceAccount: {}
 
   secretStore:
-    provider:
-      azurekv:
-        authType: WorkloadIdentity
+    spec:
+      provider:
+        azurekv:
+          authType: WorkloadIdentity
 
   externalSecret:
-    refreshInterval: 1h
-    secretStoreRef:
-      kind: SecretStore
-    target:
-      creationPolicy: Owner
+    spec:
+      refreshInterval: 1h
+      secretStoreRef:
+        kind: SecretStore
+      target:
+        creationPolicy: Owner
 
   configMap: {}
 
   persistentVolumeClaim:
-    storageClassName: managed-csi
-    accessModes:
-      - ReadWriteOnce
-    resources:
-      requests:
-        storage: 1Gi
-    volumeMode: Filesystem
+    spec:
+      storageClassName: managed-csi
+      accessModes:
+        - ReadWriteOnce
+      resources:
+        requests:
+          storage: 1Gi
+      volumeMode: Filesystem
 
   container:
     securityContext:
@@ -36,47 +64,56 @@ common:
         drop: [ALL]
 
   pod:
-    serviceAccountName: default
-    automountServiceAccountToken: false
-    enableServiceLinks: false
-    securityContext:
-      seccompProfile:
-        type: RuntimeDefault
-    terminationGracePeriodSeconds: 30
+    spec:
+      serviceAccountName: default
+      automountServiceAccountToken: false
+      enableServiceLinks: false
+      securityContext:
+        seccompProfile:
+          type: RuntimeDefault
 
   cronJob:
-    concurrencyPolicy: Forbid
-    successfulJobsHistoryLimit: 1
+    spec:
+      concurrencyPolicy: Forbid
+      successfulJobsHistoryLimit: 1
+      jobTemplate:
+        spec:
+          template: {}
 
   deployment:
-    revisionHistoryLimit: 3
-    strategy:
-      type: RollingUpdate
+    spec:
+      revisionHistoryLimit: 3
+      strategy:
+        type: RollingUpdate
+      template: {}
 
   service: {}
 
   podDisruptionBudget:
-    maxUnavailable: 1
-    unhealthyPodEvictionPolicy: AlwaysAllow
+    spec:
+      maxUnavailable: 1
+      unhealthyPodEvictionPolicy: AlwaysAllow
 
   horizontalPodAutoscaler:
-    scaleTargetRef:
-      apiVersion: apps/v1
-      kind: Deployment
-    metrics:
-    - type: Resource
-      resource:
-        name: cpu
-        target:
-          type: Utilization
-          averageUtilization: 75
-    minReplicas: 2
-    maxReplicas: 10
+    spec:
+      scaleTargetRef:
+        apiVersion: apps/v1
+        kind: Deployment
+      metrics:
+      - type: Resource
+        resource:
+          name: cpu
+          target:
+            type: Utilization
+            averageUtilization: 75
+      minReplicas: 2
+      maxReplicas: 10
 
   httpRoute: {}
 
   ingress:
-    ingressClassName: istio
+    spec:
+      ingressClassName: istio
 
   istioVirtualService: {}
 
@@ -85,25 +122,28 @@ common:
   authorizationPolicy: {}
 
   application:
-    destination:
-      server: https://kubernetes.default.svc
-    syncPolicy:
-      automated: {}
+    spec:
+      destination:
+        server: https://kubernetes.default.svc
+      syncPolicy:
+        automated: {}
 
   certificate:
-    issuerRef:
-      name: hydrantid
-      kind: ClusterIssuer
-      group: cert-manager.io
-    usages:
-      - digital signature
-      - key encipherment
+    spec:
+      issuerRef:
+        name: hydrantid
+        kind: ClusterIssuer
+        group: cert-manager.io
+      usages:
+        - digital signature
+        - key encipherment
 
   networkPolicy: {}
 
   vmAlertmanagerConfig:
-    route:
-      group_interval: 1m
+    spec:
+      route:
+        group_interval: 1m
 
   vmRule: {}
 

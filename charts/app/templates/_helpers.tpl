@@ -1,20 +1,37 @@
 {{/*
 Renders manifests from a dict of resources, with defaults sources from common values and default resource name set to dict key.
-Passes original .Values and .common Helm values to a corresponding manifest template.
-Performs post-rendering using rendering output as plain Go template with global $ Helm context.
+If found, uses manifest's helper to adjust manifest values before rendering.
+Performs post-rendering of rendering output as plain Go template with global $ Helm context.
 */}}
 {{- define "common.render" -}}
-{{- $values := (get . "$").Values }}
-{{- $spec := mergeOverwrite (dict "name" .name "common" $values.common "Values" $values) (deepCopy (get $values.common .type)) (deepCopy .spec) }}
-{{- $content := include (printf "common.%s" (lower .type)) $spec }}
-{{ tpl $content (merge (dict "name" .name "Template" (dict "BasePath" "<inline>" "Name" "<noname>")) (deepCopy $spec) (get . "$")) }}
+---
+apiVersion: {{ .apiVersion }}
+kind: {{ .kind }}
+{{- $dollar := get . "$" }}
+{{- $common := deepCopy $dollar.Values.common }}
+{{- $manifest := mergeOverwrite (deepCopy (get $common .type | default dict)) (deepCopy .manifest) (dict "common" $common) }}
+{{- $_ := set $manifest "metadata" (merge ($manifest.metadata | default dict) $common.metadata (dict "name" .name)) }}
+{{- if .extended }}{{ $_ := include (printf "common.%s" (lower .type)) $manifest }}{{ end }}
+{{- $content := include "common.render-manifest" $manifest }}
+{{- tpl $content (merge (dict "name" .name "Template" (dict "BasePath" "<inline>" "Name" "<noname>")) $manifest $dollar) }}
 {{- end -}}
 
 {{/*
-Renders manifest object as a plain YAML string.
+Renders manifest's metadata.
 */}}
-{{- define "common.render-spec" -}}
-{{- toYaml (omit . "name" "namespace" "labels" "annotations" "common" "Values") }}
+{{- define "common.render-metadata" -}}
+{{- $metadata := . -}}
+{{- range $k, $v := $metadata }}{{ if not $v }}{{ $_ := unset $metadata $k }}{{ end }}{{ end }}
+metadata: {{- toYaml $metadata | nindent 2 }}
+{{- end -}}
+
+{{/*
+Renders a manifest.
+*/}}
+{{- define "common.render-manifest" -}}
+{{- include "common.render-metadata" .metadata }}
+{{- $manifest := omit . "metadata" "common" }}
+{{ if $manifest }}{{ toYaml $manifest }}{{ end }}
 {{- end -}}
 
 {{/*
@@ -49,8 +66,8 @@ Parameters:
     {{- if not $v }}{{ continue }}{{ end }}
     {{- if kindIs "string" $v }}{{ $path := regexSplit "\\." $value -1 | reverse }}{{ range $x := $path }}{{ $v = dict $x $v }}{{ end }}{{ end }}
     {{- if $hasKey }}{{ $v = mergeOverwrite (dict $key $k) $v }}{{ end }}
-    {{- $v = mergeOverwrite (deepCopy $common) $v }}
-    {{- if $helper }}{{ $v = include $helper $v | fromYaml }}{{ end }}
+    {{- $_ := mergeOverwrite $v (deepCopy $common) $v }}
+    {{- if $helper }}{{ $_ := include $helper $v }}{{ end }}
     {{- $lst = append $lst $v }}
   {{- end }}
 {{- toYaml $lst }}

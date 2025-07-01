@@ -1,7 +1,0 @@
-{{- define "common.configmap" }}
----
-apiVersion: v1
-kind: ConfigMap
-metadata: {{- include "common.metadata" . | nindent 2 }}
-data: {{- toYaml .data | nindent 2 }}
-{{- end }}
