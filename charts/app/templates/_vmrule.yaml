@@ -3,7 +3,9 @@
 apiVersion: operator.victoriametrics.com/v1beta1
 kind: VMRule
 metadata: {{- include "common.metadata" . | nindent 2 }}
+{{/* dict-to-list: expand spec.groups.*.rules dict to list of objects, with dict keys in alert field */}}
 {{- range $k, $v := .groups }}{{- $_ := set $v "rules" (include "common.to-list" (dict "$values" .rules "$keyAt" "alert") | fromYamlArray) }}{{ end }}
+{{/* dict-to-list: expand spec.groups dict to list of objects, with dict keys in name field */}}
 {{- $_ := set . "groups" (include "common.to-list" .groups | fromYamlArray) }}
 spec: {{- include "common.render-spec" . | nindent 2 }}
 {{- end -}}
