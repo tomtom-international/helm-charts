@@ -1,0 +1,15 @@
+suite: test poddisruptionbudget
+templates:
+  - manifests.yaml
+tests:
+  - it: should work
+    values:
+      - ./fixtures/poddisruptionbudget.yaml
+    asserts:
+      - isKind:
+          of: PodDisruptionBudget
+      - equal:
+          path: spec.minAvailable
+          value: 1
+      - isNull:
+          path: spec.maxUnavailable

@@ -1,0 +1,18 @@
+vmAlertmanagerConfigs:
+  app:
+    spec:
+      route:
+        receiver: slack
+        routes:
+          slack:
+            matchers:
+              - severity=~"warning|critical"
+      receivers:
+        slack:
+          slack_configs:
+            default:
+              channel: '#slack-channel'
+              api_url:
+                name: vmalerts
+                key: slack-api-url
+              send_resolved: true

@@ -1,0 +1,29 @@
+suite: test metadata
+templates:
+  - manifests.yaml
+tests:
+  - it: should work with defaults
+    values:
+      - ./fixtures/metadata.yaml
+    documentIndex: 0
+    asserts:
+      - isKind:
+          of: ServiceAccount
+      - equal:
+          path: metadata
+          value:
+            name: app1
+            annotations:
+              a: b
+  - it: should work with overrides
+    values:
+      - ./fixtures/metadata.yaml
+    documentIndex: 1
+    asserts:
+      - isKind:
+          of: ServiceAccount
+      - equal:
+          path: metadata
+          value:
+            name: z
+            namespace: 'y'

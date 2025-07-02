@@ -1,0 +1,20 @@
+pods:
+  app:
+    spec:
+      initContainers:
+        app:
+          image: nginx
+      containers:
+        app:
+          image: nginx
+          env:
+            A: B
+          ports:
+            http:
+              port: 80
+          volumeMounts:
+            home:
+              mountPath: /home/user
+      volumes:
+        home:
+          emptyDir: {}

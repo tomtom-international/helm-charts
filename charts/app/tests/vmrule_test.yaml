@@ -1,0 +1,20 @@
+suite: test vmrule
+templates:
+  - manifests.yaml
+tests:
+  - it: should work
+    values:
+      - ./fixtures/vmrule.yaml
+    asserts:
+      - isKind:
+          of: VMRule
+      - equal:
+          path: spec.groups
+          value:
+            - name: Alerts
+              rules:
+                - alert: KubernetesPodNotHealthy
+                  expr: 'sum by (pod) (query) > 0'
+                  for: 5m
+                  labels:
+                    severity: critical

@@ -1,0 +1,21 @@
+suite: test certificate
+templates:
+  - manifests.yaml
+tests:
+  - it: should work
+    values:
+      - ./fixtures/certificate.yaml
+    asserts:
+      - isKind:
+          of: Certificate
+      - equal:
+          path: spec
+          value:
+            issuerRef:
+              group: cert-manager.io
+              kind: ClusterIssuer
+              name: hydrantid
+            secretName: app
+            usages:
+              - digital signature
+              - key encipherment

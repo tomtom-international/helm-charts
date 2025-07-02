@@ -1,0 +1,17 @@
+suite: test service
+templates:
+  - manifests.yaml
+tests:
+  - it: should work
+    values:
+      - ./fixtures/service.yaml
+    asserts:
+      - isKind:
+          of: Service
+      - equal:
+          path: spec.ports
+          value:
+            - name: smth
+              port: 4000
+            - name: http
+              port: 80
