@@ -1,0 +1,17 @@
+name: Test App Chart
+
+on:
+  push:
+    paths:
+      - charts/app/**
+  workflow_dispatch:
+    inputs:
+
+jobs:
+  unittest:
+    runs-on: az-weu-ubuntu-24.04-amd64-1cpu
+    steps:
+      - uses: actions/checkout@v4
+      - uses: d3adb5/helm-unittest-action@v2
+      - run: test -d ./charts/app
+      - run: helm lint ./charts/app --quiet
