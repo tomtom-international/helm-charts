@@ -12,6 +12,7 @@ Contents:
     - [Extra logic](#extra-logic)
     - [Post-rendering](#post-rendering)
 - [Best practices](#best-practices)
+- [Development](#development)
 
 ## Why
 
@@ -282,3 +283,12 @@ In fact, `.` context passed into post-rendering provides access to all values pa
 **Do**: top-level value file named `app.yaml` in root folder and `{dev,prod}/app.yaml` environment-specific files in subfolders help to consolidate related configurations.
 
 **Don't**: multiple environment-specific value files called `values{,.dev,.prod}.yaml`, besides having unnecessary prefix is not easy to navigate in plain structure when working with more than one App Helm chart release values under single repo/path prefix.
+
+## Development
+
+Use [`helm unittest`](https://github.com/helm-unittest/helm-unittest) for testing:
+
+```shell
+helm plugin install https://github.com/helm-unittest/helm-unittest.git
+helm unittest .
+```

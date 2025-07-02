@@ -1,0 +1,9 @@
+serviceAccounts:
+  app1:
+    metadata:
+      annotations:
+        a: b
+  app2:
+    metadata:
+      name: z
+      namespace: 'y'

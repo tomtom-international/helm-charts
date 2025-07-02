@@ -1,0 +1,30 @@
+suite: test vmalertmanagerconfig
+templates:
+  - manifests.yaml
+tests:
+  - it: should work
+    values:
+      - ./fixtures/vmalertmanagerconfig.yaml
+    asserts:
+      - isKind:
+          of: VMAlertmanagerConfig
+      - equal:
+          path: spec.route
+          value:
+            group_interval: 1m
+            receiver: slack
+            routes:
+              - receiver: slack
+                continue: true
+                matchers:
+                  - severity=~"warning|critical"
+      - equal:
+          path: spec.receivers
+          value:
+            - name: slack
+              slack_configs:
+                - channel: '#slack-channel'
+                  api_url:
+                    name: vmalerts
+                    key: slack-api-url
+                  send_resolved: true

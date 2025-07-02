@@ -1,0 +1,49 @@
+suite: test pod
+templates:
+  - manifests.yaml
+tests:
+  - it: should work
+    values:
+      - ./fixtures/pod.yaml
+    asserts:
+      - isKind:
+          of: Pod
+      - equal:
+          path: spec
+          value:
+            automountServiceAccountToken: false
+            enableServiceLinks: false
+            containers:
+              - name: app
+                image: nginx
+                env:
+                  - name: A
+                    value: B
+                ports:
+                  - name: http
+                    port: 80
+                securityContext:
+                  allowPrivilegeEscalation: false
+                  capabilities:
+                    drop:
+                      - ALL
+                  readOnlyRootFilesystem: true
+                volumeMounts:
+                  - name: home
+                    mountPath: /home/user
+            initContainers:
+              - name: app
+                image: nginx
+                securityContext:
+                  allowPrivilegeEscalation: false
+                  capabilities:
+                    drop:
+                      - ALL
+                  readOnlyRootFilesystem: true
+            securityContext:
+              seccompProfile:
+                type: RuntimeDefault
+            serviceAccountName: default
+            volumes:
+              - name: home
+                emptyDir: {}

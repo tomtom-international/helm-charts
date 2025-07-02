@@ -1,0 +1,14 @@
+deployments:
+  app:
+    spec:
+      replicas: 0
+      selector:
+        matchLabels:
+          app: app
+      template:
+        spec:
+          containers:
+            app:
+              image: nginx
+              env:
+                A: B

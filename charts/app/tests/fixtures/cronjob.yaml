@@ -1,0 +1,13 @@
+cronJobs:
+  app:
+    spec:
+      jobTemplate:
+        spec:
+          template:
+            spec:
+              containers:
+                app:
+                  image: nginx
+                  env:
+                    A: B
+

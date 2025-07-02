@@ -1,0 +1,21 @@
+suite: test application
+templates:
+  - manifests.yaml
+tests:
+  - it: should work
+    values:
+      - ./fixtures/application.yaml
+    asserts:
+      - isKind:
+          of: Application
+      - equal:
+          path: spec
+          value:
+            sources:
+              - path: a
+              - path: b
+            destination:
+              server: https://kubernetes.default.svc
+              namespace: ns
+            syncPolicy:
+              automated: {}

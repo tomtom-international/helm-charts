@@ -1,0 +1,18 @@
+suite: test httproute
+templates:
+  - manifests.yaml
+tests:
+  - it: should work
+    values:
+      - ./fixtures/httproute.yaml
+    asserts:
+      - isKind:
+          of: HTTPRoute
+      - equal:
+          path: spec.parentRefs
+          value:
+            - group: gateway.networking.k8s.io
+              kind: Gateway
+              namespace: istio-ingress
+              port: 443
+              name: gateway-private

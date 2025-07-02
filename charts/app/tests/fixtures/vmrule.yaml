@@ -1,0 +1,12 @@
+vmRules:
+  app:
+    spec:
+      groups:
+        default:
+          name: Alerts
+          rules:
+            KubernetesPodNotHealthy:
+              expr: 'sum by (pod) (query) > 0'
+              for: 5m
+              labels:
+                severity: critical

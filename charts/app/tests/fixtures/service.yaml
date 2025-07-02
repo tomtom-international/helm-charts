@@ -1,0 +1,9 @@
+services:
+  app:
+    spec:
+      ports:
+        http:
+          port: 80
+        abc:
+          name: smth
+          port: 4000

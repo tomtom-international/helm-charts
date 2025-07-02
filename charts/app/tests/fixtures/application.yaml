@@ -1,0 +1,15 @@
+applications:
+  app:
+    metadata:
+      namespace: ns
+    spec:
+      sources:
+        chart:
+          path: a
+        values:
+          path: b
+      syncPolicy:
+        automated:
+          prune: false
+          selfHeal: false
+          allowEmpty: false

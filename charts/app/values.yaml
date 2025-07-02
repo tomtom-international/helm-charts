@@ -85,6 +85,7 @@ common:
       revisionHistoryLimit: 3
       strategy:
         type: RollingUpdate
+      selector: {}
       template: {}
 
   service: {}

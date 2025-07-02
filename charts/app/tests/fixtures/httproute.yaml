@@ -1,0 +1,5 @@
+httpRoutes:
+  app:
+    spec:
+      parentRefs:
+        - name: gateway-private
