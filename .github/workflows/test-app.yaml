@@ -1,3 +1,4 @@
+---
 name: Test App Chart
 
 on:
@@ -6,6 +7,10 @@ on:
       - charts/app/**
   workflow_dispatch:
     inputs:
+
+permissions:
+  id-token: write
+  contents: read
 
 jobs:
   unittest:
