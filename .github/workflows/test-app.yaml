@@ -18,5 +18,5 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: d3adb5/helm-unittest-action@v2
-      - run: test -d ./charts/app
+        charts: charts/app
       - run: helm lint ./charts/app --quiet
