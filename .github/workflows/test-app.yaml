@@ -8,6 +8,10 @@ on:
   workflow_dispatch:
     inputs:
 
+permissions:
+  id-token: write
+  contents: read
+
 jobs:
   unittest:
     runs-on: ubuntu-latest
