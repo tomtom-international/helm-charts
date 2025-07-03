@@ -8,13 +8,9 @@ on:
   workflow_dispatch:
     inputs:
 
-permissions:
-  id-token: write
-  contents: read
-
 jobs:
   unittest:
-    runs-on: az-weu-ubuntu-24.04-amd64-1cpu
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: d3adb5/helm-unittest-action@v2
