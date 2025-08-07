@@ -20,6 +20,7 @@ global:
     secretStores: [external-secrets.io/v1beta1, SecretStore, secretStore, false]
     services: [v1, Service, service, true]
     serviceAccounts: [v1, ServiceAccount, serviceAccount, false]
+    statefulSets: [apps/v1, StatefulSet, statefulSet, true]
     vmAlertmanagerConfigs: [operator.victoriametrics.com/v1beta1, VMAlertmanagerConfig, vmAlertmanagerConfig, true]
     vmRules: [operator.victoriametrics.com/v1beta1, VMRule, vmRule, true]
 
@@ -85,6 +86,12 @@ common:
       revisionHistoryLimit: 3
       strategy:
         type: RollingUpdate
+      selector: {}
+      template: {}
+
+  statefulSet:
+    spec:
+      revisionHistoryLimit: 3
       selector: {}
       template: {}
 
