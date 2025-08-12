@@ -1,7 +1,7 @@
 ---
 global:
   supportedKinds:
-    applications: [argoproj.io/v1alpha1, Application, application, true]
+    argocdApplications: [argoproj.io/v1alpha1, Application, argocdApplication, true]
     authorizationPolicies: [security.istio.io/v1, AuthorizationPolicy, authorizationPolicy, false]
     certificates: [cert-manager.io/v1, Certificate, certificate, true]
     configMaps: [v1, ConfigMap, configMap, false]
@@ -129,7 +129,7 @@ common:
 
   authorizationPolicy: {}
 
-  application:
+  argocdApplication:
     spec:
       destination:
         server: https://kubernetes.default.svc

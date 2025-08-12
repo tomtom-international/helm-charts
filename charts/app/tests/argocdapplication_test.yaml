@@ -1,10 +1,10 @@
-suite: test application
+suite: test argocdApplication
 templates:
   - manifests.yaml
 tests:
   - it: should work
     values:
-      - ./fixtures/application.yaml
+      - ./fixtures/argocdapplication.yaml
     asserts:
       - isKind:
           of: Application
