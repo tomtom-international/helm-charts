@@ -1,4 +1,4 @@
-{{- define "common.application" -}}
+{{- define "common.argocdapplication" -}}
 {{- /* extra-logic: empty spec.syncPolicy.automated when all fields are false */}}
 {{- if and (not .spec.syncPolicy.automated.prune) (not .spec.syncPolicy.automated.selfHeal) (not .spec.syncPolicy.automated.allowEmpty) }}{{ $_ := set .spec.syncPolicy "automated" dict }}{{ end }}
 {{- /* dict-to-list: expand spec.sources dict to list of objects, discarding keys */}}
