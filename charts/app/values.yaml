@@ -2,7 +2,6 @@
 global:
   supportedKinds:
     argocdApplications: [argoproj.io/v1alpha1, Application, argocdApplication, true]
-    authorizationPolicies: [security.istio.io/v1, AuthorizationPolicy, authorizationPolicy, false]
     certificates: [cert-manager.io/v1, Certificate, certificate, true]
     configMaps: [v1, ConfigMap, configMap, false]
     cronJobs: [batch/v1, CronJob, cronJob, true]
@@ -13,6 +12,7 @@ global:
     ingresses: [networking.k8s.io/v1, Ingress, ingress, false]
     istioGateways: [networking.istio.io/v1, Gateway, istioGateway, false]
     istioVirtualServices: [networking.istio.io/v1beta1, VirtualService, istioVirtualService, false]
+    istioAuthorizationPolicies: [security.istio.io/v1, AuthorizationPolicy, istioAuthorizationPolicy, false]
     networkPolicies: [networking.k8s.io/v1, NetworkPolicy, networkPolicy, false]
     persistentVolumeClaims: [v1, PersistentVolumeClaim, persistentVolumeClaim, false]
     pods: [v1, Pod, pod, true]
@@ -123,11 +123,11 @@ common:
     spec:
       ingressClassName: istio
 
-  istioVirtualService: {}
-
   istioGateway: {}
 
-  authorizationPolicy: {}
+  istioVirtualService: {}
+
+  istioAuthorizationPolicy: {}
 
   argocdApplication:
     spec:
