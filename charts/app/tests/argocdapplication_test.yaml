@@ -1,4 +1,4 @@
-suite: test argocdApplication
+suite: test argocdapplication
 templates:
   - manifests.yaml
 tests:

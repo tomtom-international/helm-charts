@@ -201,7 +201,7 @@ VMAlertmanagerConfig#spec.receivers.*
 VMAlertmanagerConfig#spec.route.routes
 VMRule#spec.groups
 VMRule#spec.groups.*.rules
-# each: Pod#spec, CronJob#spec.jobTemplate.template.spec, Deployment#spec.template.spec
+# each: Pod#spec, CronJob#spec.jobTemplate.template.spec, {Deployment,StatefulSet}#spec.template.spec
 *.volumes
 *.containers
 *.initContainers
@@ -227,7 +227,7 @@ Certificate#spec.target.secretName
 ExternalSecret#spec
 HTTPRoute#spec.parentRefs.*.name
 VMAlertmanagerConfig#spec.route.routes.*.continue
-# each: Pod#spec, CronJob#spec.jobTemplate.template.spec, Deployment#spec.template.spec
+# each: Pod#spec, CronJob#spec.jobTemplate.template.spec, {Deployment,StatefulSet}#spec.template.spec
 *.containers.*.env
 *.initContainers.*.env
 ```
