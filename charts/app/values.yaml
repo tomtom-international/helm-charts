@@ -64,7 +64,7 @@ common:
       capabilities:
         drop: [ALL]
 
-  pod:
+  pod: &pod
     spec:
       serviceAccountName: default
       automountServiceAccountToken: false
@@ -79,23 +79,24 @@ common:
       successfulJobsHistoryLimit: 1
       jobTemplate:
         spec:
-          template: {}
+          template:
+            <<: *pod
 
   deployment:
     spec:
-      revisionHistoryLimit: 3
       strategy:
         type: RollingUpdate
+      revisionHistoryLimit: 3
       selector: {}
-      template: {}
+      template:
+        <<: *pod
 
   statefulSet:
     spec:
       revisionHistoryLimit: 3
       selector: {}
-      template: {}
-
-  service: {}
+      template:
+        <<: *pod
 
   podDisruptionBudget:
     spec:
@@ -116,6 +117,8 @@ common:
             averageUtilization: 75
       minReplicas: 2
       maxReplicas: 10
+
+  service: {}
 
   httpRoute: {}
 
@@ -154,5 +157,3 @@ common:
         group_interval: 1m
 
   vmRule: {}
-
-  hooks: {}

@@ -1,6 +1,6 @@
 {{- define "common.statefulset" -}}
 {{- /* extra-logic: set pod labels from spec.selector.matchLabels */}}
-{{- $pod := merge .spec.template .common.pod (dict "metadata" (dict "labels" .spec.selector.matchLabels)) }}
+{{- $pod := merge .spec.template (dict "metadata" (dict "labels" .spec.selector.matchLabels)) }}
 {{- $_ := merge $pod (include "common.render-metadata" $pod.metadata | fromYaml) }}
 {{- $_ := include "common.pod" (merge $pod (dict "common" .common)) }}
 {{- end -}}

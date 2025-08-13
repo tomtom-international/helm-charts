@@ -1,8 +1,8 @@
 {{- define "common.deployment" -}}
 {{- /* extra-logic: distinguish 0 and null spec.replicas values */}}
 {{- if not (or .spec.replicas (eq .spec.replicas 0.0)) }}{{ $_ := unset .spec "replicas" }}{{ end }}
-{{- /* extra-logic: set pod defaults from common.pod */}}
-{{- $pod := merge .spec.template .common.pod (dict "metadata" (dict "labels" .spec.selector.matchLabels)) }}
+{{- /* extra-logic: set pod labels from spec.selector.matchLabels */}}
+{{- $pod := merge .spec.template (dict "metadata" (dict "labels" .spec.selector.matchLabels)) }}
 {{- $_ := merge $pod (include "common.render-metadata" $pod.metadata | fromYaml) }}
 {{- $_ := include "common.pod" (merge $pod (dict "common" .common)) }}
 {{- end -}}

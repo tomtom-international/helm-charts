@@ -1,6 +1,5 @@
 {{- define "common.cronjob" -}}
-{{- /* extra-logic: set pod defaults from common.pod */}}
-{{- $pod := merge .spec.jobTemplate.spec.template .common.pod }}
+{{- $pod := .spec.jobTemplate.spec.template }}
 {{- $_ := merge $pod (include "common.render-metadata" $pod.metadata | fromYaml) }}
 {{- $_ := include "common.pod" (merge $pod (dict "common" .common)) }}
 {{- end -}}
