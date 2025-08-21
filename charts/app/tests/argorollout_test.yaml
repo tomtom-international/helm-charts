@@ -1,10 +1,10 @@
-suite: test argocdrollout
+suite: test argorollout
 templates:
   - manifests.yaml
 tests:
   - it: should work with template
     values:
-      - ./fixtures/argocdrollout.yaml
+      - ./fixtures/argorollout.yaml
     documentIndex: 0
     asserts:
       - isKind:
@@ -40,7 +40,7 @@ tests:
                 serviceAccountName: default
   - it: should work with workloadRef
     values:
-      - ./fixtures/argocdrollout.yaml
+      - ./fixtures/argorollout.yaml
     documentIndex: 1
     asserts:
       - isKind:

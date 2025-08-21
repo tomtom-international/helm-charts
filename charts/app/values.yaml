@@ -1,8 +1,8 @@
 ---
 global:
   supportedKinds:
-    argocdApplications: [argoproj.io/v1alpha1, Application, argocdApplication, true]
-    argocdRollouts: [argoproj.io/v1alpha1, Rollout, argocdRollout, true]
+    argoApplications: [argoproj.io/v1alpha1, Application, argoApplication, true]
+    argoRollouts: [argoproj.io/v1alpha1, Rollout, argoRollout, true]
     certificates: [cert-manager.io/v1, Certificate, certificate, true]
     configMaps: [v1, ConfigMap, configMap, false]
     cronJobs: [batch/v1, CronJob, cronJob, true]
@@ -133,14 +133,14 @@ common:
 
   istioAuthorizationPolicy: {}
 
-  argocdApplication:
+  argoApplication:
     spec:
       destination:
         server: https://kubernetes.default.svc
       syncPolicy:
         automated: {}
 
-  argocdRollout:
+  argoRollout:
     spec:
       template:
         <<: *pod

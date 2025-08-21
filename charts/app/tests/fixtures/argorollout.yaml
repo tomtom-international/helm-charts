@@ -1,4 +1,4 @@
-argocdRollouts:
+argoRollouts:
   app1:
     spec:
       selector:
