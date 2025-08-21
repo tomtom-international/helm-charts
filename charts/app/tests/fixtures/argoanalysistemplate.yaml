@@ -1,0 +1,10 @@
+argoAnalysisTemplates:
+  example:
+    spec:
+      metrics:
+        - name: health
+          count: 20
+          interval: 1m
+          provider:
+            web:
+              url: https://example.com/api/v1/health-check
