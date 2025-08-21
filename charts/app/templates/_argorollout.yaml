@@ -1,4 +1,4 @@
-{{- define "common.argocdrollout" -}}
+{{- define "common.argorollout" -}}
 {{- if not .spec.workloadRef -}}
 {{- /* extra-logic: set pod labels from spec.selector.matchLabels */}}
 {{- $pod := merge .spec.template (dict "metadata" (dict "labels" .spec.selector.matchLabels)) }}

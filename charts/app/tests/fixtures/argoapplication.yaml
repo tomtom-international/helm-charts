@@ -1,4 +1,4 @@
-argocdApplications:
+argoApplications:
   app:
     metadata:
       namespace: ns
