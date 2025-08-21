@@ -201,7 +201,7 @@ VMAlertmanagerConfig#spec.receivers.*
 VMAlertmanagerConfig#spec.route.routes
 VMRule#spec.groups
 VMRule#spec.groups.*.rules
-# each: Pod#spec, CronJob#spec.jobTemplate.template.spec, {Deployment,StatefulSet}#spec.template.spec
+# each: Pod#spec, CronJob#spec.jobTemplate.spec.template.spec, {Deployment,StatefulSet,Rollout}#spec.template.spec
 *.volumes
 *.containers
 *.initContainers
