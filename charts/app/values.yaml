@@ -3,6 +3,7 @@ global:
   supportedKinds:
     argoApplications: [argoproj.io/v1alpha1, Application, argoApplication, true]
     argoRollouts: [argoproj.io/v1alpha1, Rollout, argoRollout, true]
+    argoAnalysisTemplates: [argoproj.io/v1alpha1, AnalysisTemplate, argoAnalysisTemplate, false]
     certificates: [cert-manager.io/v1, Certificate, certificate, true]
     configMaps: [v1, ConfigMap, configMap, false]
     cronJobs: [batch/v1, CronJob, cronJob, true]
@@ -144,6 +145,8 @@ common:
     spec:
       template:
         <<: *pod
+
+  argoAnalysisTemplate: {}
 
   certificate:
     spec:
