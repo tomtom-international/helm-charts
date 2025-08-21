@@ -1,0 +1,58 @@
+suite: test argocdrollout
+templates:
+  - manifests.yaml
+tests:
+  - it: should work with template
+    values:
+      - ./fixtures/argocdrollout.yaml
+    documentIndex: 0
+    asserts:
+      - isKind:
+          of: Rollout
+      - equal:
+          path: spec
+          value:
+            selector:
+              matchLabels:
+                app: app1
+            template:
+              metadata:
+                labels:
+                  app: app1
+              spec:
+                automountServiceAccountToken: false
+                containers:
+                  - env:
+                      - name: A
+                        value: B
+                    image: nginx
+                    name: app
+                    securityContext:
+                      allowPrivilegeEscalation: false
+                      capabilities:
+                        drop:
+                          - ALL
+                      readOnlyRootFilesystem: true
+                enableServiceLinks: false
+                securityContext:
+                  seccompProfile:
+                    type: RuntimeDefault
+                serviceAccountName: default
+  - it: should work with workloadRef
+    values:
+      - ./fixtures/argocdrollout.yaml
+    documentIndex: 1
+    asserts:
+      - isKind:
+          of: Rollout
+      - equal:
+          path: spec
+          value:
+            selector:
+              matchLabels:
+                app: app2
+            workloadRef:
+              apiVersion: apps/v1
+              kind: Deployment
+              name: app2
+              scaleDown: onsuccess

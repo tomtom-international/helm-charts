@@ -1,0 +1,23 @@
+argocdRollouts:
+  app1:
+    spec:
+      selector:
+        matchLabels:
+          app: app1
+      template:
+        spec:
+          containers:
+            app:
+              image: nginx
+              env:
+                A: B
+  app2:
+    spec:
+      selector:
+        matchLabels:
+          app: app2
+      workloadRef:
+        apiVersion: apps/v1
+        kind: Deployment
+        name: app2
+        scaleDown: onsuccess

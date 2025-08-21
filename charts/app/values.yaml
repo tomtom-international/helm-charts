@@ -2,6 +2,7 @@
 global:
   supportedKinds:
     argocdApplications: [argoproj.io/v1alpha1, Application, argocdApplication, true]
+    argocdRollouts: [argoproj.io/v1alpha1, Rollout, argocdRollout, true]
     certificates: [cert-manager.io/v1, Certificate, certificate, true]
     configMaps: [v1, ConfigMap, configMap, false]
     cronJobs: [batch/v1, CronJob, cronJob, true]
@@ -138,6 +139,11 @@ common:
         server: https://kubernetes.default.svc
       syncPolicy:
         automated: {}
+
+  argocdRollout:
+    spec:
+      template:
+        <<: *pod
 
   certificate:
     spec:
