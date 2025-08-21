@@ -45,7 +45,7 @@ pods:
   app: {}
 ```
 
-2. The `common` dictionary provides access to defaults applied to all manifests of specific kind across all rendered manifests. For example, define `pod` defaults across all `cronJobs` and `pods`:
+2. The `common` dictionary provides access to defaults applied to all manifests of specific kind across all rendered manifests. For example, define `pod` defaults across all `pods`:
 
 ```yaml
 common:
@@ -54,10 +54,8 @@ common:
       serviceAccountName: other
 
 pods:
-  app: {}
-
-cronJobs:
-  report: {}
+  app1: {}
+  app2: {}
 ```
 
 3. Frequently used manifest fields of `list` type can be presented as `dict`s, allowing overrides in more specific context. For example, override default `pod`s `container.image`:
@@ -71,14 +69,12 @@ common:
           image: busybox:latest
 
 pods:
-  app:
+  app1:
     spec:
       containers:
         app:
           image: busybox:19700101
-
-cronJobs:
-  report: {}
+  app2: {}
 ```
 
 For more details refer to [`dict` to `list` expansion](#dict-to-list-expansion) section.
@@ -96,13 +92,11 @@ common:
           image: busybox:latest
 
 pods:
-  app:
+  app1:
     spec:
       containers:
         sidecar: ~
-
-cronJobs:
-  report: {}
+  app2: {}
 ```
 
 5. Kind-specific reducers, simplifying frequently used configurations. For example, pass container environment variables as simple key-values:
