@@ -765,6 +765,21 @@ entries:
   gradle-cache:
   - apiVersion: v2
     appVersion: "18.0"
+    created: "2025-09-18T12:17:59.280744764Z"
+    description: Helm chart for [gradle-cache](https://docs.gradle.com/build-cache-node/).
+    digest: 575dced6a12d42ecdd52f6a0a6cc9f3e810e1bbc7e45e25205a43257674fb89a
+    home: https://github.com/tomtom-international/helm-charts/tree/main/charts/gradle-cache
+    icon: https://assets.gradle.com/icon/gradle-enterprise/favicon.ico
+    maintainers:
+    - email: dzmitry.harchanin@tomtom.com
+      name: Dzmitry Harchanin
+    name: gradle-cache
+    type: application
+    urls:
+    - https://github.com/tomtom-international/helm-charts/releases/download/gradle-cache-0.1.1/gradle-cache-0.1.1.tgz
+    version: 0.1.1
+  - apiVersion: v2
+    appVersion: "18.0"
     created: "2024-01-04T10:49:17.154683219Z"
     description: Helm chart for [gradle-cache](https://docs.gradle.com/build-cache-node/).
     digest: 086d65650ca6eae2dfb4fd8dcd4a3dea737ed77070008a015fe8f24b3e68f5dd
@@ -979,4 +994,4 @@ entries:
     urls:
     - https://github.com/tomtom-international/helm-charts/releases/download/tomtom-base-chart-0.0.2/tomtom-base-chart-0.0.2.tgz
     version: 0.0.2
-generated: "2025-08-21T16:48:12.990561305Z"
+generated: "2025-09-18T12:17:59.280894685Z"
