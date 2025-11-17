@@ -1,6 +1,7 @@
 ---
 global:
   supportedKinds:
+    namespaces: [v1, Namespace, namespace, false]
     argoApplications: [argoproj.io/v1alpha1, Application, argoApplication, true]
     argoRollouts: [argoproj.io/v1alpha1, Rollout, argoRollout, true]
     argoAnalysisTemplates: [argoproj.io/v1alpha1, AnalysisTemplate, argoAnalysisTemplate, false]
@@ -15,6 +16,7 @@ global:
     istioGateways: [networking.istio.io/v1, Gateway, istioGateway, false]
     istioVirtualServices: [networking.istio.io/v1beta1, VirtualService, istioVirtualService, false]
     istioAuthorizationPolicies: [security.istio.io/v1, AuthorizationPolicy, istioAuthorizationPolicy, false]
+    istioRequestAuthentications: [security.istio.io/v1, RequestAuthentication, istioRequestAuthentication, false]
     istioServiceEntries: [networking.istio.io/v1, ServiceEntry, istioServiceEntry, false]
     istioDestinationRules: [networking.istio.io/v1, DestinationRule, istioDestinationRule, false]
     networkPolicies: [networking.k8s.io/v1, NetworkPolicy, networkPolicy, false]
@@ -136,9 +138,11 @@ common:
 
   istioAuthorizationPolicy: {}
 
-  istioServiceEntries: {}
+  istioRequestAuthentication: {}
 
-  istioDestinationRules: {}
+  istioServiceEntry: {}
+
+  istioDestinationRule: {}
 
   argoApplication:
     spec:
