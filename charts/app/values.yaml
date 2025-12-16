@@ -1,10 +1,9 @@
 ---
 global:
   supportedKinds:
-    namespaces: [v1, Namespace, namespace, false]
+    argoAnalysisTemplates: [argoproj.io/v1alpha1, AnalysisTemplate, argoAnalysisTemplate, false]
     argoApplications: [argoproj.io/v1alpha1, Application, argoApplication, true]
     argoRollouts: [argoproj.io/v1alpha1, Rollout, argoRollout, true]
-    argoAnalysisTemplates: [argoproj.io/v1alpha1, AnalysisTemplate, argoAnalysisTemplate, false]
     certificates: [cert-manager.io/v1, Certificate, certificate, true]
     configMaps: [v1, ConfigMap, configMap, false]
     cronJobs: [batch/v1, CronJob, cronJob, true]
@@ -13,19 +12,22 @@ global:
     horizontalPodAutoscalers: [autoscaling/v2, HorizontalPodAutoscaler, horizontalPodAutoscaler, false]
     httpRoutes: [gateway.networking.k8s.io/v1, HTTPRoute, httpRoute, true]
     ingresses: [networking.k8s.io/v1, Ingress, ingress, false]
-    istioGateways: [networking.istio.io/v1, Gateway, istioGateway, false]
-    istioVirtualServices: [networking.istio.io/v1beta1, VirtualService, istioVirtualService, false]
     istioAuthorizationPolicies: [security.istio.io/v1, AuthorizationPolicy, istioAuthorizationPolicy, false]
+    istioDestinationRules: [networking.istio.io/v1, DestinationRule, istioDestinationRule, false]
+    istioGateways: [networking.istio.io/v1, Gateway, istioGateway, false]
     istioRequestAuthentications: [security.istio.io/v1, RequestAuthentication, istioRequestAuthentication, false]
     istioServiceEntries: [networking.istio.io/v1, ServiceEntry, istioServiceEntry, false]
-    istioDestinationRules: [networking.istio.io/v1, DestinationRule, istioDestinationRule, false]
+    istioVirtualServices: [networking.istio.io/v1beta1, VirtualService, istioVirtualService, false]
+    namespaces: [v1, Namespace, namespace, false]
     networkPolicies: [networking.k8s.io/v1, NetworkPolicy, networkPolicy, false]
     persistentVolumeClaims: [v1, PersistentVolumeClaim, persistentVolumeClaim, false]
-    pods: [v1, Pod, pod, true]
     podDisruptionBudgets: [policy/v1, PodDisruptionBudget, podDisruptionBudget, true]
+    pods: [v1, Pod, pod, true]
+    roleBindings: [rbac.authorization.k8s.io/v1, RoleBinding, roleBinding, false]
+    roles: [rbac.authorization.k8s.io/v1, Role, role, false]
     secretStores: [external-secrets.io/v1, SecretStore, secretStore, false]
-    services: [v1, Service, service, true]
     serviceAccounts: [v1, ServiceAccount, serviceAccount, false]
+    services: [v1, Service, service, true]
     statefulSets: [apps/v1, StatefulSet, statefulSet, true]
     vmAlertmanagerConfigs: [operator.victoriametrics.com/v1beta1, VMAlertmanagerConfig, vmAlertmanagerConfig, true]
     vmRules: [operator.victoriametrics.com/v1beta1, VMRule, vmRule, true]
@@ -125,6 +127,10 @@ common:
       maxReplicas: 10
 
   service: {}
+
+  roleBinding: {}
+
+  role: {}
 
   httpRoute: {}
 
