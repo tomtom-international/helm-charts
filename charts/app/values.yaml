@@ -31,6 +31,8 @@ global:
     statefulSets: [apps/v1, StatefulSet, statefulSet, true]
     vmAlertmanagerConfigs: [operator.victoriametrics.com/v1beta1, VMAlertmanagerConfig, vmAlertmanagerConfig, true]
     vmRules: [operator.victoriametrics.com/v1beta1, VMRule, vmRule, true]
+    karpenterNodePools: [karpenter.sh/v1, NodePool, karpenterNodePool, true]
+    karpenterAKSNodeClasses: [karpenter.azure.com/v1beta1, AKSNodeClass, karpenterAKSNodeClass, false]
 
 common:
   metadata:
@@ -182,3 +184,7 @@ common:
         group_interval: 1m
 
   vmRule: {}
+
+  karpenterNodePool: {}
+
+  karpenterAKSNodeClasses: {}

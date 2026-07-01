@@ -1,0 +1,9 @@
+{{- define "common.karpenternodepool" -}}
+{{- /* dict-to-list: expand spec.template.spec.taints dict to list of objects, with dict keys in key field */}}
+{{- if .spec.template.spec.taints }}{{ $_ := set .spec.template.spec "taints" (include "common.to-list" (dict "$values" .spec.template.spec.taints "$keyAt" "key") | fromYamlArray) }}{{ end }}
+{{- /* dict-to-list: expand spec.template.spec.startupTaints dict to list of objects, with dict keys in key field */}}
+{{- if .spec.template.spec.startupTaints }}{{ $_ := set .spec.template.spec "startupTaints" (include "common.to-list" (dict "$values" .spec.template.spec.startupTaints "$keyAt" "key") | fromYamlArray) }}{{ end }}
+{{- /* dict-to-list: expand spec.template.spec.requirements dict to list of objects, with dict keys in key field */}}
+{{- if .spec.template.spec.requirements }}{{ $_ := set .spec.template.spec "requirements" (include "common.to-list" (dict "$values" .spec.template.spec.requirements "$keyAt" "key") | fromYamlArray) }}{{ end }}
+{{- $_ := unset . "common" }}
+{{- end -}}
