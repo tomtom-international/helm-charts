@@ -1,0 +1,5 @@
+{{- define "common.listenerset" -}}
+{{- /* reducers: default to metadata.name for spec.parentRef.name (with other standard defaults) */}}
+{{- $parentRefDefaults := dict "group" "gateway.networking.k8s.io" "kind" "Gateway" "namespace" "istio-ingress" "name" .metadata.name }}
+{{- if .spec.parentRef }}{{ $_ := merge .spec.parentRef $parentRefDefaults }}{{ else }}{{ $_ := set .spec "parentRef" $parentRefDefaults }}{{ end }}
+{{- end -}}

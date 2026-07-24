@@ -18,6 +18,7 @@ global:
     istioRequestAuthentications: [security.istio.io/v1, RequestAuthentication, istioRequestAuthentication, false]
     istioServiceEntries: [networking.istio.io/v1, ServiceEntry, istioServiceEntry, false]
     istioVirtualServices: [networking.istio.io/v1beta1, VirtualService, istioVirtualService, false]
+    listenerSets: [gateway.networking.k8s.io/v1, ListenerSet, listenerSet, true]
     namespaces: [v1, Namespace, namespace, false]
     networkPolicies: [networking.k8s.io/v1, NetworkPolicy, networkPolicy, false]
     persistentVolumeClaims: [v1, PersistentVolumeClaim, persistentVolumeClaim, false]
@@ -135,6 +136,8 @@ common:
   role: {}
 
   httpRoute: {}
+
+  listenerSet: {}
 
   ingress:
     spec:

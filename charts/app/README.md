@@ -220,6 +220,7 @@ Application#spec.destination.namespace
 Certificate#spec.target.secretName
 ExternalSecret#spec
 HTTPRoute#spec.parentRefs.*.name
+ListenerSet#spec.parentRef.name
 VMAlertmanagerConfig#spec.route.routes.*.continue
 # each: Pod#spec, CronJob#spec.jobTemplate.template.spec, {Deployment,StatefulSet}#spec.template.spec
 *.containers.*.env

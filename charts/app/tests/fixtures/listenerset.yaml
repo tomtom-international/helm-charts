@@ -1,0 +1,10 @@
+listenerSets:
+  app:
+    spec:
+      parentRef:
+        name: gateway-private
+      listeners:
+        - name: app
+          hostname: app.example.com
+          protocol: HTTPS
+          port: 443
