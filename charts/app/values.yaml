@@ -143,7 +143,6 @@ common:
         group: gateway.networking.k8s.io
         kind: Gateway
         namespace: istio-ingress
-        name: '{{ .name }}'
 
   ingress:
     spec:
