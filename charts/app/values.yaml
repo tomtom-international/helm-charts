@@ -79,6 +79,7 @@ common:
       serviceAccountName: default
       automountServiceAccountToken: false
       enableServiceLinks: false
+      hostUsers: false
       securityContext:
         seccompProfile:
           type: RuntimeDefault
