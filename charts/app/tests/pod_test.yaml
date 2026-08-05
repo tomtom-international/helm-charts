@@ -40,6 +40,7 @@ tests:
                     drop:
                       - ALL
                   readOnlyRootFilesystem: true
+            hostUsers: false
             securityContext:
               seccompProfile:
                 type: RuntimeDefault
