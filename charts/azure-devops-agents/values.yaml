@@ -47,6 +47,18 @@ agentPoolInfo:
   poolname: "keda self-hosted"
   poolID: "2"
 
+# Authenticate to Azure DevOps with Azure AD Workload Identity instead of a PAT.
+# When enabled: the agent pod runs under serviceAccountName with the
+# azure.workload.identity/use label, the AZP_TOKEN secret env is dropped, and the
+# azure-pipelines trigger uses authenticationRef instead of a PAT.
+# The ServiceAccount and the TriggerAuthentication are not created by this chart:
+# both are namespace-scoped and shared by every pool in the namespace, and the
+# ServiceAccount has to carry the client-id of the identity federated to it.
+managedIdentity:
+  enabled: false
+  serviceAccountName: ado-agent-mi
+  triggerAuthName: ado-keda-wi
+
 secret:
   create: true
   name: "mysecret"
