@@ -12,12 +12,19 @@ spec:
         annotations:
           {{- toYaml . | nindent 10 }}
         {{- end }}
+        {{- if .Values.managedIdentity.enabled }}
+        labels:
+          azure.workload.identity/use: "true"
+        {{- end }}
       spec:
+        {{- if .Values.managedIdentity.enabled }}
+        serviceAccountName: {{ .Values.managedIdentity.serviceAccountName }}
+        {{- end }}
         restartPolicy: Never
         containers:
         - name: {{ include "azure-devops-agents.name" . }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
-          command: ["./start.sh"]
+          command: ["/usr/local/bin/start.sh"]
           args: ["--once"]
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           env:
@@ -25,11 +32,13 @@ spec:
             value: {{ .Values.agentPoolInfo.url }}
           - name: AZP_POOL
             value: {{ .Values.agentPoolInfo.poolname }}
+          {{- if not .Values.managedIdentity.enabled }}
           - name: AZP_TOKEN
             valueFrom:
               secretKeyRef:
                 name: {{ $azpTokenSecret }}
                 key: AZP_TOKEN
+          {{- end }}
           ports:
             - name: http
               containerPort: {{ .Values.service.port }}
@@ -68,4 +77,10 @@ spec:
     metadata:
       poolID: "{{ .Values.agentPoolInfo.poolID }}"
       organizationURLFromEnv: "AZP_URL"
+      {{- if not .Values.managedIdentity.enabled }}
       personalAccessTokenFromEnv: "AZP_TOKEN"
+      {{- end }}
+    {{- if .Values.managedIdentity.enabled }}
+    authenticationRef:
+      name: {{ .Values.managedIdentity.triggerAuthName }}
+    {{- end }}
