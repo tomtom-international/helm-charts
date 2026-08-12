@@ -274,6 +274,16 @@ entries:
   azure-devops-agents:
   - apiVersion: v2
     appVersion: 1.16.0
+    created: "2026-08-12T13:14:13.580056684Z"
+    description: A Helm chart for Kubernetes
+    digest: 8ea8ca6bfbc8367a6bdfb7e7906ca40984fdfa42ce48f5afa22ebb3c9c85afd1
+    name: azure-devops-agents
+    type: application
+    urls:
+    - https://github.com/tomtom-international/helm-charts/releases/download/azure-devops-agents-0.14.0/azure-devops-agents-0.14.0.tgz
+    version: 0.14.0
+  - apiVersion: v2
+    appVersion: 1.16.0
     created: "2024-11-07T14:15:07.729814223Z"
     description: A Helm chart for Kubernetes
     digest: b58e9dbd21f0fc205b079081409fee8b178836ec79564f4b9bc67159a379ba4d
@@ -1058,4 +1068,4 @@ entries:
     urls:
     - https://github.com/tomtom-international/helm-charts/releases/download/tomtom-base-chart-0.0.2/tomtom-base-chart-0.0.2.tgz
     version: 0.0.2
-generated: "2026-08-05T15:17:22.070362371Z"
+generated: "2026-08-12T13:14:13.580203074Z"
