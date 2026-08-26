@@ -35,6 +35,7 @@ tests:
                           - ALL
                       readOnlyRootFilesystem: true
                 enableServiceLinks: false
+                hostUsers: false
                 securityContext:
                   seccompProfile:
                     type: RuntimeDefault
