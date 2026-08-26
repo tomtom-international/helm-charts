@@ -99,7 +99,7 @@ pods:
   app2: {}
 ```
 
-5. Kind-specific reducers, simplifying frequently used configurations. For example, pass container environment variables as simple key-values:
+5. Kind-specific reducers, simplifying frequently used configurations. For example, pass a container environment variables as simple key-values:
 
 ```yaml
 common:
