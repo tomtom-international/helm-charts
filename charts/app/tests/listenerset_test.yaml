@@ -1,0 +1,22 @@
+suite: test listenerset
+templates:
+  - manifests.yaml
+tests:
+  - it: should work
+    values:
+      - ./fixtures/listenerset.yaml
+    asserts:
+      - isKind:
+          of: ListenerSet
+      - isAPIVersion:
+          of: gateway.networking.k8s.io/v1
+      - equal:
+          path: spec.parentRef
+          value:
+            group: gateway.networking.k8s.io
+            kind: Gateway
+            namespace: istio-ingress
+            name: gateway-private
+      - equal:
+          path: spec.listeners[0].name
+          value: app
